@@ -10,6 +10,39 @@
 @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+/* For old IEs */
+@import url('https://anthonyjsilvia.com/favicon/favicon.ico');
+
+/* For new browsers - multisize ico */
+@import url('https://anthonyjsilvia.com/favicon/favicon.ico') screen and (max-width: 32px);
+
+/* For iPad with high-resolution Retina display running iOS ≥ 7: */
+@import url('https://anthonyjsilvia.com/favicon/favicon-152-precomposed.png') only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2);
+
+/* For iPad with high-resolution Retina display running iOS ≤ 6: */
+@import url('https://anthonyjsilvia.com/favicon/favicon-144-precomposed.png') only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1);
+
+/* For iPhone with high-resolution Retina display running iOS ≥ 7: */
+@import url('https://anthonyjsilvia.com/favicon/favicon-120-precomposed.png') only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2);
+
+/* For iPhone with high-resolution Retina display running iOS ≤ 6: */
+@import url('https://anthonyjsilvia.com/favicon/favicon-114-precomposed.png') only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 1);
+
+/* For iPhone 6+ */
+@import url('https://anthonyjsilvia.com/favicon/favicon-180-precomposed.png') only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3);
+
+/* For first- and second-generation iPad: */
+@import url('https://anthonyjsilvia.com/favicon/favicon-72-precomposed.png') only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1);
+
+/* For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: */
+@import url('https://anthonyjsilvia.com/favicon/favicon-57.png') only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 1);
+
+/* For Old Chrome */
+@import url('https://anthonyjsilvia.com/favicon/favicon-32.png') only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min--moz-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5), only screen and (min-resolution: 144dpi), only screen and (min-resolution: 1.5dppx);
+
+/* For IE10 Metro */
+@-ms-viewport{ width: device-width; }
+@import url('https://anthonyjsilvia.com/favicon/favicon-144.png') only screen and (min-width: 320px) and (max-width: 359px) and (-ms-high-contrast: none), only screen and
 
 /*--------------------------------------------------------------
 # General
