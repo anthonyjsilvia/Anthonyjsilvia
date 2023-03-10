@@ -19,11 +19,16 @@
         <div class="collapse navbar-collapse" id="mobileMenu">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="accessibility-link" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Font Size</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="accessibility-link" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accessibility</a>
                     <div class="dropdown-menu" aria-labelledby="accessibility-link">
-                        <a class="dropdown-item" href="#" onclick="changeFontSize('small')">Small</a>
-                        <a class="dropdown-item" href="#" onclick="changeFontSize('medium')">Medium</a>
-                        <a class="dropdown-item" href="#" onclick="changeFontSize('large')">Large</a>
+                        <p style="width:90%; margin-left:5%; "><strong>Font Sizes</strong></p>
+                        <a class="dropdown-item" href="#" onclick="changeFontSize('small')">Smaller Font</a>
+                        <a class="dropdown-item" href="#" onclick="changeFontSize('medium')">Default Font</a>
+                        <a class="dropdown-item" href="#" onclick="changeFontSize('large')">Larger Font</a>
+                        <hr>
+                        <p style="width:90%; margin-left:5%; "><strong>Visual Aid</strong></p>
+                        <a class="dropdown-item" href="#" onclick="showDarkModeMessage()">Dark Mode</a>
+                        
                     </div>
                 </li>
                 <li class="nav-item">

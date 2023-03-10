@@ -59,6 +59,10 @@ a:hover {
 h1, h2, h3, h4, h5, h6 {
   font-family: "Rubik", sans-serif;
 }
+.high-contrast {
+    background-color: black !important;
+    color: white !important;
+}
 /*--------------------------------------------------------------
 # Back to top button
 --------------------------------------------------------------*/
