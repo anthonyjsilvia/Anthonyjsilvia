@@ -58,7 +58,7 @@
   --text-color: #272829;
   --link-color: #0563bb;
 }*/
-
+@media (prefers-color-scheme: light) {
   :root {
     /* Update the color variables for dark mode */
     --primary-color: #0678e3;
@@ -70,6 +70,7 @@
     --text-color: #fff;
     --link-color: #067ded;
   }
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
