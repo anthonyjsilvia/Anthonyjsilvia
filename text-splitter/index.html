@@ -1,22 +1,72 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Transcript Splitter</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <script src="js/darkmode.js"></script>
-  </head>
-  <body>
-    <div id="splitter">
-      <h1>Transcript Splitter</h1>
-      <label for="textInput">Transcript:</label>
-      <textarea id="textInput" placeholder="Paste your transcript here"></textarea>
-      <button onclick="splitAndCleanText()">Split Transcript</button>
-      <div id="output"></div>
-      <div id="buttons"></div>
-      <div id="results"></div>
-    </div>
-    <script src="js/cleaner.js"></script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthony Silvia - UX Designer</title>
+<link rel="stylesheet" href="css/style.css">
 
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Anthony Silvia</a>
+        <button class="navbar-toggler my-navTog" type="button" data-toggle="collapse" data-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
+
+        <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mobileMenu">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="accessibility-link" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accessibility</a>
+                    <div class="dropdown-menu" aria-labelledby="accessibility-link">
+                        <p style="width:90%; margin-left:5%; "><strong>Font Sizes</strong></p>
+                        <a class="dropdown-item" href="#" onclick="changeFontSize('small')">Smaller Font</a>
+                        <a class="dropdown-item" href="#" onclick="changeFontSize('medium')">Default Font</a>
+                        <a class="dropdown-item" href="#" onclick="changeFontSize('large')">Larger Font</a>
+                        <hr>
+                        <p style="width:90%; margin-left:5%; "><strong>Visual Aid</strong></p>
+                        <a class="dropdown-item" href="#" onclick="showDarkModeMessage()">Dark Mode</a>
+                        
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://nodeda.com">NodeDa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://linkedin.com/in/anthonyjsilvia">Linkedin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="mailto:contact@anthonyjsilvia.com">Contact Me</a>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+<iframe src="https://anthonyjsilvia.com/text-splitter/base/" style="width: 100%; height: 100%;"></iframe>
   </body>
-</html>
+    
+    <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i>
+</a>
+<footer>
+  <div class="container text-center">
+    <p>&copy; 2023 Anthony Silvia - All rights reserved</p>
+  </div>
+</footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNSG0wG"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<script src="js/top.js"></script>
+<!--script src="js/keynav.js"></script-->
+<script src="js/ease.js"></script>
+  </html>
