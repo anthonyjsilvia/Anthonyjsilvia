@@ -1,0 +1,101 @@
+<!-- This is the beginning of the HTML file -->
+<!DOCTYPE html>
+<!-- This is the HTML section that contains all the code for the webpage -->
+<html>
+<!-- This is the head section of the HTML file -->
+<head>
+    <!-- This is the title of the webpage -->
+    <title>About - TOWN Restaurant</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<!-- This is the body section of the HTML file -->
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+      <a class="navbar-brand" href="index.html">
+        <img src="images/TOWN_logo.png" alt="Logo" height="30">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="menu.html">Menu</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="about.html">About Town</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact Us</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="accessibility-link" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accessibility</a>
+            <div class="dropdown-menu" aria-labelledby="accessibility-link">
+                <p style="width:90%; margin-left:5%; "><strong>Font Sizes</strong></p>
+                <a class="dropdown-item" href="#" onclick="changeFontSize('small')">Smaller Font</a>
+                <a class="dropdown-item" href="#" onclick="changeFontSize('medium')">Default Font</a>
+                <a class="dropdown-item" href="#" onclick="changeFontSize('large')">Larger Font</a>
+                <hr>
+                <p style="width:90%; margin-left:5%; "><strong>Visual Aid</strong></p>
+                <!--a class="dropdown-item" href="#" onclick="showDarkModeMessage()">Dark Mode</a-->
+                
+            </div>
+        </li>
+        </ul>
+      </div>
+    </nav>
+    
+
+
+    <div class="hero about-hero" id="kitchenhero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1>Our Mission</h1>
+        <p>To bring quality, style and the wish for good fortune to all of our guests. We provide a high-end experience through Chinese cuisine.</p>
+      </div>
+    </div>
+
+    <h1 id="h1crumb"></h1>
+
+    <div class="container aboutSec">
+      <div class="box">
+        <h2 id="h1crumb">Our Vision</h2>
+        <p>TOWN combines a variety of Chinese cuisine to excite and delight our customers. Our vision for the future is to create experiential dining that is more than just a night out. We aim to bring quality and luxury across all aspects of our brand. The approach of TOWN is to develop our brand with the understanding of both our culture and consumer insights. Within our vision always lives the promise of inspiring creativity, conversation, and quality. Our audience is a high-end clientele who values a dining experience. The age range of our customers is from early 30s-60s. We would like them to come back for both personal dining and events.</p>
+      </div>
+    </div>
+
+    <div class="hero about-hero" id="ourplanethero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1>Our Planet</h1>
+        <p>Our Restaurant uses 100% Recycled materials, not only for takeout, but for dining as well from napkins to our take out containers.</p>
+      </div>
+    </div>
+
+    <h1 id="h1crumb"></h1>
+
+    <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i>
+    </body>
+  
+    </a>
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2023 Anthony Silvia. All rights reserved.</p>
+        <p>Created by <a href="https://anthonyjsilvia.com">Anthony Silvia |</a></p>
+        <p>     | <a href="sources.html">Press here to view sources</a></p>
+      </div>
+    </footer>  
+      <!-- Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+       integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNSG0wG"
+       crossorigin="anonymous"></script>
+  
+       <script src="js/top.js"></script>
+  <!--script src="js/keynav.js"></script-->
+  <script src="js/ease.js"></script>
+    </html>
