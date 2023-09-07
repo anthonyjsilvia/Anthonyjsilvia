@@ -1,301 +1,620 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anthony Silvia - UX Designer</title>
-<link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anthony Silvia - UX Designer</title>
+
+    <link rel="icon" type="image/x-icon" href="./assets/images/favicon.png">
+
+
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="./assets/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="./assets/css/animate.min.css">
+    <link rel="stylesheet" href="./assets/css/smooth-scrollbar.css">
+    <link rel="stylesheet" href="./assets/css/lightbox.min.css">
+
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/responsive.css">
 
 </head>
-<body>
-    
-    <nav class="navbar navbar-expand-lg navbar bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Anthony Silvia</a>
-        <button class="navbar-toggler my-navTog" type="button" data-toggle="collapse" data-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
+<body class="home1-page">
 
-        <span class="navbar-toggler-icon"></span>
-        </button>
+   <!--  <video class="body-overlay" muted autoplay loop>
+        <source src="./assets/images/video1.mp4" type="video/mp4">
+    </video> -->
 
-        <div class="collapse navbar-collapse" id="mobileMenu">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="accessibility-link" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accessibility</a>
-                    <div class="dropdown-menu" aria-labelledby="accessibility-link">
-                        <p style="width:90%; margin-left:5%; "><strong>Font Sizes</strong></p>
-                        <a class="dropdown-item" href="#" onclick="changeFontSize('small')">Smaller Font</a>
-                        <a class="dropdown-item" href="#" onclick="changeFontSize('medium')">Default Font</a>
-                        <a class="dropdown-item" href="#" onclick="changeFontSize('large')">Larger Font</a>
-                        <hr>
-                        <p style="width:90%; margin-left:5%; "><strong>Visual Aid</strong></p>
-                        <a class="dropdown-item" href="#" onclick="showDarkModeMessage()">Dark Mode</a>
-                        
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://nodeda.com">NodeDa</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://linkedin.com/in/anthonyjsilvia">Linkedin</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="mailto:contact@anthonyjsilvia.com">Contact Me</a>
-                </li>
-            </ul>
-        </div>
+    <!-- Preloader -->
+    <div class="page-loader">
+        <div class="bounceball"></div>
+    </div>
 
-    </nav>
+    <span class="icon-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </span>
+
+    <!-- Side Menu Bar -->
+    <div class="responsive-sidebar-menu">
+        <div class="overlay"></div>
+        <div class="sidebar-menu-inner">
+            <div class="menu-wrap">
+                <p>Menu</p>
+                <ul class="menu scroll-nav-responsive d-flex">
+                    <li>
+                        <a class="scroll-to" href="#home">
+                            <i class="las la-home"></i> <span>Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="scroll-to" href="#about">
+                            <i class="lar la-user"></i> <span>About</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="scroll-to" href="#resume">
+                            <i class="las la-briefcase"></i> <span>Resume</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="scroll-to" href="#services">
+                            <i class="las la-stream"></i> <span>Services</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="scroll-to" href="#skills">
+                            <i class="las la-shapes"></i> <span>Skills</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="scroll-to" href="#portfolio">
+                            <i class="las la-grip-vertical"></i> <span>Portfolios</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="scroll-to" href="#testimonial">
+                            <i class="lar la-comment"></i> <span>Testimonial</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
 
-    
-    <div class="hero">
-        <h1>I'm a Graphic Designer &amp; UX Designer &amp; Entrepreneur</h1>
-        <div class="heroSpecs" style="margin-top: auto;">
-            <div class="heroSpace"></div>
-            <ul>
-                <li><p>Name Phonetics:  <span>AN-thuh-nee SIL-vee-uh</span></p></li>
-                <li><p>Languages: <span>English, Español (nivel de primaria)</span></p></li>
-                <li><p>Age: <span>23 Years</span></p></li>
-                <li><p>Nationality: <span>American</span></p></li>
-                <li><p>Location: <span>Charlotte, North Carolina</span></p></li>
-                <li><p>Email: <span><a href="mailto:contact@ajsux.com">contact@ajsux.com</a></span></p></li>
-            </ul>
+            <div class="sidebar-social">
+                <p>Social</p>
+                <ul class="social-links d-flex align-items-center">
+                    <li>
+                        <a href="https://linkedin.com/in/anthonyjsilvia"><i class="lab la-linkedin"></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.behance.net/anthonysilvia"><i class="lab la-behance"></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/anthonyjsilvia"><i class="lab la-github"></i></a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-    
-    <div class="content-ds">
-        <div class="bio">
-            <h1>BIOGRAPHY</h1>
-            <p>Highly motivated and results-driven UX Designer with 1+ years of experience in creating user-centered designs for websites, mobile applications, and software. Proficient in conducting user research, prototyping, testing, and iteration to deliver intuitive and enjoyable user experiences.</p>
+
+    <ul class="menu scroll-nav d-flex">
+        <li>
+            <a class="scroll-to" href="#home">
+                <span>Home</span> <i class="las la-home"></i>
+            </a>
+        </li>
+        <li>
+            <a class="scroll-to" href="#about">
+                <span>About</span> <i class="lar la-user"></i>
+            </a>
+        </li>
+        <li>
+            <a class="scroll-to" href="#resume">
+                <span>Resume</span> <i class="las la-briefcase"></i>
+            </a>
+        </li>
+        <li>
+            <a class="scroll-to" href="#services">
+                <span>Services</span> <i class="las la-stream"></i>
+            </a>
+        </li>
+        <li>
+            <a class="scroll-to" href="#skills">
+                <span>Skills</span> <i class="las la-shapes"></i>
+            </a>
+        </li>
+        <li>
+            <a class="scroll-to" href="#portfolio">
+                <span>Portfolios</span> <i class="las la-grip-vertical"></i>
+            </a>
+        </li>
+        <li>
+            <a class="scroll-to" href="#testimonial">
+                <span>Testimonial</span> <i class="lar la-comment"></i>
+            </a>
+        </li>
+    </ul>
+
+    <div class="left-sidebar">
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <h2>Anthony Silvia</h2>
+            <span class="designation">UX Designer & Developer</span>
         </div>
-        
-        <h2 id="experience">Experience</h2>
-        
-        <div class="card-container">
-            <div class="card">
-                <div class="card-header">
-                    <h3>LOWES HOME IMPROVEMENT</h3>
-                    <p>( October 2022 — Today )</p>
-                </div>
-                <div class="card-body">
-                    <h4>Associate Product Designer</h4>
-                    <p>As an Associate Product Designer at Lowes, I work on designing the interface and user experience of the software that Lowe's associates and customers use. This work will increase the business's satisfaction with our in-house and public software. Accessible user interactions are essential to daily business needs. My goal is to create an experience that is inclusive for all users. Working with a team to achieve these goals is a must, as it allows the group to develop innovative ideas to improve the overall user experience for all of our Users.</p>
-                    
-                    <div class="exSpecs" style="margin-top: auto;">
-                        <ul style="color: grey;">
-                            <li><p>Figma</p></li>
-                            <li><p>Miro</p></li>
-                            <li><p>UX Design</p></li>
-                        </ul>
+        <img class="me" src="./assets/images/me.jpg" alt="Me">
+        <h2 class="email">contact@ajsux.com</h2>
+        <h2 class="address">Based in Mooresville, NC</h2>
+        <p class="copyright">&copy; 2023 Anthony Silvia. All Rights Reserved</p>
+        <ul class="social-profile d-flex align-items-center flex-wrap justify-content-center">
+            <li>
+                <a href="https://linkedin.com/in/anthonyjsilvia"><i class="lab la-linkedin"></i></a>
+            </li>
+            <li>
+                <a href="https://www.behance.net/anthonysilvia"><i class="lab la-behance"></i></a>
+            </li>
+            <li>
+                <a href="https://github.com/anthonyjsilvia"><i class="lab la-github"></i></a>
+            </li>
+        </ul>
+        <a href="#" class="theme-btn">
+            <i class="las la-envelope"></i> Contact Me
+        </a>
+    </div>
+    <!-- Main Section -->
+    <main class="drake-main">
+        <div id="smooth-wrapper">
+            <div id="smooth-content">
+
+                <div class="left-sidebar">
+                    <div class="sidebar-header d-flex align-items-center justify-content-between">
+                        <img src="./assets/images/logo.png" alt="Logo">
+                        <span class="designation">UX Designer & Developer</span>
                     </div>
-                    
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>NODEDA LLC</h3>
-                    <p>( April 2022 — Today )</p>
-                </div>
-                <div class="card-body">
-                    <h4>Founder and CEO</h4>
-                    <p>NodeDa, a Digital Graphic and Web Design Agency based in Charlotte, North Carolina. We provide services to help get you and your business an online foundation. Visit <a href="https://nodeda.com/">nodeda.com</a> to get started.</p>
-                    
-                    <div class="exSpecs" style="margin-top: auto;">
-                        <ul style="color: grey;">
-                            <li><p>Figma</p></li>
-                            <li><p>Xcode</p></li>
-                            <li><p>UX Design</p></li>
-                            <li><p>Accounting</p></li>
-                            <li><p>Business Management</p></li>
-                        </ul>
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3>APPLE (SELF EMPLOYED)</h3>
-                    <p>( 2018 — 2022 )</p>
-                </div>
-                <div class="card-body">
-                    <h4>iOS App Store Developer</h4>
-                    <ul>
-                        <li>Designed UX for the Apps I Developed</li>
-                        <li>Designed the app Icon and Marketing</li>
-                        <li>Coded in Swift using Xcode</li>
-                        <li>Published the app and updates to the App Store</li>
-                        <li>Managed Certificates and Provisioning profiles</li>
-                        <li>Made apps exclusively for iOS and macOS</li>
+                    <img class="me" src="./assets/images/me.jpg" alt="Me">
+                    <h2 class="email">contact@ajsux.com</h2>
+                    <h2 class="address">Based in Mooresville, NC</h2>
+                    <p class="copyright">&copy; 2023 Anthony Silvia. All Rights Reserved</p>
+                    <ul class="social-profile d-flex align-items-center flex-wrap justify-content-center">
+                        <li>
+                            <a href="https://linkedin.com/in/anthonyjsilvia"><i class="lab la-linkedin"></i></a>
+                        </li>
+                        <li>
+                            <a href="https://www.behance.net/anthonysilvia"><i class="lab la-behance"></i></a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/anthonyjsilvia"><i class="lab la-github"></i></a>
+                        </li>
                     </ul>
-                    <p>iChefBook Rebranded as Recipedo in January 2021, These operations moved to NodeDa (Formally, ADX Studios)</p>
-                    
-                    <div class="exSpecs" style="margin-top: auto;">
-                        <ul style="color: grey;">
-                            <li><p>Figma</p></li>
-                            <li><p>Xcode</p></li>
-                            <li><p>UX Design</p></li>
-                        </ul>
-                    </div>
-                    
+                    <a href="#" class="theme-btn">
+                        <i class="las la-envelope"></i> Hire Me!
+                    </a>
                 </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>HerbSwift</h3>
-                    <p>( June 2018 — March 2019 )</p>
-                </div>
-                <div class="card-body">
-                    <h4>Intern</h4>
-                    <p>At Herbswift, I helped in the process of creating and designing their website and mock-ups for the retailer’s app. While maintaining strong communication. I designed HerbSwifts app UX, Website UX, and Product Images and worked on digital art for the business.</p>
-                    
-                    <div class="exSpecs" style="margin-top: auto;">
-                        <ul style="color: grey;">
-                            <li><p>Figma</p></li>
-                            <li><p>Wordpress</p></li>
-                            <li><p>UX Design</p></li>
-                            <li><p>E-Commerce</p></li>
-                        </ul>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-        <hr>
-        <h2 id="experience">Education</h2>
-        
-        <div class="card-container">
-            
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3>TBA</h3>
-                    <p>( TBD )</p>
-                </div>
-                <div class="card-body">
-                    <h4>Masters</h4>
-                    <p>UX design</p>
-                    
-                    <div class="exSpecs" style="margin-top: auto;">
-                        <ul style="color: grey;">
-                            <li><p>Figma</p></li>
-                            <li><p>Adobe XD</p></li>
-                            <li><p>UX Design</p></li>
-                        </ul>
-                    </div>
-                    
-                </div>
-            </div>
-            
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3>SOUTHERN NEW HAMPSHIRE UNIVERSITY</h3>
-                    <p>( June 2022 — Present )</p>
-                </div>
-                <div class="card-body">
-                    <h4>Bachelors in Arts</h4>
-                    <p>Graphic design, and Media arts, with a concentration in UX design</p>
-                    
-                    <div class="exSpecs" style="margin-top: auto;">
-                        <ul style="color: grey;">
-                            <li><p>Figma</p></li>
-                            <li><p>Adobe Creative Cloud</p></li>
-                            <li><p>UX Design</p></li>
-                        </ul>
-                    </div>
-                    
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Grow with Google</h3>
-                    <p>( November 2021 — April 2022 )</p>
-                </div>
-                <div class="card-body">
-                    <h4>Professional Certification</h4>
-                    <p>UX Design</p>
-                    
-                    <div class="exSpecs" style="margin-top: auto;">
-                        <ul style="color: grey;">
-                            <li><p>Figma</p></li>
-                            <li><p>Adobe XD</p></li>
-                            <li><p>UX Design</p></li>
-                            <li><p>UX Research</p></li>
-                            <li><p>Stakeholder relations</p></li>
-                        </ul>
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3>Wasilla High School</h3>
-                    <p>( 2015-2017 )</p>
-                </div>
-                <div class="card-body">
-                    <h4>High School Diploma</h4>
-                    <p>Graphic design, and Media arts</p>
-                    
-                    <div class="exSpecs" style="margin-top: auto;">
-                        <ul style="color: grey;">
-                            <li><p>Graphic Design</p></li>
-                            <li><p>Web Design</p></li>
-                            <li><p>Media Production</p></li>
-                        </ul>
-                    </div>
-                    
-                </div>
-            </div>
-            
-        </div>
-        <hr>
-        
-        <h2 id="references">References</h2>
-        
-        <div class="card">
-            <div class="card-body">
-                <p>"Anthony is a creative problem solver with a vast background in development and IT solutions. I was very impressed with his ability to understand different network technologies, topologies, and infrastructure from hardware to operating systems."</p>
-                <p>- David Ralph</p>
-            </div>
-        </div>
-        
-        <div class="card mt-3">
-            <div class="card-body">
-                <p>"I was Anthony’s high school principal. Anthony was a fantastic student. He worked hard and even did a couple of projects for the school. He is kind and a team player. He would be a good asset to any company."</p>
-                <p>- Carol Boatman</p>
-            </div>
-        </div>
-    </div>
-    
-    <!--hr>
-    
-    <h2 id="portfolio">Portfolio</h2>
-    <p>(COMING SOON)</p-->
-    
-    <hr>
-  </body>
-    
-    <a href="#" class="back-to-top"><i class="fas fa-chevron-up"></i>
-</a>
-<footer>
-  <div class="container text-center">
-    <p>&copy; 2023 Anthony Silvia - All rights reserved</p>
-  </div>
-</footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNSG0wG"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+                <!-- Hero Section -->
+                <section class="hero-section page-section scroll-to-page" id="home">
 
-<script src="js/top.js"></script>
-<!--script src="js/keynav.js"></script-->
-<script src="js/ease.js"></script>
-  </html>
+                    <div class="custom-container">
+                        <div class="hero-content content-width">
+                            <div class="section-header">
+                                <h4 class="subtitle scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-home"></i> Intro
+                                </h4>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">Hello, I am <span>Anthony</span>, a UX Designer and Developer</h1>
+                            </div>
+                            <p class="scroll-animation" data-animation="fade_from_bottom">Dynamic UX researcher and prototyper with a passion for creating captivating digital experiences. Proven expertise in developing iOS/Mac apps that blend seamless functionality with intuitive design.</p>
+                           <br> <hr>
+                            <div class="facts d-flex">
+                                <div class="left scroll-animation" data-animation="fade_from_left">
+                                    <h1>2+</h1>
+                                    <p>Years of <br>Experience</p>
+                                </div>
+                                <div class="right scroll-animation" data-animation="fade_from_right">
+                                    <h1>10+</h1>
+                                    <p>projects completed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+        
+                <!-- About Section -->
+                <section class="about-area page-section scroll-to-page" id="about">
+                    <div class="custom-container">
+                        <div class="about-content content-width">
+                            <div class="section-header">
+                                <h4 class="subtitle scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="lar la-user"></i> my Mission
+                                </h4>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">Uncovering Design's Hidden Stories
+                                    with <span>Users at the core</span></h1>
+                            </div>
+                            <p class="scroll-animation" data-animation="fade_from_bottom">
+                                Throughout my journey as a dedicated UX Designer, spanning over two enriching years, I have relentlessly pursued the art of uncovering the hidden stories behind design. I firmly believe that the heart and soul of every successful design lies in its ability to connect deeply with its users. As a result, I have made it my mission to place users at the core of every decision and strategy I undertake.<br><br>
+                                My experience has equipped me with a diverse set of skills that allow me to create intuitive and user-centered digital experiences. From conducting extensive user research to prototyping and testing, I have delved deep into the intricacies of understanding user behaviors, needs, and preferences. Armed with this knowledge, I have crafted designs that not only meet users' expectations but also exceed them, leaving a lasting impact.<br><br>
+                                Passion is the fuel that propels me forward in my UX design endeavors. I am genuinely passionate about the craft of seamlessly blending aesthetics with functionality, ensuring that every element of a design not only looks visually appealing but also serves a purpose. By meticulously curating each interaction, I strive to create designs that not only engage users but also provide them with a sense of delight and satisfaction.<br><br>
+                                In the fast-paced and ever-evolving landscape of digital experiences, my commitment to driving meaningful interactions remains unwavering. I continuously seek to push the boundaries of innovation by staying up-to-date with the latest design trends, technologies, and user experience methodologies. This allows me to adapt and evolve my approach to deliver cutting-edge designs that cater to the evolving needs and preferences of users.<br><br>
+                                Ultimately, my goal is to create digital experiences that tell compelling stories, making users an integral part of the narrative. By weaving together aesthetics, functionality, and user-centricity, I strive to leave a lasting impression on users, fostering strong connections and building trust. I am excited to continue this journey of uncovering design's hidden stories with users firmly at the core, as I believe that it is through their eyes and experiences that true design excellence is achieved.</p>
+                        </div>
+                    </div>
+                </section>
+        
+                <!-- Resume Section -->
+                <section class="resume-area page-section scroll-to-page" id="resume">
+                    <div class="custom-container">
+                        <div class="resume-content content-width">
+                            <div class="section-header">
+                                <h4 class="subtitle scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-briefcase"></i> Resume
+                                </h4>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">Experience</span></h1>
+                            </div>
+                            <div class="resume-timeline">
+                                <div class="item scroll-animation" data-animation="fade_from_right">
+                                    <span class="date">2022 - Present</span>
+                                    <h2>Associate Product Designer</h2>
+                                    <p>Lowes Home Improvement</p>
+                                </div>
+                                <div class="item scroll-animation" data-animation="fade_from_right">
+                                    <span class="date">2022 - Present</span>
+                                    <h2>Founder and CEO</h2>
+                                    <p>NodeDa LLC</p>
+                                </div>
+                                <div class="item scroll-animation" data-animation="fade_from_right">
+                                    <span class="date">2018 - 2022</span>
+                                    <h2>iOS App Store Developer</h2>
+                                    <p>Apple (Self Employed)</p>
+                                </div>
+                                <div class="item scroll-animation" data-animation="fade_from_right">
+                                    <span class="date">2018 - 2019</span>
+                                    <h2>Intern</h2>
+                                    <p>HerbSwift</p>
+                                </div>
+                                <br>
+                                <hr>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">Education</span></h1>
+                                
+                            </div>
+                            
+                            <div class="resume-timeline">
+                                <div class="item scroll-animation" data-animation="fade_from_right">
+                                    <span class="date">October 2024 - TBD</span>
+                                    <h4>No GPA</h4>
+                                    <p>Masters in Business Administration</p>
+                                    <h2>Southern New Hampshire University</h2>
+                                </div>
+                                <div class="item scroll-animation" data-animation="fade_from_right">
+                                    <span class="date">June 2022 - August 2024</span>
+                                    <h4>3.84 GPA</h4>
+                                    <p>Bachelors in Arts, Graphic Design with a Minor in User Experience</p>
+                                    <h2>Southern New Hampshire University</h2>
+                                </div>
+                                <div class="item scroll-animation" data-animation="fade_from_right">
+                                    <span class="date">November 2021 - April 2022</span>
+                                    <h4>4.0 GPA</h4>
+                                    <p>Google UX Certification</p>
+                                    <h2>Grow with Google</h2>
+                                </div>
+                            </div>
+                            </div>
+
+                            
+                    
+                        </div>
+
+
+
+                </section>                    
+        
+                <!-- Services Section -->
+                <section class="services-area page-section scroll-to-page" id="services">
+                    <div class="custom-container">
+                        <div class="services-content content-width">
+                            <div class="section-header">
+                                <h4 class="subtitle scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-stream"></i> Services
+                                </h4>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">My <span>Specializations</span></h1>
+                            </div>
+        
+                            <div class="services-items">
+                                <div class="service-item scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-bezier-curve"></i>
+                                    <h2>Website Design</h2>
+                                    <p>Between all my projects I have created websites using, HTML 5, JS, CSS 3, wordpress, and Wix.</p>
+                                    <span class="projects">4 Projects</span>
+                                </div>
+                                <div class="service-item scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-code"></i>
+                                    <h2>Development</h2>
+                                    <p>I created digital products with unique ideas using Figma, xCode, and Android Studio</p>
+                                    <span class="projects">3 Projects</span>
+                                </div>
+                                <div class="service-item scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-bezier-curve"></i>
+                                    <h2>UX Design / Research</h2>
+                                    <p>Working for NodeDa and Lowe's I have worked on 25+ projects in total.</p>
+                                    <span class="projects">5 Projects</span>
+                                </div>
+                            </div>
+        
+                        </div>
+                    </div>
+                </section>
+        
+                <!-- Skills Section -->
+                <section class="skills-area page-section scroll-to-page" id="skills">
+                    <div class="custom-container">
+                        <div class="skills-content content-width">
+                            <div class="section-header">
+                                <h4 class="subtitle scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-shapes"></i> my skills
+                                </h4>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">My <span>Advantages</span></h1>
+                            </div>
+        
+                            <div class="row skills text-center">
+                                <div class="col-md-3 scroll-animation" data-animation="fade_from_left">
+                                    <div class="skill">
+                                        <div class="skill-inner">
+                                            <img src="./assets/images/figma.png" alt="Figma">
+                                        </div>
+                                        <p class="name">Figma</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 scroll-animation" data-animation="fade_from_right">
+                                    <div class="skill">
+                                        <div class="skill-inner">
+                                            <img src="./assets/images/react.png" alt="React">
+                                        </div>
+                                        <p class="name">React</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 scroll-animation" data-animation="fade_from_left">
+                                    <div class="skill">
+                                        <div class="skill-inner">
+                                            <img src="./assets/images/wordpress.png" alt="WordPress">
+                                        </div>
+                                        <p class="name">WordPress</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 scroll-animation" data-animation="fade_from_bottom">
+                                    <div class="skill">
+                                        <div class="skill-inner">
+                                            <img src="./assets/images/laravel.png" alt="Laravel/PHP">
+                                        </div>
+                                        <p class="name">PHP</p>
+                                    </div>
+                                </div>
+                            </div>
+        
+                        </div>
+                    </div>
+                </section>
+                <section class="portfolio-area page-section scroll-to-page" id="portfolio">
+                    <div class="custom-container">
+                        <div class="portfolio-content content-width">
+                            <div class="section-header">
+                                <h4 class="subtitle scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-grip-vertical"></i> portfolio
+                                </h4>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">Featured <span>Projects</span></h1>
+                                <h2 class="scroll-animation" data-animation="fade_from_bottom">Coming <span>Soon!</span></h2>
+                            </div>
+                            </div>
+                            </div>
+                </section>
+                <!-- Portfolio Section>
+                <section class="portfolio-area page-section scroll-to-page" id="portfolio">
+                    <div class="custom-container">
+                        <div class="portfolio-content content-width">
+                            <div class="section-header">
+                                <h4 class="subtitle scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="las la-grip-vertical"></i> portfolio
+                                </h4>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">Featured <span>Projects</span></h1>
+                            </div>
+        
+                            <div class="row portfolio-items">
+                                <div class="col-md-12 scroll-animation" data-animation="fade_from_bottom">
+                                    <div class="portfolio-item portfolio-full">
+                                        <div class="portfolio-item-inner">
+                                            <a href="./assets/images/portfolio1.jpg" data-lightbox="example-1">
+                                                <img src="./assets/images/portfolio1.jpg" alt="Portfolio">
+                                            </a>
+        
+                                            <ul class="portfolio-categories">
+                                                <li>
+                                                    <a href="">Figma</a>
+                                                </li>
+                                                <li>
+                                                    <a href="">Framer</a>
+                                                </li>
+                                                <li>
+                                                    <a href="">WordPress</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <h2><a href="">Bureau - Architecture Studio Website</a></h2>
+                                    </div>
+                                </div>
+        
+                                <div class="col-md-6 scroll-animation" data-animation="fade_from_left">
+                                    <div class="portfolio-item portfolio-half">
+                                        <div class="portfolio-item-inner">
+                                            <a href="./assets/images/portfolio2.jpg" data-lightbox="example-1">
+                                                <img src="./assets/images/portfolio2.jpg" alt="Portfolio">
+                                            </a>
+
+                                            <img src="./assets/images/portfolio2.jpg" alt="Portfolio">
+        
+                                            <ul class="portfolio-categories">
+                                                <li>
+                                                    <a href="">WordPress</a>
+                                                </li>
+                                                <li>
+                                                    <a href="">Larevel/PHP</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <h2><a href="">Moonex WordPress Theme</a></h2>
+                                    </div>
+                                </div>
+        
+                                <div class="col-md-6 scroll-animation" data-animation="fade_from_right">
+                                    <div class="portfolio-item portfolio-half">
+                                        <div class="portfolio-item-inner">
+                                            <a href="./assets/images/portfolio3.jpg" data-lightbox="example-1">
+                                                <img src="./assets/images/portfolio3.jpg" alt="Portfolio">
+                                            </a>
+        
+                                            <ul class="portfolio-categories">
+                                                <li>
+                                                    <a href="">Figma</a>
+                                                </li>
+                                                <li>
+                                                    <a href="">Webflow</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <h2><a href="">Taskly Dashboard</a></h2>
+                                    </div>
+                                </div>
+        
+                                <div class="col-md-12 scroll-animation" data-animation="fade_from_bottom">
+                                    <div class="portfolio-item portfolio-half">
+                                        <div class="portfolio-item-inner">
+                                            <a href="./assets/images/portfolio4.jpg" data-lightbox="example-1">
+                                                <img src="./assets/images/portfolio4.jpg" alt="portfolio">
+                                            </a>
+        
+                                            <ul class="portfolio-categories">
+                                                <li>
+                                                    <a href="">Figma</a>
+                                                </li>
+                                                <li>
+                                                    <a href="">React</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <h2><a href="">Hinterland - Real Estate Site Redesign</a></h2>
+                                    </div>
+                                </div>
+        
+                                <div class="col-md-12 scroll-animation" data-animation="fade_from_bottom">
+                                    <div class="portfolio-item portfolio-half">
+                                        <div class="portfolio-item-inner">
+                                            <a href="./assets/images/portfolio5.jpg" data-lightbox="example-1">
+                                                <img src="./assets/images/portfolio5.jpg" alt="portfolio">
+                                            </a>
+        
+                                            <ul class="portfolio-categories">
+                                                <li>
+                                                    <a href="">Framer</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <h2><a href="">Lewis Portfolio Framer Template</a></h2>
+                                    </div>
+                                </div>
+                            </div>
+        
+                        </div>
+                    </div>
+                </section-->
+        
+                <!-- Testimonial Section -->
+                <section class="testimonial-area page-section scroll-to-page" id="testimonial">
+                    <div class="custom-container">
+                        <div class="testimonial-content content-width">
+                            <div class="section-header">
+                                <h4 class="subtitle scroll-animation" data-animation="fade_from_bottom">
+                                    <i class="lar la-comment"></i> testimonial
+                                </h4>
+                                <h1 class="scroll-animation" data-animation="fade_from_bottom">Trusted by <span>Many</span></h1>
+                            </div>
+        
+                            <div class="testimonial-slider-wrap scroll-animation" data-animation="fade_from_bottom">
+                                <div class="owl-carousel testimonial-slider owl-theme">
+                                    <div class="testimonial-item">
+                                        <div class="testimonial-item-inner">
+                                            <div class="author d-flex align-items-center">
+                                                <img src="https://media.licdn.com/dms/image/C5603AQGxt6AXkPKuzA/profile-displayphoto-shrink_200_200/0/1620346753980?e=1699488000&v=beta&t=C5gjRKP0mkrycypIp5MypyZIdSwl-yLKcIuCyCcB9fc" alt="portfolio">
+                                                <div class="right">
+                                                    <h3>Carol Boatman</h3>
+                                                    <p class="designation">Principal <span>Wasilla High School (2017)</span></p>
+                                                </div>
+                                            </div>
+                                            <p>"I was Anthony’s high school principal. Anthony was a fantastic student. He worked hard and even did a couple of projects for the school. He is kind and a team player. He would be a good asset to any company."</p>
+        
+                                            <a href="" class="project-btn">Education</a>
+                                        </div>
+                                    </div>
+                                    <div href="https://www.linkedin.com/in/david-ralph-55383032/" class="testimonial-item">
+                                        <div class="testimonial-item-inner">
+                                            <div class="author d-flex align-items-center">
+                                                <img src="https://media.licdn.com/dms/image/C5603AQEszFFasQYYYA/profile-displayphoto-shrink_200_200/0/1550182525228?e=1699488000&v=beta&t=9EOdafxVG9vJbUuarvp8dAgo-I-H5WwB8Csi3vxAoS0" alt="portfolio">
+                                                <div class="right">
+                                                    <h3>David Ralph</h3>
+                                                    <p class="designation">Teacher <span>Wasilla High School (2017)</span></p>
+                                                </div>
+                                            </div>
+                                            <p>"Anthony is a creative problem solver with a vast background in development and IT solutions. I was very impressed with his ability to understand different network technologies, topologies, and infrastructure from hardware to operating systems."</p>
+        
+                                            <a href="" class="project-btn">Education</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="testimonial-footer-nav">
+                                    <div class="testimonial-nav d-flex align-items-center">
+                                        <button class="prev"><i class="las la-angle-left"></i></button>
+                                        <div id="testimonial-slide-count"></div>
+                                        <button class="next"><i class="las la-angle-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="clients-logos">
+                                <h4 class="scroll-animation" data-animation="fade_from_bottom">I work with 5 + brands</h4>
+                                <div class="row align-items-center">
+                                    <div class="col-md-3 scroll-animation" data-animation="fade_from_left">
+                                        <a href="https://nodeda.com">
+                                        <img src="./assets/images/nodeda.png" alt="client">
+                                    </a>
+                                    </div>
+                                    <div class="col-md-3 scroll-animation" data-animation="fade_from_bottom">
+                                        <a href="https://lowes.com">
+                                        <img src="https://www.lowescdn.com/images/logos/lowes_logo_white.png" alt="client">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+        
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    
+    <script src="email.js"></script>
+    <script src="./assets/js/jquery.js"></script>
+    <script src="./assets/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/js/owl.carousel.js"></script>
+    <script src="./assets/js/gsap.min.js"></script>
+    <script src="./assets/js/ScrollTrigger.min.js"></script>
+    <script src="./assets/js/ScrollToPlugin.min.js"></script>
+    <script src="./assets/js/lightbox.min.js"></script>
+    
+    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/ajax-form.js"></script>
+</body>
+</html>
