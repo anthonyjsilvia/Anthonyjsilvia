@@ -15,20 +15,25 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initially set footer with the placeholder year
         footer.innerHTML = `
             <div class="footer-container">
-                <div class="footer-content">
-                    <p>&copy; <span id="current-year">${placeholderyear}</span> Anthony Silvia. All Rights Reserved</p>
+                <div class="footer-content" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <!-- Left: Copyright -->
+                    <div class="footer-copyright">
+                        <p style="margin: 0;">&copy; <span id="current-year">${placeholderyear}</span> Anthony Silvia. All Rights Reserved</p>
+                    </div>
                     
+                    <!-- Center: Social Links -->
+                    <div class="footer-social" style="display: flex; gap: 15px; justify-content: center;">
+                        <a href="https://linkedin.com/in/anthonyjsilvia" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.behance.net/anthonysilvia" aria-label="Behance"><i class="fab fa-behance"></i></a>
+                        <a href="https://github.com/anthonyjsilvia" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                    
+                    <!-- Right: Powered by -->
                     <div class="powered-by" style="display: flex; align-items: center; gap: 6px;">
                         <span>Powered by</span>
                         <a href="https://nodeda.com" target="_blank" style="display: flex; align-items: center;">
                             <img src="https://nodeda.com/logos/NodeDa.white.svg" alt="NodeDa" class="nodeda-logo" id="nodeda-logo" style="height: 1em;">
                         </a>
-                    </div>
-                    
-                    <div class="footer-social">
-                        <a href="https://linkedin.com/in/anthonyjsilvia" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.behance.net/anthonysilvia" aria-label="Behance"><i class="fab fa-behance"></i></a>
-                        <a href="https://github.com/anthonyjsilvia" aria-label="GitHub"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
             </div>

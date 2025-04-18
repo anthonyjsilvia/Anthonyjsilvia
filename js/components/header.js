@@ -58,8 +58,8 @@ function initHeader() {
         <div class="header-container">
             <div class="logo">
                 <a href="index.html">
-                    <h1>Anthony Silvia</h1>
-                    <span>UX Designer & Developer</span>
+                    <h1 style="color: var(--primary-color);">Anthony Silvia</h1>
+                    <!--span>UX Designer & Developer</span-->
                 </a>
             </div>
             <nav class="header-nav" id="main-nav">
