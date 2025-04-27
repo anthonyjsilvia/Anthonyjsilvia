@@ -21,6 +21,12 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+            
+            .resume-container {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+            }
         }
         
         * {
@@ -33,16 +39,17 @@
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.5;
             color: var(--primary);
-            background-color: var(--white);
-            max-width: 8.5in;
-            margin: 0 auto;
+            background-color: #f5f5f5;
+            margin: 0;
             padding: 0;
         }
         
         .resume-container {
             display: flex;
             background-color: var(--white);
-            margin: 20px;
+            margin: 20px auto;
+            max-width: 8.5in;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
         }
         
         .left-column {
@@ -248,138 +255,462 @@
         .skill-advanced .skill-level { width: 90%; }
         .skill-proficient .skill-level { width: 75%; }
         .skill-intermediate .skill-level { width: 60%; }
+        
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Buttons */
+        .button-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+        
+        .action-button:hover {
+            background-color: #003d7a;
+        }
+        
+        @media print {
+            .button-container {
+                display: none;
+            }
+        }
+        
+        /* Responsive styles for mobile */
+        @media (max-width: 768px) {
+            .resume-container {
+                flex-direction: column;
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            .left-column, .right-column {
+                width: 100%;
+                border-right: none;
+            }
+            
+            .left-column {
+                border-bottom: 1px solid var(--divider);
+            }
+            
+            .button-container {
+                position: static;
+                display: flex;
+                justify-content: center;
+                margin: 20px 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="resume-container">
-        <!-- Left Column -->
-        <div class="left-column">
-            <!-- Header -->
-            <div class="header">
-                <h1 class="name">Anthony Silvia</h1>
-                <p class="title">UX Designer</p>
-                <p class="contact-item">contact@anthonyisilvia.com</p>
-                <p class="contact-item">704-775-9266</p>
-                <p class="contact-item">anthonyjsilvia.com</p>
-                <p class="contact-item">linkedin.com/in/anthonysilvia</p>
-            </div>
-            
-            <!-- Skills -->
-            <div class="section">
-                <h2 class="section-title">Skills</h2>
-                
-                <span class="skill-category">Design Tools</span>
-                <div class="skills-chart">
-                    <div class="skill-name">Figma</div>
-                    <div class="skill-bar"><div class="skill-level" style="width: 100%;"></div></div>
-                    
-                    <div class="skill-name">Adobe XD</div>
-                    <div class="skill-bar"><div class="skill-level" style="width: 100%;"></div></div>
-                    
-                    <div class="skill-name">Prototyping</div>
-                    <div class="skill-bar"><div class="skill-level" style="width: 90%;"></div></div>
-                    
-                    <div class="skill-name">Content Design</div>
-                    <div class="skill-bar"><div class="skill-level" style="width: 65%;"></div></div>
-                    
-                    <div class="skill-name">Research</div>
-                    <div class="skill-bar"><div class="skill-level" style="width: 55%;"></div></div>
-                </div>
-                
-                <span class="skill-category">Research</span>
-                <p class="skills-list">User Testing, Heuristic Evaluation, Journey Mapping, Competitive Analysis</p>
-                
-                <span class="skill-category">Development</span>
-                <p class="skills-list">HTML/CSS, Responsive Design</p>
-                
-                <span class="skill-category">Collaboration</span>
-                <p class="skills-list">Cross-functional Team Leadership, Stakeholder Management, Design Systems</p>
-            </div>
-            
-            <!-- Education -->
-            <div class="section">
-                <h2 class="section-title">Education</h2>
-                <div class="education">
-                    <p class="school">Southern New Hampshire University</p>
-                    <p class="degree">Bachelor's in Graphic Design and Media Arts</p>
-                    <p class="degree">Minor in User Experience Design</p>
-                    <p class="education-details">Graduated August 2024</p>
-                    <p class="education-details">GPA: 3.55/4.0</p>
-                </div>
-            </div>
-            
-            <!-- Certification -->
-            <div class="section">
-                <h2 class="section-title">Certification</h2>
-                <p class="skills-list">Google UX Design Professional Certificate (April 2022)</p>
-            </div>
-        </div>
-        
-        <!-- Right Column -->
-        <div class="right-column">
-            <!-- Summary -->
-            <div class="section">
-                <h2 class="section-title">Professional Summary</h2>
-                <p style="font-size: 13px; margin-bottom: 15px;">
-                    Innovative UX Designer with 5+ years of experience creating intuitive, user-centered digital experiences. Currently an Associate Product Designer at Lowe's specializing in sustainable technologies and AI applications. Google Certified UX Designer with expertise in user research, wireframing, and prototyping. Proven track record of improving user satisfaction metrics and streamlining complex interfaces for enhanced usability.
-                </p>
-            </div>
-            
-            <!-- Professional Experience -->
-            <div class="section">
-                <h2 class="section-title">Experience</h2>
-                
-                <!-- Lowe's -->
-                <div class="job">
-                    <p class="company">Lowe's Companies, Inc.</p>
-                    <p class="position">Associate Product Designer</p>
-                    <p class="period">October 2022 – Present</p>
-                    <ul class="job-duties">
-                        <li>Designed and developed innovative software products improving customer experience for home improvement retail stores</li>
-                        <li>Conducted extensive user research resulting in improved SEQ scores by 2.3 points on average</li>
-                        <li>Implemented UX enhancements that increased UMUX scores by approximately 1.1 points on average</li>
-                        <li>Created comprehensive design specifications, wireframes, and interactive prototypes for multiple product releases</li>
-                        <li>Collaborated with engineering, marketing, and business teams to deliver cohesive solutions aligned with strategic goals</li>
-                    </ul>
-                </div>
-                
-                <!-- NodeDa -->
-                <div class="job">
-                    <p class="company">NodeDa, LLC</p>
-                    <p class="position">Founder & Owner</p>
-                    <p class="period">April 2022 – Present</p>
-                    <ul class="job-duties">
-                        <li>Founded and established the company from concept to operational business, handling all aspects of business formation</li>
-                        <li>Personally designed and developed all company apps and websites, creating a cohesive brand identity and digital presence</li>
-                        <li>Implemented strategic initiatives that resulted in steady client growth and revenue increase</li>
-                        <li>Created multiple web applications focused on accessibility and intuitive user experience</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Projects -->
-            <div class="section">
-                <h2 class="section-title">Projects</h2>
-                
-                <div class="project">
-                    <p class="project-title">Lowe's POS System Enhancement (2023)</p>
-                    <ul class="project-details">
-                        <li>Led UX redesign of point-of-sale interface resulting in improved checkout efficiency and reduced training time</li>
-                        <li>Conducted user research and usability testing with store associates to optimize workflow</li>
-                    </ul>
-                </div>
-                
-                <div class="project">
-                    <p class="project-title">Lowe's Logistics System (2022)</p>
-                    <ul class="project-details">
-                        <li>Designed intuitive interface for complex inventory and supply chain management application</li>
-                        <li>Collaborated with logistics experts to translate operational requirements into user-friendly solutions</li>
-                    </ul>
-                </div>
-                
-
-            </div>
-        </div>
+    <!-- Loading Indicator -->
+    <div class="loader">
+        <div class="loader-spinner"></div>
     </div>
+    
+    <div class="resume-container" id="resume-container">
+        <!-- Content will be loaded dynamically -->
+    </div>
+    
+    <div class="button-container">
+        <button class="action-button" onclick="location.href='/resume.html'">Back to Resume</button>
+        <button class="action-button" onclick="window.print()">Print Resume</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch the resume JSON file
+            fetch('resume.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Once we have the data, populate the page
+                    buildResume(data);
+                    
+                    // Hide the loader
+                    document.querySelector('.loader').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error loading resume data:', error);
+                    document.querySelector('.loader').innerHTML = 'Failed to load resume data. Please try again later.';
+                });
+        });
+        
+        function buildResume(data) {
+            const container = document.getElementById('resume-container');
+            
+            // Create left column
+            const leftColumn = document.createElement('div');
+            leftColumn.className = 'left-column';
+            
+            // Create right column
+            const rightColumn = document.createElement('div');
+            rightColumn.className = 'right-column';
+            
+            // Build header section (left column)
+            const header = buildHeader(data.personalInfo);
+            leftColumn.appendChild(header);
+            
+            // Build skills section (left column)
+            const skills = buildSkills(data.skills);
+            leftColumn.appendChild(skills);
+            
+            // Build education section (left column)
+            const education = buildEducation(data.education);
+            leftColumn.appendChild(education);
+            
+            // Build certification section (left column)
+            const certification = buildCertifications(data.certification);
+            leftColumn.appendChild(certification);
+            
+            // Build professional summary (right column)
+            const summary = buildSummary(data.professionalSummary);
+            rightColumn.appendChild(summary);
+            
+            // Build experience section (right column)
+            const experience = buildExperience(data.experience);
+            rightColumn.appendChild(experience);
+            
+            // Build projects section (right column)
+            const projects = buildProjects(data.projects);
+            rightColumn.appendChild(projects);
+            
+            // Add columns to container
+            container.appendChild(leftColumn);
+            container.appendChild(rightColumn);
+        }
+        
+        function buildHeader(personalInfo) {
+            const header = document.createElement('div');
+            header.className = 'header';
+            
+            const name = document.createElement('h1');
+            name.className = 'name';
+            name.textContent = personalInfo.name;
+            
+            const title = document.createElement('p');
+            title.className = 'title';
+            title.textContent = personalInfo.title;
+            
+            header.appendChild(name);
+            header.appendChild(title);
+            
+            // Add contact info
+            if (personalInfo.contact) {
+                const email = document.createElement('p');
+                email.className = 'contact-item';
+                email.textContent = personalInfo.contact.email;
+                
+                const phone = document.createElement('p');
+                phone.className = 'contact-item';
+                phone.textContent = personalInfo.contact.phone;
+                
+                const website = document.createElement('p');
+                website.className = 'contact-item';
+                website.textContent = personalInfo.contact.website;
+                
+                const linkedin = document.createElement('p');
+                linkedin.className = 'contact-item';
+                linkedin.textContent = personalInfo.contact.linkedin;
+                
+                header.appendChild(email);
+                header.appendChild(phone);
+                header.appendChild(website);
+                header.appendChild(linkedin);
+            }
+            
+            return header;
+        }
+        
+        function buildSkills(skills) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            
+            const title = document.createElement('h2');
+            title.className = 'section-title';
+            title.textContent = 'Skills';
+            section.appendChild(title);
+            
+            // Design Tools
+            if (skills.designTools && skills.designTools.length > 0) {
+                const category = document.createElement('span');
+                category.className = 'skill-category';
+                category.textContent = 'Design Tools';
+                section.appendChild(category);
+                
+                const chart = document.createElement('div');
+                chart.className = 'skills-chart';
+                
+                skills.designTools.forEach(tool => {
+                    const name = document.createElement('div');
+                    name.className = 'skill-name';
+                    name.textContent = tool.name;
+                    
+                    const bar = document.createElement('div');
+                    bar.className = 'skill-bar';
+                    
+                    const level = document.createElement('div');
+                    level.className = 'skill-level';
+                    level.style.width = `${tool.level}%`;
+                    
+                    bar.appendChild(level);
+                    chart.appendChild(name);
+                    chart.appendChild(bar);
+                });
+                
+                section.appendChild(chart);
+            }
+            
+            // Research skills
+            if (skills.research && skills.research.length > 0) {
+                const category = document.createElement('span');
+                category.className = 'skill-category';
+                category.textContent = 'Research';
+                section.appendChild(category);
+                
+                const list = document.createElement('p');
+                list.className = 'skills-list';
+                list.textContent = skills.research.join(', ');
+                section.appendChild(list);
+            }
+            
+            // Development skills
+            if (skills.development && skills.development.length > 0) {
+                const category = document.createElement('span');
+                category.className = 'skill-category';
+                category.textContent = 'Development';
+                section.appendChild(category);
+                
+                const list = document.createElement('p');
+                list.className = 'skills-list';
+                list.textContent = skills.development.join(', ');
+                section.appendChild(list);
+            }
+            
+            // Collaboration skills
+            if (skills.collaboration && skills.collaboration.length > 0) {
+                const category = document.createElement('span');
+                category.className = 'skill-category';
+                category.textContent = 'Collaboration';
+                section.appendChild(category);
+                
+                const list = document.createElement('p');
+                list.className = 'skills-list';
+                list.textContent = skills.collaboration.join(', ');
+                section.appendChild(list);
+            }
+            
+            return section;
+        }
+        
+        function buildEducation(education) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            
+            const title = document.createElement('h2');
+            title.className = 'section-title';
+            title.textContent = 'Education';
+            section.appendChild(title);
+            
+            const edu = document.createElement('div');
+            edu.className = 'education';
+            
+            const school = document.createElement('p');
+            school.className = 'school';
+            school.textContent = education.school;
+            edu.appendChild(school);
+            
+            if (education.degrees && education.degrees.length > 0) {
+                education.degrees.forEach(degree => {
+                    const degreeEl = document.createElement('p');
+                    degreeEl.className = 'degree';
+                    degreeEl.textContent = degree;
+                    edu.appendChild(degreeEl);
+                });
+            }
+            
+            const graduationDetails = document.createElement('p');
+            graduationDetails.className = 'education-details';
+            graduationDetails.textContent = `Graduated ${education.graduation}`;
+            edu.appendChild(graduationDetails);
+            
+            const gpaDetails = document.createElement('p');
+            gpaDetails.className = 'education-details';
+            gpaDetails.textContent = `GPA: ${education.gpa}`;
+            edu.appendChild(gpaDetails);
+            
+            section.appendChild(edu);
+            return section;
+        }
+        
+        function buildCertifications(certifications) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            
+            const title = document.createElement('h2');
+            title.className = 'section-title';
+            title.textContent = 'Certification';
+            section.appendChild(title);
+            
+            if (certifications && certifications.length > 0) {
+                const list = document.createElement('p');
+                list.className = 'skills-list';
+                list.textContent = certifications.join(', ');
+                section.appendChild(list);
+            }
+            
+            return section;
+        }
+        
+        function buildSummary(summary) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            
+            const title = document.createElement('h2');
+            title.className = 'section-title';
+            title.textContent = 'Professional Summary';
+            section.appendChild(title);
+            
+            const summaryText = document.createElement('p');
+            summaryText.style.fontSize = '13px';
+            summaryText.style.marginBottom = '15px';
+            summaryText.textContent = summary;
+            section.appendChild(summaryText);
+            
+            return section;
+        }
+        
+        function buildExperience(experience) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            
+            const title = document.createElement('h2');
+            title.className = 'section-title';
+            title.textContent = 'Experience';
+            section.appendChild(title);
+            
+            if (experience && experience.length > 0) {
+                experience.forEach(job => {
+                    const jobEl = document.createElement('div');
+                    jobEl.className = 'job';
+                    
+                    const company = document.createElement('p');
+                    company.className = 'company';
+                    company.textContent = job.company;
+                    jobEl.appendChild(company);
+                    
+                    const position = document.createElement('p');
+                    position.className = 'position';
+                    position.textContent = job.position;
+                    jobEl.appendChild(position);
+                    
+                    const period = document.createElement('p');
+                    period.className = 'period';
+                    period.textContent = job.period;
+                    jobEl.appendChild(period);
+                    
+                    if (job.duties && job.duties.length > 0) {
+                        const duties = document.createElement('ul');
+                        duties.className = 'job-duties';
+                        
+                        job.duties.forEach(duty => {
+                            const li = document.createElement('li');
+                            li.textContent = duty;
+                            duties.appendChild(li);
+                        });
+                        
+                        jobEl.appendChild(duties);
+                    }
+                    
+                    section.appendChild(jobEl);
+                });
+            }
+            
+            return section;
+        }
+        
+        function buildProjects(projects) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            
+            const title = document.createElement('h2');
+            title.className = 'section-title';
+            title.textContent = 'Projects';
+            section.appendChild(title);
+            
+            if (projects && projects.length > 0) {
+                projects.forEach(project => {
+                    const projectEl = document.createElement('div');
+                    projectEl.className = 'project';
+                    
+                    const projectTitle = document.createElement('p');
+                    projectTitle.className = 'project-title';
+                    projectTitle.textContent = project.title;
+                    projectEl.appendChild(projectTitle);
+                    
+                    if (project.details && project.details.length > 0) {
+                        const details = document.createElement('ul');
+                        details.className = 'project-details';
+                        
+                        project.details.forEach(detail => {
+                            const li = document.createElement('li');
+                            li.textContent = detail;
+                            details.appendChild(li);
+                        });
+                        
+                        projectEl.appendChild(details);
+                    }
+                    
+                    section.appendChild(projectEl);
+                });
+            }
+            
+            return section;
+        }
+    </script>
 </body>
 </html>
