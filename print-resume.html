@@ -357,421 +357,384 @@
         <button class="action-button" onclick="window.print()">Print Resume</button>
     </div>
     
+    <script src="js/unlock-contact.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fetch the resume JSON file
+    document.addEventListener('DOMContentLoaded', function() {
+        function ready(fn) {
+            if (window.ContactUnlock) fn();
+            else setTimeout(() => ready(fn), 50);
+        }
+        ready(function() {
             fetch('resume.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+                .then(r => r.json())
                 .then(data => {
-                    // Once we have the data, populate the page
                     buildResume(data);
-                    
-                    // Hide the loader
                     document.querySelector('.loader').style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Error loading resume data:', error);
-                    document.querySelector('.loader').innerHTML = 'Failed to load resume data. Please try again later.';
                 });
         });
-        
-        function buildResume(data) {
-            const container = document.getElementById('resume-container');
-            
-            // Create left column
-            const leftColumn = document.createElement('div');
-            leftColumn.className = 'left-column';
-            
-            // Create right column
-            const rightColumn = document.createElement('div');
-            rightColumn.className = 'right-column';
-            
-            // Build header section (left column)
-            const header = buildHeader(data.personalInfo);
-            leftColumn.appendChild(header);
-            
-            // Build skills section (left column)
-            const skills = buildSkills(data.skills);
-            leftColumn.appendChild(skills);
-            
-            // Build education section (left column)
-            const education = buildEducation(data.education);
-            leftColumn.appendChild(education);
-            
-            // Build certification section (left column)
-            const certification = buildCertifications(data.certification);
-            leftColumn.appendChild(certification);
+    });
 
-            // Build languages section (left column)
-            const languages = buildLanguages(data.languages);
-            leftColumn.appendChild(languages);
-            
-            // Build professional summary (right column)
-            const summary = buildSummary(data.professionalSummary);
-            rightColumn.appendChild(summary);
-            
-            // Build experience section (right column)
-            const experience = buildExperience(data.experience);
-            rightColumn.appendChild(experience);
-            
-            // Build projects section (right column)
-            const projects = buildProjects(data.projects);
-            rightColumn.appendChild(projects);
-            
-            // Add columns to container
-            container.appendChild(leftColumn);
-            container.appendChild(rightColumn);
-        }
-        
-        function buildHeader(personalInfo) {
-            const header = document.createElement('div');
-            header.className = 'header';
-            
-            // Profile image
-            const img = document.createElement('img');
-            img.src = 'assets/images/me.jpg';
-            img.alt = 'Anthony Silvia';
-            img.style.width = '90px';
-            img.style.height = '90px';
-            img.style.objectFit = 'cover';
-            img.style.borderRadius = '50%';
-            img.style.display = 'block';
-            img.style.margin = '0 auto 18px auto';
-            header.appendChild(img);
-            
-            const name = document.createElement('h1');
-            name.className = 'name';
-            name.textContent = personalInfo.name;
-            
-            const title = document.createElement('p');
-            title.className = 'title';
-            title.textContent = personalInfo.title;
-            
-            header.appendChild(name);
-            header.appendChild(title);
-            
-            // Add contact info
-            if (personalInfo.contact) {
-                // Use unlock logic for email and phone
-                if (window.ContactUnlock && window.ContactUnlock.hasContactCookie && window.ContactUnlock.hasContactCookie()) {
-                    if (personalInfo.contact.email) {
-                        const email = document.createElement('p');
-                        email.className = 'contact-item';
-                        email.innerHTML = `<i class='fas fa-envelope'></i> <a href='mailto:${personalInfo.contact.email}'>${personalInfo.contact.email}</a>`;
-                        header.appendChild(email);
-                    }
-                    if (personalInfo.contact.phone) {
-                        const phone = document.createElement('p');
-                        phone.className = 'contact-item';
-                        phone.innerHTML = `<i class='fas fa-phone'></i> <a href='tel:${personalInfo.contact.phone}'>${personalInfo.contact.phone}</a>`;
-                        header.appendChild(phone);
-                    }
-                } else {
-                    if (personalInfo.contact.email) {
-                        const email = document.createElement('p');
-                        email.className = 'contact-item';
-                        email.innerHTML = `<i class='fas fa-envelope'></i> <button class='unlock-contact-btn' data-type='email' style='background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0;'>Unlock Contact Info</button>`;
-                        header.appendChild(email);
-                    }
-                    if (personalInfo.contact.phone) {
-                        const phone = document.createElement('p');
-                        phone.className = 'contact-item';
-                        phone.innerHTML = `<i class='fas fa-phone'></i> <button class='unlock-contact-btn' data-type='phone' style='background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0;'>Unlock Contact Info</button>`;
-                        header.appendChild(phone);
-                    }
+    function buildResume(data) {
+        const container = document.getElementById('resume-container');
+        const leftColumn = document.createElement('div');
+        leftColumn.className = 'left-column';
+        const rightColumn = document.createElement('div');
+        rightColumn.className = 'right-column';
+        const header = buildHeader(data.personalInfo);
+        leftColumn.appendChild(header);
+        const skills = buildSkills(data.skills);
+        leftColumn.appendChild(skills);
+        const education = buildEducation(data.education);
+        leftColumn.appendChild(education);
+        const certification = buildCertifications(data.certification);
+        leftColumn.appendChild(certification);
+        const languages = buildLanguages(data.languages);
+        leftColumn.appendChild(languages);
+        const summary = buildSummary(data.professionalSummary);
+        rightColumn.appendChild(summary);
+        const experience = buildExperience(data.experience);
+        rightColumn.appendChild(experience);
+        const projects = buildProjects(data.projects);
+        rightColumn.appendChild(projects);
+        container.appendChild(leftColumn);
+        container.appendChild(rightColumn);
+    }
+    
+    function buildHeader(personalInfo) {
+        const header = document.createElement('div');
+        header.className = 'header';
+        const img = document.createElement('img');
+        img.src = 'assets/images/me.jpg';
+        img.alt = 'Anthony Silvia';
+        img.style.width = '90px';
+        img.style.height = '90px';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '50%';
+        img.style.display = 'block';
+        img.style.margin = '0 auto 18px auto';
+        header.appendChild(img);
+        const name = document.createElement('h1');
+        name.className = 'name';
+        name.textContent = personalInfo.name;
+        const title = document.createElement('p');
+        title.className = 'title';
+        title.textContent = personalInfo.title;
+        header.appendChild(name);
+        header.appendChild(title);
+        if (personalInfo.contact) {
+            if (window.ContactUnlock && window.ContactUnlock.hasContactCookie && window.ContactUnlock.hasContactCookie()) {
+                if (personalInfo.contact.email) {
+                    const email = document.createElement('p');
+                    email.className = 'contact-item';
+                    email.innerHTML = `<i class='fas fa-envelope'></i> <span style='font-style:normal;text-decoration:none;color:inherit;'>${personalInfo.contact.email}</span>`;
+                    header.appendChild(email);
                 }
-                if (personalInfo.contact.website) {
-                    const website = document.createElement('p');
-                    website.className = 'contact-item';
-                    website.innerHTML = `<i class='fas fa-globe'></i> <a href='https://${personalInfo.contact.website}' target='_blank'>${personalInfo.contact.website}</a>`;
-                    header.appendChild(website);
+                if (personalInfo.contact.phone) {
+                    const phone = document.createElement('p');
+                    phone.className = 'contact-item';
+                    phone.innerHTML = `<i class='fas fa-phone'></i> <span style='font-style:normal;text-decoration:none;color:inherit;'>${personalInfo.contact.phone}</span>`;
+                    header.appendChild(phone);
                 }
-                if (personalInfo.contact.linkedin) {
-                    const linkedin = document.createElement('p');
-                    linkedin.className = 'contact-item';
-                    linkedin.innerHTML = `<i class='fab fa-linkedin'></i> <a href='https://${personalInfo.contact.linkedin}' target='_blank'>${personalInfo.contact.linkedin}</a>`;
-                    header.appendChild(linkedin);
+            } else {
+                if (personalInfo.contact.email) {
+                    const email = document.createElement('p');
+                    email.className = 'contact-item';
+                    email.innerHTML = `<i class='fas fa-envelope'></i> <button class='unlock-contact-btn' data-type='email' style='background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0;'>Unlock Contact Info</button>`;
+                    header.appendChild(email);
+                }
+                if (personalInfo.contact.phone) {
+                    const phone = document.createElement('p');
+                    phone.className = 'contact-item';
+                    phone.innerHTML = `<i class='fas fa-phone'></i> <button class='unlock-contact-btn' data-type='phone' style='background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0;'>Unlock Contact Info</button>`;
+                    header.appendChild(phone);
                 }
             }
+            if (personalInfo.contact.website) {
+                const website = document.createElement('p');
+                website.className = 'contact-item';
+                website.innerHTML = `<i class='fas fa-globe'></i> <a href='https://${personalInfo.contact.website}' target='_blank' style='text-decoration:none;color:inherit;'>${personalInfo.contact.website}</a>`;
+                header.appendChild(website);
+            }
+            if (personalInfo.contact.linkedin) {
+                const linkedin = document.createElement('p');
+                linkedin.className = 'contact-item';
+                linkedin.innerHTML = `<i class='fab fa-linkedin'></i> <a href='https://${personalInfo.contact.linkedin}' target='_blank' style='text-decoration:none;color:inherit;'>${personalInfo.contact.linkedin}</a>`;
+                header.appendChild(linkedin);
+            }
+        }
+        return header;
+    }
+    
+    function buildSkills(skills) {
+        const section = document.createElement('div');
+        section.className = 'section';
+        
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = 'Skills';
+        section.appendChild(title);
+        
+        // Design Tools
+        if (skills.designTools && skills.designTools.length > 0) {
+            const category = document.createElement('span');
+            category.className = 'skill-category';
+            category.textContent = 'Design Tools';
+            section.appendChild(category);
             
-            return header;
+            const chart = document.createElement('div');
+            chart.className = 'skills-chart';
+            
+            skills.designTools.forEach(tool => {
+                const name = document.createElement('div');
+                name.className = 'skill-name';
+                name.textContent = tool.name;
+                
+                const bar = document.createElement('div');
+                bar.className = 'skill-bar';
+                
+                const level = document.createElement('div');
+                level.className = 'skill-level';
+                level.style.width = `${tool.level}%`;
+                
+                bar.appendChild(level);
+                chart.appendChild(name);
+                chart.appendChild(bar);
+            });
+            
+            section.appendChild(chart);
         }
         
-        function buildSkills(skills) {
-            const section = document.createElement('div');
-            section.className = 'section';
+        // Research skills
+        if (skills.research && skills.research.length > 0) {
+            const category = document.createElement('span');
+            category.className = 'skill-category';
+            category.textContent = 'Research';
+            section.appendChild(category);
             
-            const title = document.createElement('h2');
-            title.className = 'section-title';
-            title.textContent = 'Skills';
-            section.appendChild(title);
-            
-            // Design Tools
-            if (skills.designTools && skills.designTools.length > 0) {
-                const category = document.createElement('span');
-                category.className = 'skill-category';
-                category.textContent = 'Design Tools';
-                section.appendChild(category);
-                
-                const chart = document.createElement('div');
-                chart.className = 'skills-chart';
-                
-                skills.designTools.forEach(tool => {
-                    const name = document.createElement('div');
-                    name.className = 'skill-name';
-                    name.textContent = tool.name;
-                    
-                    const bar = document.createElement('div');
-                    bar.className = 'skill-bar';
-                    
-                    const level = document.createElement('div');
-                    level.className = 'skill-level';
-                    level.style.width = `${tool.level}%`;
-                    
-                    bar.appendChild(level);
-                    chart.appendChild(name);
-                    chart.appendChild(bar);
-                });
-                
-                section.appendChild(chart);
-            }
-            
-            // Research skills
-            if (skills.research && skills.research.length > 0) {
-                const category = document.createElement('span');
-                category.className = 'skill-category';
-                category.textContent = 'Research';
-                section.appendChild(category);
-                
-                const list = document.createElement('p');
-                list.className = 'skills-list';
-                list.textContent = skills.research.join(', ');
-                section.appendChild(list);
-            }
-            
-            // Development skills
-            if (skills.development && skills.development.length > 0) {
-                const category = document.createElement('span');
-                category.className = 'skill-category';
-                category.textContent = 'Development';
-                section.appendChild(category);
-                
-                const list = document.createElement('p');
-                list.className = 'skills-list';
-                list.textContent = skills.development.join(', ');
-                section.appendChild(list);
-            }
-            
-            // Collaboration skills
-            if (skills.collaboration && skills.collaboration.length > 0) {
-                const category = document.createElement('span');
-                category.className = 'skill-category';
-                category.textContent = 'Collaboration';
-                section.appendChild(category);
-                
-                const list = document.createElement('p');
-                list.className = 'skills-list';
-                list.textContent = skills.collaboration.join(', ');
-                section.appendChild(list);
-            }
-            
-            return section;
+            const list = document.createElement('p');
+            list.className = 'skills-list';
+            list.textContent = skills.research.join(', ');
+            section.appendChild(list);
         }
         
-        function buildEducation(education) {
-            const section = document.createElement('div');
-            section.className = 'section';
+        // Development skills
+        if (skills.development && skills.development.length > 0) {
+            const category = document.createElement('span');
+            category.className = 'skill-category';
+            category.textContent = 'Development';
+            section.appendChild(category);
             
-            const title = document.createElement('h2');
-            title.className = 'section-title';
-            title.textContent = 'Education';
-            section.appendChild(title);
-            
-            const edu = document.createElement('div');
-            edu.className = 'education';
-            
-            const school = document.createElement('p');
-            school.className = 'school';
-            school.textContent = education.school;
-            edu.appendChild(school);
-            
-            if (education.degrees && education.degrees.length > 0) {
-                education.degrees.forEach(degree => {
-                    const degreeEl = document.createElement('p');
-                    degreeEl.className = 'degree';
-                    degreeEl.textContent = degree;
-                    edu.appendChild(degreeEl);
-                });
-            }
-            
-            const graduationDetails = document.createElement('p');
-            graduationDetails.className = 'education-details';
-            graduationDetails.textContent = `Graduated ${education.graduation}`;
-            edu.appendChild(graduationDetails);
-            
-            const gpaDetails = document.createElement('p');
-            gpaDetails.className = 'education-details';
-            gpaDetails.textContent = `GPA: ${education.gpa}`;
-            edu.appendChild(gpaDetails);
-            
-            section.appendChild(edu);
-            return section;
+            const list = document.createElement('p');
+            list.className = 'skills-list';
+            list.textContent = skills.development.join(', ');
+            section.appendChild(list);
         }
         
-        function buildCertifications(certifications) {
-            const section = document.createElement('div');
-            section.className = 'section';
+        // Collaboration skills
+        if (skills.collaboration && skills.collaboration.length > 0) {
+            const category = document.createElement('span');
+            category.className = 'skill-category';
+            category.textContent = 'Collaboration';
+            section.appendChild(category);
             
-            const title = document.createElement('h2');
-            title.className = 'section-title';
-            title.textContent = 'Certification';
-            section.appendChild(title);
-            
-            if (certifications && certifications.length > 0) {
-                const list = document.createElement('p');
-                list.className = 'skills-list';
-                list.textContent = certifications.join(', ');
-                section.appendChild(list);
-            }
-            
-            return section;
+            const list = document.createElement('p');
+            list.className = 'skills-list';
+            list.textContent = skills.collaboration.join(', ');
+            section.appendChild(list);
         }
         
-        function buildLanguages(languages) {
-            const section = document.createElement('div');
-            section.className = 'section';
+        return section;
+    }
+    
+    function buildEducation(education) {
+        const section = document.createElement('div');
+        section.className = 'section';
+        
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = 'Education';
+        section.appendChild(title);
+        
+        const edu = document.createElement('div');
+        edu.className = 'education';
+        
+        const school = document.createElement('p');
+        school.className = 'school';
+        school.textContent = education.school;
+        edu.appendChild(school);
+        
+        if (education.degrees && education.degrees.length > 0) {
+            education.degrees.forEach(degree => {
+                const degreeEl = document.createElement('p');
+                degreeEl.className = 'degree';
+                degreeEl.textContent = degree;
+                edu.appendChild(degreeEl);
+            });
+        }
+        
+        const graduationDetails = document.createElement('p');
+        graduationDetails.className = 'education-details';
+        graduationDetails.textContent = `Graduated ${education.graduation}`;
+        edu.appendChild(graduationDetails);
+        
+        const gpaDetails = document.createElement('p');
+        gpaDetails.className = 'education-details';
+        gpaDetails.textContent = `GPA: ${education.gpa}`;
+        edu.appendChild(gpaDetails);
+        
+        section.appendChild(edu);
+        return section;
+    }
+    
+    function buildCertifications(certifications) {
+        const section = document.createElement('div');
+        section.className = 'section';
+        
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = 'Certification';
+        section.appendChild(title);
+        
+        if (certifications && certifications.length > 0) {
+            const list = document.createElement('p');
+            list.className = 'skills-list';
+            list.textContent = certifications.join(', ');
+            section.appendChild(list);
+        }
+        
+        return section;
+    }
+    
+    function buildLanguages(languages) {
+        const section = document.createElement('div');
+        section.className = 'section';
 
-            const title = document.createElement('h2');
-            title.className = 'section-title';
-            title.textContent = 'Languages';
-            section.appendChild(title);
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = 'Languages';
+        section.appendChild(title);
 
-            if (languages && languages.length > 0) {
-                const list = document.createElement('ul');
-                list.style.listStyle = 'none';
-                list.style.padding = '0';
-                languages.forEach(lang => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = '7px';
-                    li.style.fontSize = '13px';
-                    li.innerHTML = `${lang.name} <span style="background:var(--light-accent);color:var(--accent);border-radius:8px;padding:2px 10px;font-size:11px;margin-left:8px;vertical-align:middle;">${lang.level}</span>`;
-                    list.appendChild(li);
-                });
-                section.appendChild(list);
-            }
-            return section;
+        if (languages && languages.length > 0) {
+            const list = document.createElement('ul');
+            list.style.listStyle = 'none';
+            list.style.padding = '0';
+            languages.forEach(lang => {
+                const li = document.createElement('li');
+                li.style.marginBottom = '7px';
+                li.style.fontSize = '13px';
+                li.innerHTML = `${lang.name} <span style="background:var(--light-accent);color:var(--accent);border-radius:8px;padding:2px 10px;font-size:11px;margin-left:8px;vertical-align:middle;">${lang.level}</span>`;
+                list.appendChild(li);
+            });
+            section.appendChild(list);
+        }
+        return section;
+    }
+    
+    function buildSummary(summary) {
+        const section = document.createElement('div');
+        section.className = 'section';
+        
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = 'Professional Summary';
+        section.appendChild(title);
+        
+        const summaryText = document.createElement('p');
+        summaryText.style.fontSize = '13px';
+        summaryText.style.marginBottom = '15px';
+        summaryText.textContent = summary;
+        section.appendChild(summaryText);
+        
+        return section;
+    }
+    
+    function buildExperience(experience) {
+        const section = document.createElement('div');
+        section.className = 'section';
+        
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = 'Experience';
+        section.appendChild(title);
+        
+        if (experience && experience.length > 0) {
+            experience.forEach(job => {
+                const jobEl = document.createElement('div');
+                jobEl.className = 'job';
+                
+                const company = document.createElement('p');
+                company.className = 'company';
+                company.textContent = job.company;
+                jobEl.appendChild(company);
+                
+                const position = document.createElement('p');
+                position.className = 'position';
+                position.textContent = job.position;
+                jobEl.appendChild(position);
+                
+                const period = document.createElement('p');
+                period.className = 'period';
+                period.textContent = job.period;
+                jobEl.appendChild(period);
+                
+                if (job.duties && job.duties.length > 0) {
+                    const duties = document.createElement('ul');
+                    duties.className = 'job-duties';
+                    
+                    job.duties.forEach(duty => {
+                        const li = document.createElement('li');
+                        li.textContent = duty;
+                        duties.appendChild(li);
+                    });
+                    
+                    jobEl.appendChild(duties);
+                }
+                
+                section.appendChild(jobEl);
+            });
         }
         
-        function buildSummary(summary) {
-            const section = document.createElement('div');
-            section.className = 'section';
-            
-            const title = document.createElement('h2');
-            title.className = 'section-title';
-            title.textContent = 'Professional Summary';
-            section.appendChild(title);
-            
-            const summaryText = document.createElement('p');
-            summaryText.style.fontSize = '13px';
-            summaryText.style.marginBottom = '15px';
-            summaryText.textContent = summary;
-            section.appendChild(summaryText);
-            
-            return section;
+        return section;
+    }
+    
+    function buildProjects(projects) {
+        const section = document.createElement('div');
+        section.className = 'section';
+        
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = 'Projects';
+        section.appendChild(title);
+        
+        if (projects && projects.length > 0) {
+            projects.forEach(project => {
+                const projectEl = document.createElement('div');
+                projectEl.className = 'project';
+                
+                const projectTitle = document.createElement('p');
+                projectTitle.className = 'project-title';
+                projectTitle.textContent = project.title;
+                projectEl.appendChild(projectTitle);
+                
+                if (project.details && project.details.length > 0) {
+                    const details = document.createElement('ul');
+                    details.className = 'project-details';
+                    
+                    project.details.forEach(detail => {
+                        const li = document.createElement('li');
+                        li.textContent = detail;
+                        details.appendChild(li);
+                    });
+                    
+                    projectEl.appendChild(details);
+                }
+                
+                section.appendChild(projectEl);
+            });
         }
         
-        function buildExperience(experience) {
-            const section = document.createElement('div');
-            section.className = 'section';
-            
-            const title = document.createElement('h2');
-            title.className = 'section-title';
-            title.textContent = 'Experience';
-            section.appendChild(title);
-            
-            if (experience && experience.length > 0) {
-                experience.forEach(job => {
-                    const jobEl = document.createElement('div');
-                    jobEl.className = 'job';
-                    
-                    const company = document.createElement('p');
-                    company.className = 'company';
-                    company.textContent = job.company;
-                    jobEl.appendChild(company);
-                    
-                    const position = document.createElement('p');
-                    position.className = 'position';
-                    position.textContent = job.position;
-                    jobEl.appendChild(position);
-                    
-                    const period = document.createElement('p');
-                    period.className = 'period';
-                    period.textContent = job.period;
-                    jobEl.appendChild(period);
-                    
-                    if (job.duties && job.duties.length > 0) {
-                        const duties = document.createElement('ul');
-                        duties.className = 'job-duties';
-                        
-                        job.duties.forEach(duty => {
-                            const li = document.createElement('li');
-                            li.textContent = duty;
-                            duties.appendChild(li);
-                        });
-                        
-                        jobEl.appendChild(duties);
-                    }
-                    
-                    section.appendChild(jobEl);
-                });
-            }
-            
-            return section;
-        }
-        
-        function buildProjects(projects) {
-            const section = document.createElement('div');
-            section.className = 'section';
-            
-            const title = document.createElement('h2');
-            title.className = 'section-title';
-            title.textContent = 'Projects';
-            section.appendChild(title);
-            
-            if (projects && projects.length > 0) {
-                projects.forEach(project => {
-                    const projectEl = document.createElement('div');
-                    projectEl.className = 'project';
-                    
-                    const projectTitle = document.createElement('p');
-                    projectTitle.className = 'project-title';
-                    projectTitle.textContent = project.title;
-                    projectEl.appendChild(projectTitle);
-                    
-                    if (project.details && project.details.length > 0) {
-                        const details = document.createElement('ul');
-                        details.className = 'project-details';
-                        
-                        project.details.forEach(detail => {
-                            const li = document.createElement('li');
-                            li.textContent = detail;
-                            details.appendChild(li);
-                        });
-                        
-                        projectEl.appendChild(details);
-                    }
-                    
-                    section.appendChild(projectEl);
-                });
-            }
-            
-            return section;
-        }
+        return section;
+    }
     </script>
     <script src="js/unlock-contact.js"></script>
 </body>
