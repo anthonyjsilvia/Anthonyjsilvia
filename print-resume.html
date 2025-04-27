@@ -406,6 +406,10 @@
             // Build certification section (left column)
             const certification = buildCertifications(data.certification);
             leftColumn.appendChild(certification);
+
+            // Build languages section (left column)
+            const languages = buildLanguages(data.languages);
+            leftColumn.appendChild(languages);
             
             // Build professional summary (right column)
             const summary = buildSummary(data.professionalSummary);
@@ -428,6 +432,18 @@
             const header = document.createElement('div');
             header.className = 'header';
             
+            // Profile image
+            const img = document.createElement('img');
+            img.src = 'assets/images/me.jpg';
+            img.alt = 'Anthony Silvia';
+            img.style.width = '90px';
+            img.style.height = '90px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '50%';
+            img.style.display = 'block';
+            img.style.margin = '0 auto 18px auto';
+            header.appendChild(img);
+            
             const name = document.createElement('h1');
             name.className = 'name';
             name.textContent = personalInfo.name;
@@ -441,26 +457,46 @@
             
             // Add contact info
             if (personalInfo.contact) {
-                const email = document.createElement('p');
-                email.className = 'contact-item';
-                email.textContent = personalInfo.contact.email;
-                
-                const phone = document.createElement('p');
-                phone.className = 'contact-item';
-                phone.textContent = personalInfo.contact.phone;
-                
-                const website = document.createElement('p');
-                website.className = 'contact-item';
-                website.textContent = personalInfo.contact.website;
-                
-                const linkedin = document.createElement('p');
-                linkedin.className = 'contact-item';
-                linkedin.textContent = personalInfo.contact.linkedin;
-                
-                header.appendChild(email);
-                header.appendChild(phone);
-                header.appendChild(website);
-                header.appendChild(linkedin);
+                // Use unlock logic for email and phone
+                if (window.ContactUnlock && window.ContactUnlock.hasContactCookie && window.ContactUnlock.hasContactCookie()) {
+                    if (personalInfo.contact.email) {
+                        const email = document.createElement('p');
+                        email.className = 'contact-item';
+                        email.innerHTML = `<i class='fas fa-envelope'></i> <a href='mailto:${personalInfo.contact.email}'>${personalInfo.contact.email}</a>`;
+                        header.appendChild(email);
+                    }
+                    if (personalInfo.contact.phone) {
+                        const phone = document.createElement('p');
+                        phone.className = 'contact-item';
+                        phone.innerHTML = `<i class='fas fa-phone'></i> <a href='tel:${personalInfo.contact.phone}'>${personalInfo.contact.phone}</a>`;
+                        header.appendChild(phone);
+                    }
+                } else {
+                    if (personalInfo.contact.email) {
+                        const email = document.createElement('p');
+                        email.className = 'contact-item';
+                        email.innerHTML = `<i class='fas fa-envelope'></i> <button class='unlock-contact-btn' data-type='email' style='background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0;'>Unlock Contact Info</button>`;
+                        header.appendChild(email);
+                    }
+                    if (personalInfo.contact.phone) {
+                        const phone = document.createElement('p');
+                        phone.className = 'contact-item';
+                        phone.innerHTML = `<i class='fas fa-phone'></i> <button class='unlock-contact-btn' data-type='phone' style='background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0;'>Unlock Contact Info</button>`;
+                        header.appendChild(phone);
+                    }
+                }
+                if (personalInfo.contact.website) {
+                    const website = document.createElement('p');
+                    website.className = 'contact-item';
+                    website.innerHTML = `<i class='fas fa-globe'></i> <a href='https://${personalInfo.contact.website}' target='_blank'>${personalInfo.contact.website}</a>`;
+                    header.appendChild(website);
+                }
+                if (personalInfo.contact.linkedin) {
+                    const linkedin = document.createElement('p');
+                    linkedin.className = 'contact-item';
+                    linkedin.innerHTML = `<i class='fab fa-linkedin'></i> <a href='https://${personalInfo.contact.linkedin}' target='_blank'>${personalInfo.contact.linkedin}</a>`;
+                    header.appendChild(linkedin);
+                }
             }
             
             return header;
@@ -606,6 +642,31 @@
             return section;
         }
         
+        function buildLanguages(languages) {
+            const section = document.createElement('div');
+            section.className = 'section';
+
+            const title = document.createElement('h2');
+            title.className = 'section-title';
+            title.textContent = 'Languages';
+            section.appendChild(title);
+
+            if (languages && languages.length > 0) {
+                const list = document.createElement('ul');
+                list.style.listStyle = 'none';
+                list.style.padding = '0';
+                languages.forEach(lang => {
+                    const li = document.createElement('li');
+                    li.style.marginBottom = '7px';
+                    li.style.fontSize = '13px';
+                    li.innerHTML = `${lang.name} <span style="background:var(--light-accent);color:var(--accent);border-radius:8px;padding:2px 10px;font-size:11px;margin-left:8px;vertical-align:middle;">${lang.level}</span>`;
+                    list.appendChild(li);
+                });
+                section.appendChild(list);
+            }
+            return section;
+        }
+        
         function buildSummary(summary) {
             const section = document.createElement('div');
             section.className = 'section';
@@ -712,5 +773,6 @@
             return section;
         }
     </script>
+    <script src="js/unlock-contact.js"></script>
 </body>
 </html>

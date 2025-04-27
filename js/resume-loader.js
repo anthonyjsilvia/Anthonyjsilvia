@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function populateResumePage(resumeData) {
+    // Populate contact info in sidebar
+    populateContact(resumeData.personalInfo && resumeData.personalInfo.contact);
+    
     // Populate professional summary
     populateProfessionalSummary(resumeData.professionalSummary);
     
@@ -40,6 +43,9 @@ function populateResumePage(resumeData) {
     
     // Populate projects
     populateProjects(resumeData.projects);
+    
+    // Populate languages (in sidebar)
+    populateLanguages(resumeData.skills, resumeData.languages);
 }
 
 function populateProfessionalSummary(summary) {
@@ -133,9 +139,9 @@ function populateExperience(experience) {
         experience.forEach(job => {
             timelineHTML += `
                 <div class="timeline-item">
-                    <div class="timeline-date">${job.period}</div>
                     <div class="timeline-content">
                         <h3>${job.position}</h3>
+                        <span class="timeline-date-badge">${job.period}</span>
                         <p>${job.company}</p>
                         <ul>
                             ${job.duties.map(duty => `<li>${duty}</li>`).join('')}
@@ -154,9 +160,9 @@ function populateEducation(education) {
     if (educationTimeline && education) {
         let timelineHTML = `
             <div class="timeline-item">
-                <div class="timeline-date">Graduated ${education.graduation}</div>
                 <div class="timeline-content">
                     <h3>${education.school}</h3>
+                    <span class="timeline-date-badge">Graduated ${education.graduation}</span>
                     <p>${education.degrees.join(', ')}</p>
                     <span class="gpa">${education.gpa} GPA</span>
                 </div>
@@ -198,5 +204,49 @@ function populateProjects(projects) {
         });
         
         projectsSection.innerHTML = projectsHTML;
+    }
+}
+
+function populateLanguages(skills, languages) {
+    const languagesList = document.querySelector('.sidebar-languages');
+    if (languagesList) {
+        if (languages && Array.isArray(languages) && languages.length > 0) {
+            languagesList.innerHTML = languages.map(lang => {
+                let badge = '';
+                if (lang.level) {
+                    badge = `<span class="lang-badge">${lang.level}</span>`;
+                }
+                return `<li>${lang.name} ${badge}</li>`;
+            }).join('');
+        } else if (skills && skills.designTools) {
+            // fallback: treat designTools as languages
+            languagesList.innerHTML = skills.designTools.map(tool => {
+                const filledDots = Math.round(tool.level / 20);
+                const dots = Array.from({length: 5}, (_, i) =>
+                    `<span style="color:${i < filledDots ? 'var(--primary-color)' : '#ccc'};font-size:1.1em;">●</span>`
+                ).join('');
+                return `<li>${tool.name} <span class="lang-dots">${dots}</span></li>`;
+            }).join('');
+        }
+    }
+}
+
+function populateContact(contact) {
+    const contactList = document.querySelector('.sidebar-contact');
+    if (contactList && contact) {
+        let html = '';
+        if (contact.email) {
+            html += `<li><i class='fas fa-envelope'></i> <button class='unlock-contact-btn' data-type='email' style='background:none;border:none;color:var(--primary-color);font-weight:600;cursor:pointer;padding:0;'>Unlock Contact Info</button></li>`;
+        }
+        if (contact.phone) {
+            html += `<li><i class='fas fa-phone'></i> <button class='unlock-contact-btn' data-type='phone' style='background:none;border:none;color:var(--primary-color);font-weight:600;cursor:pointer;padding:0;'>Unlock Contact Info</button></li>`;
+        }
+        if (contact.website) {
+            html += `<li><i class='fas fa-globe'></i> <a href='https://${contact.website}' target='_blank'>${contact.website}</a></li>`;
+        }
+        if (contact.linkedin) {
+            html += `<li><i class='fab fa-linkedin'></i> <a href='https://${contact.linkedin}' target='_blank'>${contact.linkedin}</a></li>`;
+        }
+        contactList.innerHTML = html;
     }
 }

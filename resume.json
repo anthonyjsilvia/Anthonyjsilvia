@@ -101,5 +101,9 @@
           "Collaborated with logistics experts to translate operational requirements into user-friendly solutions"
         ]
       }
+    ],
+    "languages": [
+      { "name": "English", "level": "Native" },
+      { "name": "Spanish", "level": "Intermediate" }
     ]
   }

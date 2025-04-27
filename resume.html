@@ -17,7 +17,6 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/resume.css">
-
 </head>
 <body>
     <!-- Loading Indicator -->
@@ -29,9 +28,37 @@
     <header id="main-header"></header>
     
     <!-- Main Content -->
-    <div class="page-container">
-        <div class="container">
-            <!-- Page Header -->
+    <div class="resume-modern-container">
+        <!-- Sidebar -->
+        <aside class="resume-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-avatar">
+                    <img src="assets/images/me.jpg" alt="Anthony Silvia" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+                </div>
+                <h1 class="sidebar-name">Anthony Silvia</h1>
+                <p class="sidebar-title">UX Designer & Developer</p>
+            </div>
+            <div class="sidebar-section">
+                <h2>Contact</h2>
+                <ul class="sidebar-contact">
+                    <!-- Populate with contact info -->
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h2>Skills</h2>
+                <div id="skills-section" class="skills-container">
+                    <!-- Will be populated from JSON -->
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <h2>Languages</h2>
+                <ul class="sidebar-languages">
+                    <!-- Populate with languages -->
+                </ul>
+            </div>
+        </aside>
+        <!-- Main Resume Content -->
+        <main class="resume-main">
             <div class="page-header">
                 <span class="page-subtitle"><i class="fas fa-briefcase"></i> Resume</span>
                 <h1 class="page-title">My Professional <span class="highlight">Journey</span></h1>
@@ -39,56 +66,53 @@
                     A summary of my work history, educational background, and professional achievements.
                 </p>
             </div>
-            
-            <!-- Professional Summary -->
-            <div id="professional-summary" class="summary-section">
-                <!-- Will be populated from JSON -->
+            <div class="resume-content">
+                <!-- Professional Summary -->
+                <div id="professional-summary" class="summary-section">
+                    <!-- Will be populated from JSON -->
+                </div>
+                <!-- Experience Timeline -->
+                <div class="resume-section">
+                    <h2 class="section-title">Professional Experience</h2>
+                    <div id="experience-timeline" class="timeline">
+                        <!-- Will be populated from JSON -->
+                    </div>
+                </div>
+                <!-- Education Timeline -->
+                <div class="resume-section">
+                    <h2 class="section-title">Education</h2>
+                    <div id="education-timeline" class="timeline">
+                        <!-- Will be populated from JSON -->
+                    </div>
+                </div>
+                <!-- Certifications -->
+                <div class="resume-section">
+                    <h2 class="section-title">Certifications</h2>
+                    <div id="certifications-section" class="certifications-container">
+                        <!-- Will be populated from JSON -->
+                    </div>
+                </div>
+                <!-- Projects -->
+                <div class="resume-section">
+                    <h2 class="section-title">Projects</h2>
+                    <div id="projects-section" class="projects-container">
+                        <!-- Will be populated from JSON -->
+                    </div>
+                </div>
             </div>
-
-            <!-- Skills Section -->
-            <h2 class="section-title">Skills</h2>
-            <div id="skills-section" class="skills-container">
-                <!-- Will be populated from JSON -->
-            </div>
-            
-            <!-- Experience Timeline -->
-            <h2 class="section-title">Professional Experience</h2>
-            <div id="experience-timeline" class="timeline">
-                <!-- Will be populated from JSON -->
-            </div>
-            
-            <!-- Education Timeline -->
-            <h2 class="section-title">Education</h2>
-            <div id="education-timeline" class="timeline">
-                <!-- Will be populated from JSON -->
-            </div>
-            
-            <!-- Certifications -->
-            <h2 class="section-title">Certifications</h2>
-            <div id="certifications-section" class="certifications-container">
-                <!-- Will be populated from JSON -->
-            </div>
-            
-            <!-- Projects -->
-            <h2 class="section-title">Projects</h2>
-            <div id="projects-section" class="projects-container">
-                <!-- Will be populated from JSON -->
-            </div>
-            
-            <!-- Download Resume Button -->
-            <div style="text-align: center; margin-top: 3rem;">
-                <a href="#" class="contact-btn" style="display: inline-block; max-width: 250px;">Download Full Resume</a>
-            </div>
-        </div>
+        </main>
     </div>
-    
+    <!-- Floating Print Button -->
+    <a href="/print-resume.html" class="floating-print-btn" title="Print Resume">
+        <i class="fas fa-print"></i>
+    </a>
     <!-- Footer (will be populated by footer.js) -->
     <footer></footer>
-
     <!-- Custom JavaScript -->
     <script src="js/components/header.js"></script>
     <script src="js/components/footer.js"></script>
     <script src="js/script.js"></script>
     <script src="js/resume-loader.js"></script>
+    <script src="js/unlock-contact.js"></script>
 </body>
 </html>
