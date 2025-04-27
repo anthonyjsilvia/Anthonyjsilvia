@@ -1,0 +1,105 @@
+{
+    "personalInfo": {
+      "name": "Anthony Silvia",
+      "title": "UX Designer",
+      "contact": {
+        "email": "contact@anthonyisilvia.com",
+        "phone": "704-775-9266",
+        "website": "anthonyjsilvia.com",
+        "linkedin": "linkedin.com/in/anthonysilvia"
+      }
+    },
+    "professionalSummary": "Innovative UX Designer with 5+ years of experience creating intuitive, user-centered digital experiences. Currently an Associate Product Designer at Lowe's specializing in sustainable technologies and AI applications. Google Certified UX Designer with expertise in user research, wireframing, and prototyping. Proven track record of improving user satisfaction metrics and streamlining complex interfaces for enhanced usability.",
+    "skills": {
+      "designTools": [
+        {
+          "name": "Figma",
+          "level": 100
+        },
+        {
+          "name": "Adobe XD",
+          "level": 100
+        },
+        {
+          "name": "Prototyping",
+          "level": 90
+        },
+        {
+          "name": "Content Design",
+          "level": 65
+        },
+        {
+          "name": "Research",
+          "level": 55
+        }
+      ],
+      "research": [
+        "User Testing",
+        "Heuristic Evaluation",
+        "Journey Mapping",
+        "Competitive Analysis"
+      ],
+      "development": [
+        "HTML/CSS",
+        "Responsive Design"
+      ],
+      "collaboration": [
+        "Cross-functional Team Leadership",
+        "Stakeholder Management",
+        "Design Systems"
+      ]
+    },
+    "experience": [
+      {
+        "company": "Lowe's Companies, Inc.",
+        "position": "Associate Product Designer",
+        "period": "October 2022 – Present",
+        "duties": [
+          "Designed and developed innovative software products improving customer experience for home improvement retail stores",
+          "Conducted extensive user research resulting in improved SEQ scores by 2.3 points on average",
+          "Implemented UX enhancements that increased UMUX scores by approximately 1.1 points on average",
+          "Created comprehensive design specifications, wireframes, and interactive prototypes for multiple product releases",
+          "Collaborated with engineering, marketing, and business teams to deliver cohesive solutions aligned with strategic goals"
+        ]
+      },
+      {
+        "company": "NodeDa, LLC",
+        "position": "Founder & Owner",
+        "period": "April 2022 – Present",
+        "duties": [
+          "Founded and established the company from concept to operational business, handling all aspects of business formation",
+          "Personally designed and developed all company apps and websites, creating a cohesive brand identity and digital presence",
+          "Implemented strategic initiatives that resulted in steady client growth and revenue increase",
+          "Created multiple web applications focused on accessibility and intuitive user experience"
+        ]
+      }
+    ],
+    "education": {
+      "school": "Southern New Hampshire University",
+      "degrees": [
+        "Bachelor's in Graphic Design and Media Arts",
+        "Minor in User Experience Design"
+      ],
+      "graduation": "August 2024",
+      "gpa": "3.55/4.0"
+    },
+    "certification": [
+      "Google UX Design Professional Certificate (April 2022)"
+    ],
+    "projects": [
+      {
+        "title": "Lowe's POS System Enhancement (2023)",
+        "details": [
+          "Led UX redesign of point-of-sale interface resulting in improved checkout efficiency and reduced training time",
+          "Conducted user research and usability testing with store associates to optimize workflow"
+        ]
+      },
+      {
+        "title": "Lowe's Logistics System (2022)",
+        "details": [
+          "Designed intuitive interface for complex inventory and supply chain management application",
+          "Collaborated with logistics experts to translate operational requirements into user-friendly solutions"
+        ]
+      }
+    ]
+  }

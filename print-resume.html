@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anthony Silvia - UX Designer Resume</title>
+    <style>
+        /* Minimalist styling based on example */
+        :root {
+            --primary: #333333;
+            --secondary: #666666;
+            --accent: #0056b3;
+            --light-accent: #e6f0fa;
+            --light-gray: #f5f5f5;
+            --white: #FFFFFF;
+            --divider: #dddddd;
+        }
+        
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: var(--primary);
+            background-color: var(--white);
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
+        .resume-container {
+            display: flex;
+            background-color: var(--white);
+            margin: 20px;
+        }
+        
+        .left-column {
+            width: 30%;
+            background-color: var(--white);
+            padding: 30px 20px;
+            border-right: 1px solid var(--divider);
+        }
+        
+        .right-column {
+            width: 70%;
+            padding: 30px 20px;
+        }
+        
+        /* Header Section */
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .name {
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .title {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .contact-item {
+            font-size: 13px;
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+        
+        /* Section Styling */
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 3px;
+            background-color: var(--accent);
+            margin-top: 5px;
+        }
+        
+        /* Skills styling */
+        .skill-category {
+            font-weight: 600;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .skills-list {
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        
+        /* Experience styling */
+        .job {
+            margin-bottom: 20px;
+        }
+        
+        .company {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        
+        .position {
+            font-weight: 400;
+            font-style: italic;
+            font-size: 13px;
+            color: var(--accent);
+            margin-bottom: 3px;
+        }
+        
+        .period {
+            font-size: 12px;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+        
+        .job-duties {
+            padding-left: 15px;
+        }
+        
+        .job-duties li {
+            margin-bottom: 5px;
+            list-style-type: none;
+            position: relative;
+            font-size: 13px;
+        }
+        
+        .job-duties li::before {
+            content: "•";
+            position: absolute;
+            left: -15px;
+            color: var(--accent);
+        }
+        
+        /* Education */
+        .school {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        
+        .degree {
+            font-size: 13px;
+            margin-bottom: 3px;
+            font-style: italic;
+        }
+        
+        .education-details {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+        
+        /* Projects */
+        .project {
+            margin-bottom: 15px;
+        }
+        
+        .project-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .project-details {
+            padding-left: 15px;
+        }
+        
+        .project-details li {
+            margin-bottom: 5px;
+            list-style-type: none;
+            position: relative;
+            font-size: 13px;
+        }
+        
+        .project-details li::before {
+            content: "•";
+            position: absolute;
+            left: -15px;
+            color: var(--accent);
+        }
+        
+        /* Chart element for skills visualization */
+        .skills-chart {
+            margin: 10px 0 20px 0;
+        }
+        
+        .skill-bar {
+            height: 5px;
+            background-color: var(--divider);
+            margin-bottom: 10px;
+            position: relative;
+            border: 1px solid var(--divider);
+        }
+        
+        .skill-level {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: var(--accent);
+            /* Add fallback borders for printing */
+            border-right: 1px solid var(--accent);
+            box-shadow: 0 0 0 1000px var(--accent) inset;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .skill-name {
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+        
+        .skill-advanced .skill-level { width: 90%; }
+        .skill-proficient .skill-level { width: 75%; }
+        .skill-intermediate .skill-level { width: 60%; }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <!-- Left Column -->
+        <div class="left-column">
+            <!-- Header -->
+            <div class="header">
+                <h1 class="name">Anthony Silvia</h1>
+                <p class="title">UX Designer</p>
+                <p class="contact-item">contact@anthonyisilvia.com</p>
+                <p class="contact-item">704-775-9266</p>
+                <p class="contact-item">anthonyjsilvia.com</p>
+                <p class="contact-item">linkedin.com/in/anthonysilvia</p>
+            </div>
+            
+            <!-- Skills -->
+            <div class="section">
+                <h2 class="section-title">Skills</h2>
+                
+                <span class="skill-category">Design Tools</span>
+                <div class="skills-chart">
+                    <div class="skill-name">Figma</div>
+                    <div class="skill-bar"><div class="skill-level" style="width: 100%;"></div></div>
+                    
+                    <div class="skill-name">Adobe XD</div>
+                    <div class="skill-bar"><div class="skill-level" style="width: 100%;"></div></div>
+                    
+                    <div class="skill-name">Prototyping</div>
+                    <div class="skill-bar"><div class="skill-level" style="width: 90%;"></div></div>
+                    
+                    <div class="skill-name">Content Design</div>
+                    <div class="skill-bar"><div class="skill-level" style="width: 65%;"></div></div>
+                    
+                    <div class="skill-name">Research</div>
+                    <div class="skill-bar"><div class="skill-level" style="width: 55%;"></div></div>
+                </div>
+                
+                <span class="skill-category">Research</span>
+                <p class="skills-list">User Testing, Heuristic Evaluation, Journey Mapping, Competitive Analysis</p>
+                
+                <span class="skill-category">Development</span>
+                <p class="skills-list">HTML/CSS, Responsive Design</p>
+                
+                <span class="skill-category">Collaboration</span>
+                <p class="skills-list">Cross-functional Team Leadership, Stakeholder Management, Design Systems</p>
+            </div>
+            
+            <!-- Education -->
+            <div class="section">
+                <h2 class="section-title">Education</h2>
+                <div class="education">
+                    <p class="school">Southern New Hampshire University</p>
+                    <p class="degree">Bachelor's in Graphic Design and Media Arts</p>
+                    <p class="degree">Minor in User Experience Design</p>
+                    <p class="education-details">Graduated August 2024</p>
+                    <p class="education-details">GPA: 3.55/4.0</p>
+                </div>
+            </div>
+            
+            <!-- Certification -->
+            <div class="section">
+                <h2 class="section-title">Certification</h2>
+                <p class="skills-list">Google UX Design Professional Certificate (April 2022)</p>
+            </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="right-column">
+            <!-- Summary -->
+            <div class="section">
+                <h2 class="section-title">Professional Summary</h2>
+                <p style="font-size: 13px; margin-bottom: 15px;">
+                    Innovative UX Designer with 5+ years of experience creating intuitive, user-centered digital experiences. Currently an Associate Product Designer at Lowe's specializing in sustainable technologies and AI applications. Google Certified UX Designer with expertise in user research, wireframing, and prototyping. Proven track record of improving user satisfaction metrics and streamlining complex interfaces for enhanced usability.
+                </p>
+            </div>
+            
+            <!-- Professional Experience -->
+            <div class="section">
+                <h2 class="section-title">Experience</h2>
+                
+                <!-- Lowe's -->
+                <div class="job">
+                    <p class="company">Lowe's Companies, Inc.</p>
+                    <p class="position">Associate Product Designer</p>
+                    <p class="period">October 2022 – Present</p>
+                    <ul class="job-duties">
+                        <li>Designed and developed innovative software products improving customer experience for home improvement retail stores</li>
+                        <li>Conducted extensive user research resulting in improved SEQ scores by 2.3 points on average</li>
+                        <li>Implemented UX enhancements that increased UMUX scores by approximately 1.1 points on average</li>
+                        <li>Created comprehensive design specifications, wireframes, and interactive prototypes for multiple product releases</li>
+                        <li>Collaborated with engineering, marketing, and business teams to deliver cohesive solutions aligned with strategic goals</li>
+                    </ul>
+                </div>
+                
+                <!-- NodeDa -->
+                <div class="job">
+                    <p class="company">NodeDa, LLC</p>
+                    <p class="position">Founder & Owner</p>
+                    <p class="period">April 2022 – Present</p>
+                    <ul class="job-duties">
+                        <li>Founded and established the company from concept to operational business, handling all aspects of business formation</li>
+                        <li>Personally designed and developed all company apps and websites, creating a cohesive brand identity and digital presence</li>
+                        <li>Implemented strategic initiatives that resulted in steady client growth and revenue increase</li>
+                        <li>Created multiple web applications focused on accessibility and intuitive user experience</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Projects -->
+            <div class="section">
+                <h2 class="section-title">Projects</h2>
+                
+                <div class="project">
+                    <p class="project-title">Lowe's POS System Enhancement (2023)</p>
+                    <ul class="project-details">
+                        <li>Led UX redesign of point-of-sale interface resulting in improved checkout efficiency and reduced training time</li>
+                        <li>Conducted user research and usability testing with store associates to optimize workflow</li>
+                    </ul>
+                </div>
+                
+                <div class="project">
+                    <p class="project-title">Lowe's Logistics System (2022)</p>
+                    <ul class="project-details">
+                        <li>Designed intuitive interface for complex inventory and supply chain management application</li>
+                        <li>Collaborated with logistics experts to translate operational requirements into user-friendly solutions</li>
+                    </ul>
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
