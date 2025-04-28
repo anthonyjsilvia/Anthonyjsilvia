@@ -1,0 +1,26 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "title": "NodeDaLingo",
+      "subtitle": "Mobile App Development",
+      "description": "A Swift-based mobile application developed for NodeDa LLC. The project showcases expertise in iOS development and modern mobile app architecture.",
+      "image": "https://nodeda.com/appicons/lingo.svg",
+      "categories": ["Accessibility", "Apple Human Interface Guidelines", "Swift", "SwiftUI"],
+      "link": "https://apps.apple.com/us/app/nodeda-lingo/id6689492207",
+      "github": "https://github.com/NodeDaLLC/Lingo",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "NodeDa Cookbook",
+      "subtitle": "Mobile App Development",
+      "description": "A Swift-based mobile application developed for home chefs and food enthusiasts. The project showcases expertise in iOS development and modern mobile data persistence architecture.",
+      "image": "https://nodeda.com/appicons/Cookbooknew.svg",
+      "categories": ["Apple Human Interface Guidelines", "Swift", "SwiftUI", "Core Data","Firebase"],
+      "link": "https://apps.apple.com/us/app/nodeda-cookbook/id6523414165&ved=2ahUKEwjJhsjhz_mMAxUwG9AFHcQRCGcQFnoECBkQAQ&usg=AOvVaw3APs83EQdaX5TZC8T8BcYN",
+      "github": "disabled",
+      "featured": true
+    }
+  ]
+} 

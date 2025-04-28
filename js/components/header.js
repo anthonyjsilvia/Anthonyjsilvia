@@ -46,9 +46,9 @@ function initHeader() {
         { label: 'Home', icon: 'fas fa-home', href: 'index.html' },
         { label: 'About', icon: 'fas fa-user', href: 'about.html' },
         { label: 'Resume', icon: 'fas fa-briefcase', href: 'resume.html' },
-        { label: 'Disciplines', icon: 'fas fa-puzzle-piece', href: 'services.html' },
+        //{ label: 'Disciplines', icon: 'fas fa-puzzle-piece', href: 'services.html' },
         //{ label: 'Skills', icon: 'fas fa-shapes', href: 'skills.html' },
-        //{ label: 'Portfolio', icon: 'fas fa-grip-vertical', href: 'portfolio.html' },
+        { label: 'Portfolio', icon: 'fas fa-grip-vertical', href: 'portfolio.html' },
         { label: 'Testimonials', icon: 'far fa-comment', href: 'testimonials.html' },
         //{ label: 'Contact', icon: 'fas fa-envelope', href: 'contact.html' }
     ];
