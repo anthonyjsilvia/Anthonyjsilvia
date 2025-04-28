@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="128" fill="#3498db"/>
+  <g transform="translate(96, 96)">
+    <!-- Accessibility symbol -->
+    <circle cx="160" cy="160" r="120" fill="white" opacity="0.9"/>
+    <path d="M160 80c-44.183 0-80 35.817-80 80s35.817 80 80 80 80-35.817 80-80-35.817-80-80-80zm0 140c-33.137 0-60-26.863-60-60s26.863-60 60-60 60 26.863 60 60-26.863 60-60 60z" fill="#3498db"/>
+    <path d="M160 120c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm0 60c-11.046 0-20-8.954-20-20s8.954-20 20-20 20 8.954 20 20-8.954 20-20 20z" fill="#3498db"/>
+    
+    <!-- Speech bubble -->
+    <path d="M320 80H200v120c0 33.137 26.863 60 60 60 11.046 0 21.569-2.529 30.432-7.192L320 320V80z" fill="white" opacity="0.9"/>
+    
+    <!-- Microphone icon -->
+    <path d="M240 180c0-11.046 8.954-20 20-20s20 8.954 20 20v40c0 11.046-8.954 20-20 20s-20-8.954-20-20v-40z" fill="#3498db"/>
+    <path d="M280 220c0 22.091-17.909 40-40 40s-40-17.909-40-40h-20c0 33.137 26.863 60 60 60s60-26.863 60-60h-20z" fill="#3498db"/>
+    <path d="M260 300v20h-40v-20h40z" fill="#3498db"/>
+    
+    <!-- Text lines representing captions -->
+    <rect x="220" y="100" width="60" height="8" rx="4" fill="#3498db"/>
+    <rect x="220" y="120" width="40" height="8" rx="4" fill="#3498db"/>
+    <rect x="220" y="140" width="50" height="8" rx="4" fill="#3498db"/>
+  </g>
+</svg> 

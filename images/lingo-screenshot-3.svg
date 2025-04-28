@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812">
+  <!-- Phone frame -->
+  <rect width="375" height="812" rx="40" fill="#f5f5f5"/>
+  <rect x="20" y="20" width="335" height="772" rx="30" fill="white"/>
+  
+  <!-- Status bar -->
+  <rect x="40" y="40" width="295" height="30" rx="5" fill="#f0f0f0"/>
+  <circle cx="60" cy="55" r="5" fill="#333"/>
+  <rect x="80" y="50" width="100" height="10" rx="5" fill="#333"/>
+  <circle cx="320" cy="55" r="5" fill="#333"/>
+  
+  <!-- Progress header -->
+  <rect x="40" y="90" width="295" height="60" rx="10" fill="#3498db"/>
+  <text x="60" y="130" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">Your Progress</text>
+  
+  <!-- Language selection -->
+  <rect x="40" y="170" width="295" height="50" rx="10" fill="#f0f0f0"/>
+  <text x="60" y="200" font-family="Arial, sans-serif" font-size="18" fill="#333">Spanish</text>
+  
+  <!-- Progress stats -->
+  <rect x="40" y="240" width="295" height="120" rx="10" fill="#f0f0f0"/>
+  <text x="60" y="270" font-family="Arial, sans-serif" font-size="18" fill="#333">This Week</text>
+  
+  <!-- Progress bar -->
+  <rect x="60" y="290" width="255" height="20" rx="10" fill="#e0e0e0"/>
+  <rect x="60" y="290" width="200" height="20" rx="10" fill="#3498db"/>
+  <text x="60" y="330" font-family="Arial, sans-serif" font-size="14" fill="#333">80% of weekly goal completed</text>
+  
+  <!-- Streak calendar -->
+  <rect x="40" y="380" width="295" height="200" rx="10" fill="#f0f0f0"/>
+  <text x="60" y="410" font-family="Arial, sans-serif" font-size="18" fill="#333">Activity Calendar</text>
+  
+  <!-- Calendar grid -->
+  <rect x="60" y="430" width="40" height="40" rx="5" fill="#3498db"/>
+  <rect x="110" y="430" width="40" height="40" rx="5" fill="#3498db"/>
+  <rect x="160" y="430" width="40" height="40" rx="5" fill="#3498db"/>
+  <rect x="210" y="430" width="40" height="40" rx="5" fill="#3498db"/>
+  <rect x="260" y="430" width="40" height="40" rx="5" fill="#e0e0e0"/>
+  
+  <rect x="60" y="480" width="40" height="40" rx="5" fill="#3498db"/>
+  <rect x="110" y="480" width="40" height="40" rx="5" fill="#3498db"/>
+  <rect x="160" y="480" width="40" height="40" rx="5" fill="#e0e0e0"/>
+  <rect x="210" y="480" width="40" height="40" rx="5" fill="#e0e0e0"/>
+  <rect x="260" y="480" width="40" height="40" rx="5" fill="#e0e0e0"/>
+  
+  <rect x="60" y="530" width="40" height="40" rx="5" fill="#3498db"/>
+  <rect x="110" y="530" width="40" height="40" rx="5" fill="#e0e0e0"/>
+  <rect x="160" y="530" width="40" height="40" rx="5" fill="#e0e0e0"/>
+  <rect x="210" y="530" width="40" height="40" rx="5" fill="#e0e0e0"/>
+  <rect x="260" y="530" width="40" height="40" rx="5" fill="#e0e0e0"/>
+  
+  <!-- Achievements -->
+  <rect x="40" y="600" width="295" height="120" rx="10" fill="#f0f0f0"/>
+  <text x="60" y="630" font-family="Arial, sans-serif" font-size="18" fill="#333">Achievements</text>
+  
+  <!-- Achievement badges -->
+  <circle cx="80" cy="670" r="20" fill="#f39c12"/>
+  <circle cx="140" cy="670" r="20" fill="#2ecc71"/>
+  <circle cx="200" cy="670" r="20" fill="#e74c3c"/>
+  <circle cx="260" cy="670" r="20" fill="#9b59b6"/>
+  
+  <!-- Bottom navigation -->
+  <rect x="0" y="742" width="375" height="70" fill="#f0f0f0"/>
+  <circle cx="75" cy="777" r="20" fill="#e0e0e0"/>
+  <circle cx="187.5" cy="777" r="20" fill="#3498db"/>
+  <circle cx="300" cy="777" r="20" fill="#e0e0e0"/>
+</svg> 

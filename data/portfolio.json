@@ -7,7 +7,7 @@
       "description": "A Swift-based mobile application developed for NodeDa LLC. The project showcases expertise in iOS development and modern mobile app architecture.",
       "image": "https://nodeda.com/appicons/lingo.svg",
       "categories": ["Accessibility", "Apple Human Interface Guidelines", "Swift", "SwiftUI"],
-      "link": "https://apps.apple.com/us/app/nodeda-lingo/id6689492207",
+      "link": "/lingo.html",
       "github": "https://github.com/NodeDaLLC/Lingo",
       "featured": true
     },
