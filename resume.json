@@ -1,109 +1,212 @@
 {
-    "personalInfo": {
-      "name": "Anthony Silvia",
-      "title": "UX Designer",
-      "contact": {
-        "email": "contact@anthonyisilvia.com",
-        "phone": "704-775-9266",
-        "website": "anthonyjsilvia.com",
-        "linkedin": "linkedin.com/in/anthonysilvia"
+  "personalInfo": {
+    "name": "Anthony Silvia",
+    "title": "UX Designer",
+    "contact": {
+      "email": "contact@anthonyisilvia.com",
+      "phone": "704-775-9266",
+      "website": "anthonyjsilvia.com",
+      "linkedin": "linkedin.com/in/anthonysilvia"
+    }
+  },
+  "professionalSummary": "Hi, I'm Anthony Silvia—a dynamic problem-solver at the intersection of software design, innovation, and user-centric solutions. I currently serve as an Associate Product Designer at Lowe's, crafting seamless experiences for customers and internal teams. At the same time, I'm the Principal at NodeDa, where I lead the development of groundbreaking tools like live transcription software (NodeDa Lingo) and other amazing projects. With a strong foundation in UX research, web development, and startup growth, I specialize in delivering intuitive, scalable solutions that solve real-world problems while pushing the boundaries of technology.",
+  "keyStrengths": [
+    "Designing innovative, user-friendly platforms for modern business needs",
+    "Leading teams with collaborative energy and a focus on accessibility",
+    "Mastering the balance between visionary leadership and hands-on development",
+    "Keeping startups lean, efficient, and scalable with robust tech stacks like Firebase"
+  ],
+  "skills": {
+    "designTools": [
+      {
+        "name": "Figma",
+        "level": 100
+      },
+      {
+        "name": "Adobe XD",
+        "level": 100
+      },
+      {
+        "name": "Prototyping",
+        "level": 90
+      },
+      {
+        "name": "Content Design",
+        "level": 65
+      },
+      {
+        "name": "Research",
+        "level": 55
       }
-    },
-    "professionalSummary": "Innovative UX Designer with 5+ years of experience creating intuitive, user-centered digital experiences. Currently an Associate Product Designer at Lowe's specializing in sustainable technologies and AI applications. Google Certified UX Designer with expertise in user research, wireframing, and prototyping. Proven track record of improving user satisfaction metrics and streamlining complex interfaces for enhanced usability.",
-    "skills": {
-      "designTools": [
-        {
-          "name": "Figma",
-          "level": 100
-        },
-        {
-          "name": "Adobe XD",
-          "level": 100
-        },
-        {
-          "name": "Prototyping",
-          "level": 90
-        },
-        {
-          "name": "Content Design",
-          "level": 65
-        },
-        {
-          "name": "Research",
-          "level": 55
-        }
-      ],
-      "research": [
-        "User Testing",
-        "Heuristic Evaluation",
-        "Journey Mapping",
-        "Competitive Analysis"
-      ],
-      "development": [
-        "HTML/CSS",
-        "Responsive Design"
-      ],
-      "collaboration": [
-        "Cross-functional Team Leadership",
-        "Stakeholder Management",
-        "Design Systems"
+    ],
+    "topSkills": [
+      "Business Ownership",
+      "Start-up Ventures",
+      "Start-up Leadership"
+    ],
+    "research": [
+      "User Testing",
+      "Heuristic Evaluation",
+      "Journey Mapping",
+      "Competitive Analysis"
+    ],
+    "development": [
+      "HTML/CSS",
+      "Responsive Design"
+    ],
+    "collaboration": [
+      "Cross-functional Team Leadership",
+      "Stakeholder Management",
+      "Design Systems"
+    ]
+  },
+  "experience": [
+    {
+      "company": "Lowe's Companies, Inc.",
+      "position": "Associate Product Designer",
+      "period": "October 2022 – Present",
+      "duties": [
+        "Support the design and refinement of key systems to improve usability and workflow efficiency",
+        "Conduct usability testing and synthesize user research findings into actionable design recommendations",
+        "Create detailed wireframes and prototypes using Figma to communicate design intent effectively"
       ]
     },
-    "experience": [
-      {
-        "company": "Lowe's Companies, Inc.",
-        "position": "Associate Product Designer",
-        "period": "October 2022 – Present",
-        "duties": [
-          "Designed and developed innovative software products improving customer experience for home improvement retail stores",
-          "Conducted extensive user research resulting in improved SEQ scores by 2.3 points on average",
-          "Implemented UX enhancements that increased UMUX scores by approximately 1.1 points on average",
-          "Created comprehensive design specifications, wireframes, and interactive prototypes for multiple product releases",
-          "Collaborated with engineering, marketing, and business teams to deliver cohesive solutions aligned with strategic goals"
-        ]
-      },
-      {
-        "company": "NodeDa, LLC",
-        "position": "Founder & Owner",
-        "period": "April 2022 – Present",
-        "duties": [
-          "Founded and established the company from concept to operational business, handling all aspects of business formation",
-          "Personally designed and developed all company apps and websites, creating a cohesive brand identity and digital presence",
-          "Implemented strategic initiatives that resulted in steady client growth and revenue increase",
-          "Created multiple web applications focused on accessibility and intuitive user experience"
-        ]
-      }
-    ],
-    "education": {
+    {
+      "company": "NodeDa",
+      "position": "Founder",
+      "period": "April 2022 – Present",
+      "duties": [
+        "Led the development of modern designed applications at NodeDa, focusing on marketing and business development",
+        "Implemented accessible features to ensure a user-friendly experience for all customers",
+        "Spearheaded the company's growth strategy, resulting in a significant increase in market share"
+      ]
+    },
+    {
+      "company": "Lowe's Companies, Inc.",
+      "position": "Various Retail Roles",
+      "period": "February 2019 - September 2022",
+      "duties": [
+        "Provided exceptional customer service, winning multiple awards for addressing complex needs and fostering positive interactions",
+        "Developed strong product knowledge in flooring and installation sales to meet customer needs and drive sales",
+        "Managed and trained cashiers, coordinated scheduling, and upheld operational efficiency as a Head Cashier"
+      ]
+    },
+    {
+      "company": "Freelance",
+      "position": "Web Designer",
+      "period": "May 2017 - June 2019",
+      "location": "Tempe, Arizona, United States",
+      "duties": [
+        "Designed websites for small businesses, focusing on user-friendly interfaces and engaging designs",
+        "Collaborated with startups under NDAs to create visually appealing and functional websites",
+        "Utilized skills in graphic design, UX/UI principles, and coding to bring clients' visions to life"
+      ]
+    },
+    {
+      "company": "Fry's Food and Drug",
+      "position": "File Maintenance Clerk",
+      "period": "August 2018 - February 2019",
+      "location": "Scottsdale, AZ : 75th and McDowell Location",
+      "duties": [
+        "Provided exceptional customer service by utilizing strong communication and listening skills to assist individual customers and small groups",
+        "Demonstrated attention to detail and self-motivation in a fast-paced environment at Fry's Food and Drug",
+        "Created simple solutions to complex conversations, showcasing excellent problem-solving skills",
+        "Developed strong customer service and communication skills while working at the 75th and McDowell location in Scottsdale, AZ"
+      ]
+    },
+    {
+      "company": "Lowe's Companies, Inc.",
+      "position": "Cashier",
+      "period": "November 2017 - May 2018",
+      "location": "Wasilla, Alaska, United States",
+      "duties": [
+        "Provided excellent customer service by utilizing strong communication and listening skills to assist individual customers and small groups",
+        "Demonstrated attention to detail and self-motivation while working in a fast-paced environment",
+        "Applied problem-solving skills to create simple solutions during complex conversations with customers"
+      ]
+    },
+    {
+      "company": "Three Bears Alaska, Inc.",
+      "position": "Grocery Stocker",
+      "period": "August 2017 - November 2017",
+      "location": "Wasilla, Alaska, United States",
+      "duties": [
+        "Provided excellent customer service by engaging with customers in a friendly manner and offering simple solutions to their needs",
+        "Demonstrated strong communication and listening skills to effectively interact with small groups and individual customers",
+        "Maintained a detail-oriented approach while working in a fast-paced environment"
+      ]
+    },
+    {
+      "company": "Matanuska-Susitna Borough School District",
+      "position": "Web Design Intern",
+      "period": "April 2016 - September 2016",
+      "location": "Palmer, Alaska, United States",
+      "duties": [
+        "Edited the Matanuska-Susitna Borough School District website to enhance user experience",
+        "Provided code support for website changes and managed iParent customer support",
+        "Collaborated with team to gather feedback and improve support channels",
+        "Developed skills in web design, coding, and customer support"
+      ]
+    }
+  ],
+  "education": [
+    {
       "school": "Southern New Hampshire University",
-      "degrees": [
-        "Bachelor's in Graphic Design and Media Arts",
-        "Minor in User Experience Design"
-      ],
-      "graduation": "August 2024",
+      "degree": "Bachelor's in Graphic Design and Media Arts",
+      "minor": "User Experience Design",
+      "period": "May 2022 - August 2024",
       "gpa": "3.55/4.0"
     },
-    "certification": [
-      "Google UX Design Professional Certificate (April 2022)"
-    ],
-    "projects": [
-      {
-        "title": "Lowe's POS System Enhancement (2022 - Present)",
-        "details": [
-          "Led UX redesign of point-of-sale interface resulting in improved checkout efficiency and reduced training time",
-          "Conducted user research and usability testing with store associates to optimize workflow"
-        ]
-      },
-      {
-        "title": "Lowe's Logistics System (2023)",
-        "details": [
-          "Designed intuitive interface for complex inventory and supply chain management application",
-          "Collaborated with logistics experts to translate operational requirements into user-friendly solutions"
-        ]
-      }
-    ],
-    "languages": [
-      { "name": "English", "level": "Native" },
-      { "name": "Spanish", "level": "Intermediate" }
-    ]
-  }
+    {
+      "school": "Wasilla High School",
+      "degree": "High School/Secondary Diplomas and Certificates",
+      "period": "2015 - 2017"
+    },
+    {
+      "school": "South Anchorage High School",
+      "degree": "High School/Secondary Diplomas and Certificates"
+    }
+  ],
+  "certifications": [
+    "Google UX Design Professional Certificate (April 2022)",
+    "Introduction to Web Development (CS1005)",
+    "UX Foundations: Accessibility",
+    "Accounting (ACCT1001)",
+    "Project Management (PM1001)",
+    "Introduction to Statistics (STAT1001)"
+  ],
+  "projects": [
+    {
+      "title": "Lowe's POS System Enhancement (2022 - Present)",
+      "details": [
+        "Led UX redesign of point-of-sale interface resulting in improved checkout efficiency and reduced training time",
+        "Conducted user research and usability testing with store associates to optimize workflow"
+      ]
+    },
+    {
+      "title": "Lowe's Logistics System (2023)",
+      "details": [
+        "Designed intuitive interface for complex inventory and supply chain management application",
+        "Collaborated with logistics experts to translate operational requirements into user-friendly solutions"
+      ]
+    },
+    {
+      "title": "NodeDa Lingo",
+      "details": [
+        "Led development of live transcription software",
+        "Implemented accessible features for all users"
+      ]
+    }
+  ],
+  "languages": [
+    { "name": "English", "level": "Native or Bilingual" },
+    { "name": "Spanish", "level": "Elementary" },
+    { "name": "American Sign Language", "level": "Elementary" }
+  ],
+  "honors": [
+    "Honor Roll",
+    "Dean's List",
+    "President's List"
+  ],
+  "funFact": "I'm passionate about transforming complex problems into elegant solutions—fueled by caffeine-free herbal tea and a knack for building Lego apartments in my downtime."
+}

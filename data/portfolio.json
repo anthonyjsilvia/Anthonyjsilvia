@@ -2,12 +2,12 @@
   "projects": [
     {
       "id": 1,
-      "title": "NodeDaLingo",
+      "title": "NodeDa Lingo",
       "subtitle": "Mobile App Development",
       "description": "A Swift-based mobile application developed for NodeDa LLC. The project showcases expertise in iOS development and modern mobile app architecture.",
       "image": "https://nodeda.com/appicons/lingo.svg",
       "categories": ["Accessibility", "Apple Human Interface Guidelines", "Swift", "SwiftUI"],
-      "link": "/lingo.html",
+      "link": "https://nodeda.com/lingo",
       "github": "https://github.com/NodeDaLLC/Lingo",
       "featured": true
     },

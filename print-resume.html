@@ -386,16 +386,28 @@
         leftColumn.appendChild(skills);
         const education = buildEducation(data.education);
         leftColumn.appendChild(education);
-        const certification = buildCertifications(data.certification);
+        const certification = buildCertifications(data.certifications);
         leftColumn.appendChild(certification);
         const languages = buildLanguages(data.languages);
         leftColumn.appendChild(languages);
         const summary = buildSummary(data.professionalSummary);
         rightColumn.appendChild(summary);
+        
+        // Add key strengths if they exist
+        if (data.keyStrengths) {
+            const strengths = buildKeyStrengths(data.keyStrengths);
+            rightColumn.appendChild(strengths);
+        }
+        
         const experience = buildExperience(data.experience);
         rightColumn.appendChild(experience);
-        const projects = buildProjects(data.projects);
-        rightColumn.appendChild(projects);
+        
+        // Add honors if they exist
+        if (data.honors) {
+            const honors = buildHonors(data.honors);
+            rightColumn.appendChild(honors);
+        }
+        
         container.appendChild(leftColumn);
         container.appendChild(rightColumn);
     }
@@ -473,6 +485,19 @@
         title.className = 'section-title';
         title.textContent = 'Skills';
         section.appendChild(title);
+        
+        // Top Skills
+        if (skills.topSkills && skills.topSkills.length > 0) {
+            const category = document.createElement('span');
+            category.className = 'skill-category';
+            category.textContent = 'Top Skills';
+            section.appendChild(category);
+            
+            const list = document.createElement('p');
+            list.className = 'skills-list';
+            list.textContent = skills.topSkills.join(', ');
+            section.appendChild(list);
+        }
         
         // Design Tools
         if (skills.designTools && skills.designTools.length > 0) {
@@ -555,34 +580,48 @@
         title.textContent = 'Education';
         section.appendChild(title);
         
-        const edu = document.createElement('div');
-        edu.className = 'education';
-        
-        const school = document.createElement('p');
-        school.className = 'school';
-        school.textContent = education.school;
-        edu.appendChild(school);
-        
-        if (education.degrees && education.degrees.length > 0) {
-            education.degrees.forEach(degree => {
-                const degreeEl = document.createElement('p');
-                degreeEl.className = 'degree';
-                degreeEl.textContent = degree;
-                edu.appendChild(degreeEl);
+        if (education && education.length > 0) {
+            education.forEach(edu => {
+                const eduEl = document.createElement('div');
+                eduEl.className = 'education';
+                
+                const school = document.createElement('p');
+                school.className = 'school';
+                school.textContent = edu.school;
+                eduEl.appendChild(school);
+                
+                if (edu.degree) {
+                    const degree = document.createElement('p');
+                    degree.className = 'degree';
+                    degree.textContent = edu.degree;
+                    eduEl.appendChild(degree);
+                }
+                
+                if (edu.minor) {
+                    const minor = document.createElement('p');
+                    minor.className = 'degree';
+                    minor.textContent = `Minor: ${edu.minor}`;
+                    eduEl.appendChild(minor);
+                }
+                
+                if (edu.period) {
+                    const period = document.createElement('p');
+                    period.className = 'education-details';
+                    period.textContent = edu.period;
+                    eduEl.appendChild(period);
+                }
+                
+                if (edu.gpa) {
+                    const gpa = document.createElement('p');
+                    gpa.className = 'education-details';
+                    gpa.textContent = `GPA: ${edu.gpa}`;
+                    eduEl.appendChild(gpa);
+                }
+                
+                section.appendChild(eduEl);
             });
         }
         
-        const graduationDetails = document.createElement('p');
-        graduationDetails.className = 'education-details';
-        graduationDetails.textContent = `Graduated ${education.graduation}`;
-        edu.appendChild(graduationDetails);
-        
-        const gpaDetails = document.createElement('p');
-        gpaDetails.className = 'education-details';
-        gpaDetails.textContent = `GPA: ${education.gpa}`;
-        edu.appendChild(gpaDetails);
-        
-        section.appendChild(edu);
         return section;
     }
     
@@ -697,42 +736,47 @@
         return section;
     }
     
-    function buildProjects(projects) {
+    function buildKeyStrengths(strengths) {
         const section = document.createElement('div');
         section.className = 'section';
         
         const title = document.createElement('h2');
         title.className = 'section-title';
-        title.textContent = 'Projects';
+        title.textContent = 'Key Strengths';
         section.appendChild(title);
         
-        if (projects && projects.length > 0) {
-            projects.forEach(project => {
-                const projectEl = document.createElement('div');
-                projectEl.className = 'project';
-                
-                const projectTitle = document.createElement('p');
-                projectTitle.className = 'project-title';
-                projectTitle.textContent = project.title;
-                projectEl.appendChild(projectTitle);
-                
-                if (project.details && project.details.length > 0) {
-                    const details = document.createElement('ul');
-                    details.className = 'project-details';
-                    
-                    project.details.forEach(detail => {
-                        const li = document.createElement('li');
-                        li.textContent = detail;
-                        details.appendChild(li);
-                    });
-                    
-                    projectEl.appendChild(details);
-                }
-                
-                section.appendChild(projectEl);
-            });
-        }
+        const list = document.createElement('ul');
+        list.className = 'strengths-list';
         
+        strengths.forEach(strength => {
+            const li = document.createElement('li');
+            li.textContent = strength;
+            list.appendChild(li);
+        });
+        
+        section.appendChild(list);
+        return section;
+    }
+
+    function buildHonors(honors) {
+        const section = document.createElement('div');
+        section.className = 'section';
+        
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = 'Honors & Awards';
+        section.appendChild(title);
+        
+        const list = document.createElement('ul');
+        list.className = 'honors-list';
+        
+        honors.forEach(honor => {
+            const li = document.createElement('li');
+            li.textContent = honor;
+            list.appendChild(li);
+        });
+        
+        section.appendChild(list);
         return section;
     }
     </script>

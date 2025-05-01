@@ -29,6 +29,11 @@ function populateResumePage(resumeData) {
     // Populate professional summary
     populateProfessionalSummary(resumeData.professionalSummary);
     
+    // Populate key strengths if they exist
+    if (resumeData.keyStrengths) {
+        populateKeyStrengths(resumeData.keyStrengths);
+    }
+    
     // Populate skills
     populateSkills(resumeData.skills);
     
@@ -39,13 +44,15 @@ function populateResumePage(resumeData) {
     populateEducation(resumeData.education);
     
     // Populate certifications
-    populateCertifications(resumeData.certification);
-    
-    // Populate projects
-    populateProjects(resumeData.projects);
+    populateCertifications(resumeData.certifications);
     
     // Populate languages (in sidebar)
-    populateLanguages(resumeData.skills, resumeData.languages);
+    populateLanguages(resumeData.languages);
+    
+    // Populate honors if they exist
+    if (resumeData.honors) {
+        populateHonors(resumeData.honors);
+    }
 }
 
 function populateProfessionalSummary(summary) {
@@ -57,6 +64,18 @@ function populateProfessionalSummary(summary) {
     }
 }
 
+function populateKeyStrengths(strengths) {
+    const strengthsSection = document.createElement('div');
+    strengthsSection.className = 'key-strengths';
+    strengthsSection.innerHTML = `
+        <h3>Key Strengths</h3>
+        <ul>
+            ${strengths.map(strength => `<li>${strength}</li>`).join('')}
+        </ul>
+    `;
+    document.getElementById('professional-summary').appendChild(strengthsSection);
+}
+
 function populateSkills(skills) {
     const skillsSection = document.getElementById('skills-section');
     if (skillsSection && skills) {
@@ -64,6 +83,7 @@ function populateSkills(skills) {
         let researchHTML = '';
         let developmentHTML = '';
         let collaborationHTML = '';
+        let topSkillsHTML = '';
         
         // Design Tools with progress bars
         if (skills.designTools && skills.designTools.length > 0) {
@@ -86,6 +106,18 @@ function populateSkills(skills) {
             
             designToolsHTML += `
                     </div>
+                </div>
+            `;
+        }
+        
+        // Top Skills
+        if (skills.topSkills && skills.topSkills.length > 0) {
+            topSkillsHTML = `
+                <div class="skills-category">
+                    <h3>Top Skills</h3>
+                    <ul class="skills-list">
+                        ${skills.topSkills.map(skill => `<li>${skill}</li>`).join('')}
+                    </ul>
                 </div>
             `;
         }
@@ -127,7 +159,7 @@ function populateSkills(skills) {
         }
         
         // Combine all skills
-        skillsSection.innerHTML = designToolsHTML + researchHTML + developmentHTML + collaborationHTML;
+        skillsSection.innerHTML = topSkillsHTML + designToolsHTML + researchHTML + developmentHTML + collaborationHTML;
     }
 }
 
@@ -143,6 +175,7 @@ function populateExperience(experience) {
                         <h3>${job.position}</h3>
                         <span class="timeline-date-badge">${job.period}</span>
                         <p>${job.company}</p>
+                        ${job.location ? `<p class="location">${job.location}</p>` : ''}
                         <ul>
                             ${job.duties.map(duty => `<li>${duty}</li>`).join('')}
                         </ul>
@@ -157,17 +190,22 @@ function populateExperience(experience) {
 
 function populateEducation(education) {
     const educationTimeline = document.getElementById('education-timeline');
-    if (educationTimeline && education) {
-        let timelineHTML = `
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <h3>${education.school}</h3>
-                    <span class="timeline-date-badge">Graduated ${education.graduation}</span>
-                    <p>${education.degrees.join(', ')}</p>
-                    <span class="gpa">${education.gpa} GPA</span>
+    if (educationTimeline && education && education.length > 0) {
+        let timelineHTML = '';
+        
+        education.forEach(edu => {
+            timelineHTML += `
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>${edu.school}</h3>
+                        ${edu.period ? `<span class="timeline-date-badge">${edu.period}</span>` : ''}
+                        <p>${edu.degree}</p>
+                        ${edu.minor ? `<p>Minor: ${edu.minor}</p>` : ''}
+                        ${edu.gpa ? `<span class="gpa">${edu.gpa} GPA</span>` : ''}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        });
         
         educationTimeline.innerHTML = timelineHTML;
     }
@@ -187,47 +225,27 @@ function populateCertifications(certifications) {
     }
 }
 
-function populateProjects(projects) {
-    const projectsSection = document.getElementById('projects-section');
-    if (projectsSection && projects && projects.length > 0) {
-        let projectsHTML = '';
-        
-        projects.forEach(project => {
-            projectsHTML += `
-                <div class="project-card">
-                    <h3>${project.title}</h3>
-                    <ul>
-                        ${project.details.map(detail => `<li>${detail}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        });
-        
-        projectsSection.innerHTML = projectsHTML;
+function populateLanguages(languages) {
+    const languagesList = document.querySelector('.sidebar-languages');
+    if (languagesList && languages && languages.length > 0) {
+        languagesList.innerHTML = languages.map(lang => {
+            let badge = '';
+            if (lang.level) {
+                badge = `<span class="lang-badge">${lang.level}</span>`;
+            }
+            return `<li>${lang.name} ${badge}</li>`;
+        }).join('');
     }
 }
 
-function populateLanguages(skills, languages) {
-    const languagesList = document.querySelector('.sidebar-languages');
-    if (languagesList) {
-        if (languages && Array.isArray(languages) && languages.length > 0) {
-            languagesList.innerHTML = languages.map(lang => {
-                let badge = '';
-                if (lang.level) {
-                    badge = `<span class="lang-badge">${lang.level}</span>`;
-                }
-                return `<li>${lang.name} ${badge}</li>`;
-            }).join('');
-        } else if (skills && skills.designTools) {
-            // fallback: treat designTools as languages
-            languagesList.innerHTML = skills.designTools.map(tool => {
-                const filledDots = Math.round(tool.level / 20);
-                const dots = Array.from({length: 5}, (_, i) =>
-                    `<span style="color:${i < filledDots ? 'var(--primary-color)' : '#ccc'};font-size:1.1em;">●</span>`
-                ).join('');
-                return `<li>${tool.name} <span class="lang-dots">${dots}</span></li>`;
-            }).join('');
-        }
+function populateHonors(honors) {
+    const honorsSection = document.getElementById('honors-section');
+    if (honorsSection && honors && honors.length > 0) {
+        honorsSection.innerHTML = `
+            <ul class="honors-list">
+                ${honors.map(honor => `<li>${honor}</li>`).join('')}
+            </ul>
+        `;
     }
 }
 
