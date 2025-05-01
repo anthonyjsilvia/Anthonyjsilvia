@@ -65,15 +65,14 @@ function populateProfessionalSummary(summary) {
 }
 
 function populateKeyStrengths(strengths) {
-    const strengthsSection = document.createElement('div');
-    strengthsSection.className = 'key-strengths';
-    strengthsSection.innerHTML = `
-        <h3>Key Strengths</h3>
-        <ul>
-            ${strengths.map(strength => `<li>${strength}</li>`).join('')}
-        </ul>
-    `;
-    document.getElementById('professional-summary').appendChild(strengthsSection);
+    const strengthsSection = document.getElementById('key-strengths-section');
+    if (strengthsSection && strengths && strengths.length > 0) {
+        strengthsSection.innerHTML = `
+            <ul class="key-strengths-list">
+                ${strengths.map(strength => `<li>${strength}</li>`).join('')}
+            </ul>
+        `;
+    }
 }
 
 function populateSkills(skills) {
@@ -167,23 +166,80 @@ function populateExperience(experience) {
     const experienceTimeline = document.getElementById('experience-timeline');
     if (experienceTimeline && experience && experience.length > 0) {
         let timelineHTML = '';
-        
-        experience.forEach(job => {
-            timelineHTML += `
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>${job.position}</h3>
-                        <span class="timeline-date-badge">${job.period}</span>
-                        <p>${job.company}</p>
-                        ${job.location ? `<p class="location">${job.location}</p>` : ''}
-                        <ul>
-                            ${job.duties.map(duty => `<li>${duty}</li>`).join('')}
-                        </ul>
-                    </div>
+        let currentCompany = null;
+        let currentCompanyHTML = '';
+        let lastEndDate = null;
+
+        // Sort experience by start date in descending order (most recent first)
+        const sortedExperience = [...experience].sort((a, b) => {
+            const getDate = (period) => {
+                const match = period.match(/(\w+)\s+(\d{4})\s*–\s*(?:Present|(\w+)\s+(\d{4}))/);
+                if (match) {
+                    const [_, startMonth, startYear, endMonth, endYear] = match;
+                    // For "Present", use current date
+                    if (!endMonth) return new Date();
+                    return new Date(`${endMonth} 1, ${endYear}`);
+                }
+                return new Date(0);
+            };
+            return getDate(b.period) - getDate(a.period);
+        });
+
+        sortedExperience.forEach((job, index) => {
+            const periodMatch = job.period.match(/(\w+)\s+(\d{4})\s*–\s*(?:Present|(\w+)\s+(\d{4}))/);
+            const startDate = periodMatch ? new Date(`${periodMatch[1]} 1, ${periodMatch[2]}`) : null;
+            const endDate = periodMatch && periodMatch[3] ? new Date(`${periodMatch[3]} 1, ${periodMatch[4]}`) : new Date();
+
+            // Check if this is a new company or if there's a gap
+            if (currentCompany !== job.company || (lastEndDate && startDate && (lastEndDate - startDate) > 30 * 24 * 60 * 60 * 1000)) {
+                // If we have a previous company, add it to the timeline
+                if (currentCompanyHTML) {
+                    timelineHTML += currentCompanyHTML;
+                }
+                
+                // Start a new company section
+                currentCompany = job.company;
+                currentCompanyHTML = `
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="company-header">
+                                ${job.logo ? 
+                                    `<img src="${job.logo}" alt="${job.company}" class="company-logo" onerror="this.style.display='none'; this.parentElement.querySelector('.company-name').style.display='block';">` : 
+                                    ''
+                                }
+                                <h3 class="company-name" ${job.logo ? 'style="display:none;"' : ''}>${job.company}</h3>
+                            </div>
+                            <div class="company-roles">
+                `;
+            }
+
+            // Add the role to the current company section
+            currentCompanyHTML += `
+                <div class="role">
+                    <h4>${job.position}</h4>
+                    <span class="timeline-date-badge">${job.period}</span>
+                    ${job.location ? `<p class="location">${job.location}</p>` : ''}
+                    <ul class="role-duties">
+                        ${job.duties.map(duty => `<li>${duty}</li>`).join('')}
+                    </ul>
                 </div>
             `;
+
+            // If this is the last job or the next job is from a different company, close the current company section
+            if (index === sortedExperience.length - 1 || sortedExperience[index + 1].company !== currentCompany) {
+                currentCompanyHTML += `
+                    </div>
+                </div>
+            </div>
+                `;
+                timelineHTML += currentCompanyHTML;
+                currentCompanyHTML = '';
+                currentCompany = null;
+            }
+
+            lastEndDate = startDate;
         });
-        
+
         experienceTimeline.innerHTML = timelineHTML;
     }
 }
@@ -217,7 +273,23 @@ function populateCertifications(certifications) {
         let certificationsHTML = '<ul class="certifications-list">';
         
         certifications.forEach(cert => {
-            certificationsHTML += `<li>${cert}</li>`;
+            // Split the certification into name and date if it contains a date in parentheses
+            const match = cert.match(/(.*?)\s*\((.*?)\)/);
+            if (match) {
+                const [_, name, date] = match;
+                certificationsHTML += `
+                    <li>
+                        <span class="certification-name">${name.trim()}</span>
+                        <span class="certification-date">${date.trim()}</span>
+                    </li>
+                `;
+            } else {
+                certificationsHTML += `
+                    <li>
+                        <span class="certification-name">${cert}</span>
+                    </li>
+                `;
+            }
         });
         
         certificationsHTML += '</ul>';
