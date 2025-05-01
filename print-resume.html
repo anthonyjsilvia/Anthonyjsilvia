@@ -22,6 +22,16 @@
                 print-color-adjust: exact !important;
             }
             
+            .filter-panel,
+            .filter-toggle,
+            .button-container {
+                display: none !important;
+            }
+
+            .experience-item:not(.visible) {
+                display: none !important;
+            }
+
             .resume-container {
                 box-shadow: none;
                 margin: 0;
@@ -340,6 +350,324 @@
                 margin: 20px 0;
             }
         }
+
+        .key-strengths-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .key-strengths-list li {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            line-height: 1.4;
+        }
+        
+        .key-strengths-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-section h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .honors-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .honors-list li {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            line-height: 1.4;
+        }
+        
+        .honors-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .sidebar-contact {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-contact li {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: flex-start;
+        }
+        
+        .sidebar-contact li i {
+            color: var(--accent);
+            width: 16px;
+            text-align: left;
+        }
+
+        .sidebar-contact li a,
+        .sidebar-contact li button {
+            text-align: left;
+            display: inline-block;
+        }
+
+        .industry-filters {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .industry-filters h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .industry-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .industry-checkbox input {
+            margin-right: 8px;
+        }
+
+        .industry-checkbox label {
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .experience-item {
+            display: none;
+        }
+
+        .experience-item.visible {
+            display: block;
+        }
+
+        .position-type {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-left: 0.5rem;
+            font-style: italic;
+        }
+
+        .position-type-filters {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .position-type-filters h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .position-type-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .position-type-checkbox input {
+            margin-right: 8px;
+        }
+
+        .position-type-checkbox label {
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .job-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta-item {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            font-style: italic;
+        }
+
+        .job-meta-separator {
+            color: var(--secondary);
+            font-size: 0.8rem;
+        }
+
+        .location-type-filters {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .location-type-filters h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .location-type-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .location-type-checkbox input {
+            margin-right: 8px;
+        }
+
+        .location-type-checkbox label {
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .filter-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-height: 80vh;
+            overflow-y: auto;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-panel.collapsed {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .filter-panel.collapsed .filter-content {
+            display: none;
+        }
+
+        .filter-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--primary);
+            z-index: 1001;
+        }
+
+        .filter-content {
+            margin-top: 30px;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--divider);
+        }
+
+        .filter-section:last-child {
+            border-bottom: none;
+        }
+
+        .filter-section h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-section h3 i {
+            color: var(--accent);
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .filter-checkbox input {
+            margin-right: 8px;
+        }
+
+        .filter-checkbox label {
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .filter-panel {
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                top: auto;
+                width: 100%;
+                max-height: 50vh;
+                border-radius: 8px 8px 0 0;
+            }
+
+            .filter-panel.collapsed {
+                height: 40px;
+                width: 100%;
+            }
+
+            .filter-toggle {
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                background: var(--white);
+                padding: 10px;
+                border-radius: 8px 8px 0 0;
+                box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            }
+        }
     </style>
 </head>
 <body>
@@ -356,6 +684,32 @@
         <button class="action-button" onclick="location.href='/resume.html'">Back to Resume</button>
         <button class="action-button" onclick="window.print()">Print Resume</button>
     </div>
+
+    <div class="filter-panel">
+        <button class="filter-toggle" onclick="toggleFilterPanel()">
+            <i class="fas fa-filter"></i>
+        </button>
+        <div class="filter-content">
+            <div class="filter-section">
+                <h3><i class="fas fa-industry"></i> Industry</h3>
+                <div id="industry-filters-container">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+            <div class="filter-section">
+                <h3><i class="fas fa-briefcase"></i> Position Type</h3>
+                <div id="position-type-filters-container">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+            <div class="filter-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Location Type</h3>
+                <div id="location-type-filters-container">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script src="js/unlock-contact.js"></script>
     <script>
@@ -369,10 +723,120 @@
                 .then(r => r.json())
                 .then(data => {
                     buildResume(data);
+                    setupIndustryFilters(data.experience);
+                    setupPositionTypeFilters(data.experience);
+                    setupLocationTypeFilters(data.experience);
                     document.querySelector('.loader').style.display = 'none';
                 });
         });
     });
+
+    function toggleFilterPanel() {
+        const panel = document.querySelector('.filter-panel');
+        panel.classList.toggle('collapsed');
+    }
+
+    function setupIndustryFilters(experience) {
+        const container = document.getElementById('industry-filters-container');
+        const industries = new Set();
+        
+        // Collect unique industries
+        experience.forEach(job => {
+            if (job.industry && Array.isArray(job.industry)) {
+                job.industry.forEach(industry => {
+                    industries.add(industry);
+                });
+            }
+        });
+
+        // Create checkboxes for each industry
+        industries.forEach(industry => {
+            const checkbox = document.createElement('div');
+            checkbox.className = 'filter-checkbox';
+            checkbox.innerHTML = `
+                <input type="checkbox" id="industry-${industry.replace(/\s+/g, '-')}" checked>
+                <label for="industry-${industry.replace(/\s+/g, '-')}">${industry}</label>
+            `;
+            container.appendChild(checkbox);
+        });
+
+        // Add event listeners to checkboxes
+        container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const industry = this.id.replace('industry-', '').replace(/-/g, ' ');
+                const experienceItems = document.querySelectorAll('.experience-item');
+                
+                experienceItems.forEach(item => {
+                    const itemIndustries = item.getAttribute('data-industry').split(',');
+                    if (itemIndustries.includes(industry)) {
+                        item.classList.toggle('visible', this.checked);
+                    }
+                });
+            });
+        });
+    }
+
+    function setupPositionTypeFilters(experience) {
+        const container = document.getElementById('position-type-filters-container');
+        const positionTypes = new Set(['Full-time', 'Part-time', 'Internship']);
+        
+        // Create checkboxes for each position type
+        positionTypes.forEach(type => {
+            const checkbox = document.createElement('div');
+            checkbox.className = 'filter-checkbox';
+            checkbox.innerHTML = `
+                <input type="checkbox" id="position-type-${type.toLowerCase()}" checked>
+                <label for="position-type-${type.toLowerCase()}">${type}</label>
+            `;
+            container.appendChild(checkbox);
+        });
+
+        // Add event listeners to checkboxes
+        container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const positionType = this.id.replace('position-type-', '');
+                const experienceItems = document.querySelectorAll('.experience-item');
+                
+                experienceItems.forEach(item => {
+                    const itemPositionType = item.getAttribute('data-position-type');
+                    if (itemPositionType === positionType) {
+                        item.classList.toggle('visible', this.checked);
+                    }
+                });
+            });
+        });
+    }
+
+    function setupLocationTypeFilters(experience) {
+        const container = document.getElementById('location-type-filters-container');
+        const locationTypes = new Set(['Hybrid', 'In-office', 'On-site', 'Remote']);
+        
+        // Create checkboxes for each location type
+        locationTypes.forEach(type => {
+            const checkbox = document.createElement('div');
+            checkbox.className = 'filter-checkbox';
+            checkbox.innerHTML = `
+                <input type="checkbox" id="location-type-${type.toLowerCase()}" checked>
+                <label for="location-type-${type.toLowerCase()}">${type}</label>
+            `;
+            container.appendChild(checkbox);
+        });
+
+        // Add event listeners to checkboxes
+        container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const locationType = this.id.replace('location-type-', '');
+                const experienceItems = document.querySelectorAll('.experience-item');
+                
+                experienceItems.forEach(item => {
+                    const itemLocationType = item.getAttribute('data-location-type');
+                    if (itemLocationType === locationType) {
+                        item.classList.toggle('visible', this.checked);
+                    }
+                });
+            });
+        });
+    }
 
     function buildResume(data) {
         const container = document.getElementById('resume-container');
@@ -380,33 +844,47 @@
         leftColumn.className = 'left-column';
         const rightColumn = document.createElement('div');
         rightColumn.className = 'right-column';
+
+        // Left Column
         const header = buildHeader(data.personalInfo);
         leftColumn.appendChild(header);
+
+        // Skills Section
         const skills = buildSkills(data.skills);
+        skills.className = 'sidebar-section';
         leftColumn.appendChild(skills);
-        const education = buildEducation(data.education);
-        leftColumn.appendChild(education);
-        const certification = buildCertifications(data.certifications);
-        leftColumn.appendChild(certification);
-        const languages = buildLanguages(data.languages);
-        leftColumn.appendChild(languages);
-        const summary = buildSummary(data.professionalSummary);
-        rightColumn.appendChild(summary);
-        
-        // Add key strengths if they exist
+
+        // Key Strengths Section
         if (data.keyStrengths) {
             const strengths = buildKeyStrengths(data.keyStrengths);
-            rightColumn.appendChild(strengths);
+            strengths.className = 'sidebar-section';
+            leftColumn.appendChild(strengths);
         }
-        
-        const experience = buildExperience(data.experience);
-        rightColumn.appendChild(experience);
-        
-        // Add honors if they exist
+
+        // Languages Section
+        const languages = buildLanguages(data.languages);
+        languages.className = 'sidebar-section';
+        leftColumn.appendChild(languages);
+
+        // Certifications Section
+        const certification = buildCertifications(data.certifications);
+        certification.className = 'sidebar-section';
+        leftColumn.appendChild(certification);
+
+        // Honors & Awards Section
         if (data.honors) {
             const honors = buildHonors(data.honors);
-            rightColumn.appendChild(honors);
+            honors.className = 'sidebar-section';
+            leftColumn.appendChild(honors);
         }
+
+        // Right Column
+        const summary = buildSummary(data.professionalSummary);
+        rightColumn.appendChild(summary);
+        const experience = buildExperience(data.experience);
+        rightColumn.appendChild(experience);
+        const education = buildEducation(data.education);
+        rightColumn.appendChild(education);
         
         container.appendChild(leftColumn);
         container.appendChild(rightColumn);
@@ -699,7 +1177,10 @@
         if (experience && experience.length > 0) {
             experience.forEach(job => {
                 const jobEl = document.createElement('div');
-                jobEl.className = 'job';
+                jobEl.className = 'experience-item visible';
+                jobEl.setAttribute('data-industry', Array.isArray(job.industry) ? job.industry.join(',') : '');
+                jobEl.setAttribute('data-position-type', job.positionType.toLowerCase());
+                jobEl.setAttribute('data-location-type', job.locationType.toLowerCase());
                 
                 const company = document.createElement('p');
                 company.className = 'company';
@@ -710,6 +1191,26 @@
                 position.className = 'position';
                 position.textContent = job.position;
                 jobEl.appendChild(position);
+
+                const jobMeta = document.createElement('div');
+                jobMeta.className = 'job-meta';
+                
+                const locationType = document.createElement('span');
+                locationType.className = 'job-meta-item';
+                locationType.textContent = job.locationType;
+                
+                const separator = document.createElement('span');
+                separator.className = 'job-meta-separator';
+                separator.textContent = '•';
+                
+                const positionType = document.createElement('span');
+                positionType.className = 'job-meta-item';
+                positionType.textContent = job.positionType;
+                
+                jobMeta.appendChild(locationType);
+                jobMeta.appendChild(separator);
+                jobMeta.appendChild(positionType);
+                jobEl.appendChild(jobMeta);
                 
                 const period = document.createElement('p');
                 period.className = 'period';
@@ -738,15 +1239,13 @@
     
     function buildKeyStrengths(strengths) {
         const section = document.createElement('div');
-        section.className = 'section';
-        
         const title = document.createElement('h2');
         title.className = 'section-title';
         title.textContent = 'Key Strengths';
         section.appendChild(title);
         
         const list = document.createElement('ul');
-        list.className = 'strengths-list';
+        list.className = 'key-strengths-list';
         
         strengths.forEach(strength => {
             const li = document.createElement('li');
@@ -760,8 +1259,6 @@
 
     function buildHonors(honors) {
         const section = document.createElement('div');
-        section.className = 'section';
-        
         const title = document.createElement('h2');
         title.className = 'section-title';
         title.textContent = 'Honors & Awards';

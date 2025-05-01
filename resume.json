@@ -63,8 +63,12 @@
   "experience": [
     {
       "company": "Lowe's Companies, Inc.",
+      "logo": "assets/images/lowes.svg",
       "position": "Associate Product Designer",
+      "positionType": "Full-time",
+      "locationType": "Hybrid",
       "period": "October 2022 – Present",
+      "industry": ["Product Design", "Software and Technology"],
       "duties": [
         "Support the design and refinement of key systems to improve usability and workflow efficiency",
         "Conduct usability testing and synthesize user research findings into actionable design recommendations",
@@ -72,9 +76,13 @@
       ]
     },
     {
-      "company": "NodeDa",
+      "company": "NodeDa, LLC",
+      "logo": "https://nodeda.com/logos/NodeDa.black.svg",
       "position": "Founder",
+      "positionType": "Full-time",
+      "locationType": "Remote",
       "period": "April 2022 – Present",
+      "industry": ["Product Design", "Software and Technology"],
       "duties": [
         "Led the development of modern designed applications at NodeDa, focusing on marketing and business development",
         "Implemented accessible features to ensure a user-friendly experience for all customers",
@@ -83,8 +91,12 @@
     },
     {
       "company": "Lowe's Companies, Inc.",
+      "logo": "assets/images/lowes.svg",
       "position": "Various Retail Roles",
+      "positionType": "Full-time",
+      "locationType": "On-site",
       "period": "February 2019 - September 2022",
+      "industry": ["Retail"],
       "duties": [
         "Provided exceptional customer service, winning multiple awards for addressing complex needs and fostering positive interactions",
         "Developed strong product knowledge in flooring and installation sales to meet customer needs and drive sales",
@@ -94,7 +106,10 @@
     {
       "company": "Freelance",
       "position": "Web Designer",
+      "positionType": "Part-time",
+      "locationType": "Remote",
       "period": "May 2017 - June 2019",
+      "industry": ["Product Design", "Software and Technology"],
       "location": "Tempe, Arizona, United States",
       "duties": [
         "Designed websites for small businesses, focusing on user-friendly interfaces and engaging designs",
@@ -104,8 +119,12 @@
     },
     {
       "company": "Fry's Food and Drug",
+      "logo": "assets/images/frys.svg",
       "position": "File Maintenance Clerk",
+      "positionType": "Part-time",
+      "locationType": "On-site",
       "period": "August 2018 - February 2019",
+      "industry": ["Retail"],
       "location": "Scottsdale, AZ : 75th and McDowell Location",
       "duties": [
         "Provided exceptional customer service by utilizing strong communication and listening skills to assist individual customers and small groups",
@@ -116,8 +135,12 @@
     },
     {
       "company": "Lowe's Companies, Inc.",
+      "logo": "assets/images/lowes.svg",
       "position": "Cashier",
+      "positionType": "Part-time",
+      "locationType": "On-site",
       "period": "November 2017 - May 2018",
+      "industry": ["Retail"],
       "location": "Wasilla, Alaska, United States",
       "duties": [
         "Provided excellent customer service by utilizing strong communication and listening skills to assist individual customers and small groups",
@@ -127,8 +150,12 @@
     },
     {
       "company": "Three Bears Alaska, Inc.",
+      "logo": "assets/images/threebears.svg",
       "position": "Grocery Stocker",
+      "positionType": "Part-time",
+      "locationType": "On-site",
       "period": "August 2017 - November 2017",
+      "industry": ["Retail"],
       "location": "Wasilla, Alaska, United States",
       "duties": [
         "Provided excellent customer service by engaging with customers in a friendly manner and offering simple solutions to their needs",
@@ -138,8 +165,12 @@
     },
     {
       "company": "Matanuska-Susitna Borough School District",
+      "logo": "assets/images/matsuk12.svg",
       "position": "Web Design Intern",
+      "positionType": "Internship",
+      "locationType": "In-office",
       "period": "April 2016 - September 2016",
+      "industry": ["Product Design", "Software and Technology"],
       "location": "Palmer, Alaska, United States",
       "duties": [
         "Edited the Matanuska-Susitna Borough School District website to enhance user experience",
