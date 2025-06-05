@@ -729,9 +729,13 @@ function setupMobileMenu() {
         }
         
         .logo h1 {
-            font-size: 1rem !important;
+            font-size: 1.5rem !important;
             margin: 0 !important;
             color: var(--primary-color) !important;
+        }
+        
+        .dyslexic-font .logo h1 {
+            font-size: 1rem !important;
         }
         
         .header-nav a {

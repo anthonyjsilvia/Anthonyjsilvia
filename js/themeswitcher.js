@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         themeDescription.style.display = 'block';
         themeDescriptionTimeout = setTimeout(() => {
             themeDescription.style.display = 'none';
-        }, 10000);
+        }, 4000);
     }
 
     // Set initial select value based on current theme
