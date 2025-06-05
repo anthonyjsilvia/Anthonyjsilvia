@@ -8,9 +8,18 @@
       "description": "A Swift-based mobile application developed for home chefs and food enthusiasts. The project showcases expertise in iOS development and modern mobile data persistence architecture.",
       "image": "https://nodeda.com/appicons/Cookbooknew.svg",
       "categories": ["Apple Human Interface Guidelines", "Swift", "SwiftUI", "Core Data", "Firebase"],
-      "link": "https://apps.apple.com/us/app/nodeda-cookbook/id6523414165&ved=2ahUKEwjJhsjhz_mMAxUwG9AFHcQRCGcQFnoECBkQAQ&usg=AOvVaw3APs83EQdaX5TZC8T8BcYN",
+      "link": "https://nodeda.com/cookbook",
       "github": "disabled",
       "featured": true,
+      "company": {
+        "name": "NodeDa",
+        "logo": {
+          "light": "https://nodeda.com/logos/NodeDa.black.svg",
+          "dark": "https://nodeda.com/logos/NodeDa.white.svg"
+        },
+        "website": "https://nodeda.com",
+        "description": "NodeDa is a software development company specializing in mobile and web applications."
+      },
       "platforms": ["iOS"],
       "interactions": {
         "type": "Interactive Prototype",
@@ -51,6 +60,15 @@
       "link": "https://nodeda.com/lingo",
       "github": "https://github.com/NodeDaLLC/Lingo",
       "featured": true,
+      "company": {
+        "name": "NodeDa",
+        "logo": {
+          "light": "https://nodeda.com/logos/NodeDa.black.svg",
+          "dark": "https://nodeda.com/logos/NodeDa.white.svg"
+        },
+        "website": "https://nodeda.com",
+        "description": "NodeDa is a software development company specializing in mobile and web applications."
+      },
       "platforms": ["iOS", "Android", "Web"],
       "interactions": {
         "type": "Interactive Prototype",
@@ -90,6 +108,15 @@
       "link": "none",
       "github": "disabled",
       "featured": true,
+      "company": {
+        "name": "Lowe's",
+        "logo": {
+          "light": "/assets/images/lowes/Lowes_logo_pms_280.png",
+          "dark": "/assets/images/lowes/lowes_logo_white.png"
+        },
+        "website": "https://www.lowes.com",
+        "description": "Lowe's Companies, Inc. is an American retail company specializing in home improvement."
+      },
       "platforms": ["Confidential"],
       "interactions": {
         "type": "Confidential",
@@ -126,6 +153,15 @@
       "link": "none",
       "github": "disabled",
       "featured": true,
+      "company": {
+        "name": "Lowe's",
+        "logo": {
+          "light": "/assets/images/lowes/Lowes_logo_pms_280.png",
+          "dark": "/assets/images/lowes/lowes_logo_white.png"
+        },
+        "website": "https://www.lowes.com",
+        "description": "Lowe's Companies, Inc. is an American retail company specializing in home improvement."
+      },
       "platforms": ["Enterprise Systems"],
       "interactions": {
         "type": "Interactive Prototype",
@@ -164,6 +200,15 @@
       "link": "none",
       "github": "disabled",
       "featured": true,
+      "company": {
+        "name": "Lowe's",
+        "logo": {
+          "light": "/assets/images/lowes/Lowes_logo_pms_280.png",
+          "dark": "/assets/images/lowes/lowes_logo_white.png"
+        },
+        "website": "https://www.lowes.com",
+        "description": "Lowe's Companies, Inc. is an American retail company specializing in home improvement."
+      },
       "platforms": ["Enterprise POS"],
       "interactions": {
         "type": "Interactive Prototype",

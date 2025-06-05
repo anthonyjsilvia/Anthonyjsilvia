@@ -334,12 +334,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         updateThemeDescription(selectedTheme);
-        // Dispatch event for theme change
-        document.dispatchEvent(new Event('themeChanged'));
+        
+        // Create and dispatch themeChanged event
+        const themeChangedEvent = new Event('themeChanged');
+        document.dispatchEvent(themeChangedEvent);
+        
+        // Immediately update logos
+        if (typeof window.updateCompanyLogos === 'function') {
+            window.updateCompanyLogos();
+        }
+        if (typeof window.updateResumeLogos === 'function') {
+            window.updateResumeLogos();
+        }
     });
 
     // Listen for OS theme preference changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    const colorSchemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+    colorSchemeMedia.addEventListener('change', e => {
         if (!localStorage.getItem('theme')) {
             if (e.matches) {
                 document.documentElement.setAttribute('data-prefers-dark', 'true');
@@ -348,6 +359,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.dispatchEvent(new Event('themeChanged'));
             updateThemeDescription('system');
+            
+            // Update company logos if the functions exist
+            if (typeof window.updateCompanyLogos === 'function') {
+                window.updateCompanyLogos();
+            }
+            if (typeof window.updateResumeLogos === 'function') {
+                window.updateResumeLogos();
+            }
+        }
+    });
+
+    // Also listen for theme changes via the themeChanged event
+    document.addEventListener('themeChanged', () => {
+        // Update company logos if the functions exist
+        if (typeof window.updateCompanyLogos === 'function') {
+            window.updateCompanyLogos();
+        }
+        if (typeof window.updateResumeLogos === 'function') {
+            window.updateResumeLogos();
         }
     });
 

@@ -10,59 +10,179 @@ async function fetchPortfolioData() {
     }
 }
 
-// Function to extract unique categories from projects
-function extractCategories(projects) {
-    const categories = new Set(['All']); // Always include 'All' category
-    
+// Function to extract unique companies from projects
+function extractCompanies(projects) {
+    const companies = new Set(['All']);
     projects.forEach(project => {
-        if (project.categories) {
-            project.categories.forEach(category => categories.add(category));
+        if (project.company && project.company.name) {
+            companies.add(project.company.name);
         }
     });
+    return Array.from(companies).sort();
+}
+
+// Function to extract unique tags from projects
+function extractTags(projects) {
+    const tags = new Set();
+    projects.forEach(project => {
+        if (project.categories) {
+            project.categories.forEach(tag => tags.add(tag));
+        }
+    });
+    return Array.from(tags).sort();
+}
+
+// Function to populate filter options
+function populateFilterOptions(projects) {
+    const companyFilter = document.getElementById('company-filter');
+    const tagFilter = document.getElementById('tag-filter');
     
-    return Array.from(categories).sort((a, b) => {
-        // Keep 'All' at the beginning
-        if (a === 'All') return -1;
-        if (b === 'All') return 1;
-        return a.localeCompare(b);
+    // Populate company filter
+    const companies = extractCompanies(projects);
+    companies.forEach(company => {
+        const option = document.createElement('option');
+        option.value = company.toLowerCase();
+        option.textContent = company;
+        companyFilter.appendChild(option);
+    });
+    
+    // Populate tag filter
+    const tags = extractTags(projects);
+    tags.forEach(tag => {
+        const option = document.createElement('option');
+        option.value = tag.toLowerCase();
+        option.textContent = tag;
+        tagFilter.appendChild(option);
     });
 }
 
-// Function to create project card
-function createProjectCard(project) {
-    const githubButton = project.github && project.github !== "disabled" 
-        ? `<a href="${project.github}" class="btn btn-secondary" target="_blank">
-             <i class="fab fa-github"></i> GitHub
-           </a>`
-        : '';
+// Function to filter projects
+function filterProjects(projects, company, selectedTags) {
+    return projects.filter(project => {
+        const projectCompany = project.title.split(' ')[0].toLowerCase();
+        const matchesCompany = company === 'all' || projectCompany === company;
+        
+        const projectTags = project.categories.map(tag => tag.toLowerCase());
+        const matchesTags = selectedTags.length === 0 || 
+            selectedTags.every(tag => projectTags.includes(tag));
+        
+        return matchesCompany && matchesTags;
+    });
+}
 
-    return `
-        <div class="project-card" data-categories="${project.categories.join(' ')}">
-            <div class="project-image">
-                <img src="${project.image}" alt="${project.title}">
+// Function to sort projects
+function sortProjects(projects, sortBy) {
+    return [...projects].sort((a, b) => {
+        switch (sortBy) {
+            case 'company':
+                const companyA = a.title.split(' ')[0];
+                const companyB = b.title.split(' ')[0];
+                return companyA.localeCompare(companyB);
+            case 'title':
+                return a.title.localeCompare(b.title);
+            default:
+                return a.displayOrder - b.displayOrder;
+        }
+    });
+}
+
+// Function to update portfolio display
+function updatePortfolioDisplay(projects) {
+    const portfolioSections = document.querySelector('.portfolio-sections');
+    portfolioSections.innerHTML = '';
+    
+    projects.forEach((project, index) => {
+        const section = createProjectSection(project, index);
+        portfolioSections.appendChild(section);
+    });
+}
+
+// Function to get the appropriate logo URL based on current theme
+function getLogoUrl(project) {
+    if (!project.company || !project.company.logo) return '';
+    
+    let isDarkMode = false;
+    
+    // Check for manual theme setting first
+    if (document.documentElement.classList.contains('dark-theme')) {
+        isDarkMode = true;
+    } else if (document.documentElement.classList.contains('light-theme')) {
+        isDarkMode = false;
+    } else {
+        // Then check system preference
+        isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    
+    return isDarkMode ? project.company.logo.dark : project.company.logo.light;
+}
+
+// Function to update all company logos based on current theme
+function updateCompanyLogos() {
+    const logoImages = document.querySelectorAll('.company-logo img');
+    logoImages.forEach(img => {
+        const projectId = img.closest('.portfolio-section').id.split('-')[1];
+        const project = window.portfolioData.projects.find(p => p.id === parseInt(projectId));
+        if (project) {
+            img.src = getLogoUrl(project);
+        }
+    });
+}
+
+// Make updateCompanyLogos available globally
+window.updateCompanyLogos = updateCompanyLogos;
+
+function createProjectSection(project, index) {
+    const section = document.createElement('section');
+    section.className = 'portfolio-section';
+    section.id = `project-${project.id}`;
+    
+    const imageUrl = project.image !== 'none' ? project.image : '/assets/images/project-placeholder.png';
+    
+    // Company information
+    const companyInfo = project.company ? `
+        <div class="project-company">
+            <div class="company-logo">
+                <img src="${getLogoUrl(project)}" alt="${project.company.name} logo">
             </div>
-            <div class="project-content">
-                <h3>${project.title}</h3>
-                <p class="project-subtitle">${project.subtitle}</p>
+            <a href="${project.company.website}" class="company-website" target="_blank">
+                Visit ${project.company.name} Website <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    ` : '';
+    
+    const content = `
+        ${companyInfo}
+        <div class="project-content">
+            <div class="project-image">
+                <img src="${imageUrl}" alt="${project.title}">
+            </div>
+            <div class="project-details">
+                <h2 class="project-title">${project.title}</h2>
+                <h3 class="project-subtitle">${project.subtitle}</h3>
                 <p class="project-description">${project.description}</p>
+                
+                <div class="project-categories">
+                    ${project.categories.map(category => 
+                        `<span class="category-tag">${category}</span>`
+                    ).join('')}
+                </div>
+                
                 <div class="project-links">
-                    <a href="${project.link}" class="btn btn-primary" target="_blank">View Project</a>
-                    ${githubButton}
+                    ${project.link !== 'none' ? 
+                        `<a href="${project.link}" class="project-link primary-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> View Project
+                        </a>` : ''}
+                    ${project.github !== 'disabled' ? 
+                        `<a href="${project.github}" class="project-link secondary-link" target="_blank">
+                            <i class="fab fa-github"></i> Contribute with GitHub
+                        </a>` : ''}
                 </div>
             </div>
         </div>
     `;
-}
-
-// Function to create category filter
-function createCategoryFilter(categories) {
-    return `
-        <div class="portfolio-filters">
-            ${categories.map(category => `
-                <button class="filter-btn" data-category="${category}">${category}</button>
-            `).join('')}
-        </div>
-    `;
+    
+    section.innerHTML = content;
+    return section;
 }
 
 // Function to initialize portfolio
@@ -70,46 +190,35 @@ async function initializePortfolio() {
     const portfolioData = await fetchPortfolioData();
     if (!portfolioData) return;
 
-    const portfolioContainer = document.querySelector('.portfolio-container');
-    const filtersContainer = document.querySelector('.portfolio-filters-container');
-
-    // Extract categories from projects
-    const categories = extractCategories(portfolioData.projects);
-
-    // Add category filters
-    filtersContainer.innerHTML = createCategoryFilter(categories);
-
-    // Add project cards
-    portfolioContainer.innerHTML = portfolioData.projects
-        .filter(project => project.featured)
-        .map(project => createProjectCard(project))
-        .join('');
-
-    // Add filter functionality
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const category = button.dataset.category;
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            const projects = document.querySelectorAll('.project-card');
-            projects.forEach(project => {
-                if (category === 'All') {
-                    project.style.display = 'block';
-                } else {
-                    const projectCategories = project.dataset.categories.split(' ');
-                    project.style.display = projectCategories.includes(category) ? 'block' : 'none';
-                }
-            });
-        });
-    });
-
-    // Set 'All' as active by default
-    const allButton = document.querySelector('.filter-btn[data-category="All"]');
-    if (allButton) {
-        allButton.classList.add('active');
+    // Store portfolio data globally for theme switching
+    window.portfolioData = portfolioData;
+    const projects = portfolioData.projects;
+    
+    // Populate filter options
+    populateFilterOptions(projects);
+    
+    // Set up event listeners for filters and sort
+    const companyFilter = document.getElementById('company-filter');
+    const tagFilter = document.getElementById('tag-filter');
+    const sortSelect = document.getElementById('sort-select');
+    
+    function applyFiltersAndSort() {
+        const selectedCompany = companyFilter.value;
+        const selectedTags = Array.from(tagFilter.selectedOptions).map(option => option.value);
+        const sortBy = sortSelect.value;
+        
+        let filteredProjects = filterProjects(projects, selectedCompany, selectedTags);
+        filteredProjects = sortProjects(filteredProjects, sortBy);
+        
+        updatePortfolioDisplay(filteredProjects);
     }
+    
+    companyFilter.addEventListener('change', applyFiltersAndSort);
+    tagFilter.addEventListener('change', applyFiltersAndSort);
+    sortSelect.addEventListener('change', applyFiltersAndSort);
+    
+    // Initial display
+    applyFiltersAndSort();
 }
 
 // Initialize when DOM is loaded
@@ -135,52 +244,6 @@ async function loadPortfolio() {
     } catch (error) {
         console.error('Error loading portfolio:', error);
     }
-}
-
-function createProjectSection(project, index) {
-    const section = document.createElement('section');
-    section.className = 'portfolio-section';
-    section.id = `project-${index}`;
-    
-    const imageUrl = project.image !== 'none' ? project.image : '/assets/images/project-placeholder.png';
-    
-    // Check if the link is a NodeDa link
-    const isNodeDaLink = project.link.includes('nodeda.com');
-    const linkText = isNodeDaLink ? 'View Project Website' : 'View Project';
-    const linkIcon = isNodeDaLink ? '<i class="fas fa-external-link-alt"></i>' : '';
-    
-    const content = `
-        <div class="project-content">
-            <div class="project-image">
-                <img src="${imageUrl}" alt="${project.title}">
-            </div>
-            <div class="project-details">
-                <h2 class="project-title">${project.title}</h2>
-                <h3 class="project-subtitle">${project.subtitle}</h3>
-                <p class="project-description">${project.description}</p>
-                
-                <div class="project-categories">
-                    ${project.categories.map(category => 
-                        `<span class="category-tag">${category}</span>`
-                    ).join('')}
-                </div>
-                
-                <div class="project-links">
-                    ${project.link !== 'none' ? 
-                        `<a href="${project.link}" class="project-link primary-link" target="_blank">
-                            ${linkIcon} ${linkText}
-                        </a>` : ''}
-                    ${project.github !== 'disabled' ? 
-                        `<a href="${project.github}" class="project-link secondary-link" target="_blank">
-                            <i class="fab fa-github"></i> Contribute with GitHub
-                        </a>` : ''}
-                </div>
-            </div>
-        </div>
-    `;
-    
-    section.innerHTML = content;
-    return section;
 }
 
 // Load portfolio when DOM is ready

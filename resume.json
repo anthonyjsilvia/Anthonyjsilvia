@@ -63,7 +63,10 @@
   "experience": [
     {
       "company": "Lowe's Companies, Inc.",
-      "logo": "assets/images/lowes.svg",
+      "logo": {
+        "light": "/assets/images/lowes/Lowes_logo_pms_280.png",
+        "dark": "/assets/images/lowes/lowes_logo_white.png"
+      },
       "position": "Associate Product Designer",
       "positionType": "Full-time",
       "locationType": "Hybrid",
@@ -77,7 +80,10 @@
     },
     {
       "company": "NodeDa, LLC",
-      "logo": "https://nodeda.com/logos/NodeDa.black.svg",
+      "logo": {
+        "light": "https://nodeda.com/logos/NodeDa.black.svg",
+        "dark": "https://nodeda.com/logos/NodeDa.white.svg"
+      },
       "position": "Founder",
       "positionType": "Full-time",
       "locationType": "Remote",
@@ -91,7 +97,10 @@
     },
     {
       "company": "Lowe's Companies, Inc.",
-      "logo": "assets/images/lowes.svg",
+      "logo": {
+        "light": "/assets/images/lowes/Lowes_logo_pms_280.png",
+        "dark": "/assets/images/lowes/lowes_logo_white.png"
+      },
       "position": "Various Retail Roles",
       "positionType": "Full-time",
       "locationType": "On-site",
@@ -119,7 +128,10 @@
     },
     {
       "company": "Fry's Food and Drug",
-      "logo": "assets/images/frys.svg",
+      "logo": {
+        "light": "/assets/images/kroger/kroger.blue.svg",
+        "dark": "/assets/images/kroger/kroger.white.svg"
+      },
       "position": "File Maintenance Clerk",
       "positionType": "Part-time",
       "locationType": "On-site",
@@ -135,7 +147,10 @@
     },
     {
       "company": "Lowe's Companies, Inc.",
-      "logo": "assets/images/lowes.svg",
+      "logo": {
+        "light": "/assets/images/lowes/Lowes_logo_pms_280.png",
+        "dark": "/assets/images/lowes/lowes_logo_white.png"
+      },
       "position": "Cashier",
       "positionType": "Part-time",
       "locationType": "On-site",
@@ -150,7 +165,10 @@
     },
     {
       "company": "Three Bears Alaska, Inc.",
-      "logo": "assets/images/threebears.svg",
+      "logo": {
+        "light": "/assets/images/threebears/3-bears-logo.jpg.png",
+        "dark": "/assets/images/threebears/3-bears-logo.jpg.png"
+      },
       "position": "Grocery Stocker",
       "positionType": "Part-time",
       "locationType": "On-site",
@@ -165,7 +183,10 @@
     },
     {
       "company": "Matanuska-Susitna Borough School District",
-      "logo": "assets/images/matsuk12.svg",
+      "logo": {
+        "light": "/assets/images/matsuk12/district-logo-colored.svg",
+        "dark": "/assets/images/matsuk12/district-logo-white.svg"
+      },
       "position": "Web Design Intern",
       "positionType": "Internship",
       "locationType": "In-office",

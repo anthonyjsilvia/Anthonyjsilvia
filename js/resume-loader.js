@@ -10,11 +10,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
+            // Store resume data globally for theme switching
+            window.resumeData = data;
+            
             // Once we have the data, populate the page
             populateResumePage(data);
             
             // Hide the loader
             document.querySelector('.loader').style.display = 'none';
+            
+            // Initial logo update based on current theme
+            updateResumeLogos();
+            
+            // Listen for theme changes
+            document.addEventListener('themeChanged', updateResumeLogos);
+            
+            // Listen for system color scheme changes
+            if (window.matchMedia) {
+                const colorSchemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+                colorSchemeMedia.addEventListener('change', () => {
+                    if (!localStorage.getItem('theme')) {
+                        updateResumeLogos();
+                    }
+                });
+            }
         })
         .catch(error => {
             console.error('Error loading resume data:', error);
@@ -23,8 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function populateResumePage(resumeData) {
-    // Populate professional summary
-    populateProfessionalSummary(resumeData.professionalSummary);
+    // Only show professional summary on print page
+    if (window.location.pathname.includes('print-resume')) {
+        populateProfessionalSummary(resumeData.professionalSummary);
+    }
     
     // Populate key strengths if they exist
     if (resumeData.keyStrengths) {
@@ -62,10 +83,10 @@ function populateProfessionalSummary(summary) {
 }
 
 function populateKeyStrengths(strengths) {
-    const strengthsSection = document.getElementById('key-strengths');
+    const strengthsSection = document.getElementById('key-strengths-section');
     if (strengthsSection && strengths && strengths.length > 0) {
         const list = document.createElement('ul');
-        list.className = 'strengths-list';
+        list.className = 'key-strengths-list';
         
         strengths.forEach(strength => {
             const li = document.createElement('li');
@@ -73,6 +94,7 @@ function populateKeyStrengths(strengths) {
             list.appendChild(li);
         });
         
+        strengthsSection.innerHTML = ''; // Clear existing content
         strengthsSection.appendChild(list);
     }
 }
@@ -83,61 +105,37 @@ function populateSkills(skills) {
         let skillsHTML = '';
         
         // Top Skills
-        if (skills.topSkills && skills.topSkills.length > 0) {
-            skillsHTML += `
-                <div class="skills-category">
-                    <h3>Top Skills</h3>
-                    <ul class="skills-list">
-                        ${skills.topSkills.map(skill => `<li><i class="fas fa-star"></i>${skill}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
+        const topSkills = [
+            'UX Design',
+            'Software Development',
+            'Project Management',
+            'Start-up Leadership'
+        ];
         
-        // Design Tools
+        skillsHTML += `
+            <div class="skills-category">
+                <h3>Top Skills</h3>
+                <ul class="skills-list">
+                    ${topSkills.map(skill => `<li><i class="fas fa-star"></i>${skill}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+        
+        // Design Tools with skill levels
         if (skills.designTools && skills.designTools.length > 0) {
             skillsHTML += `
                 <div class="skills-category">
                     <h3>Design Tools</h3>
-                    <ul class="skills-list">
-                        ${skills.designTools.map(tool => `<li><i class="fas fa-paint-brush"></i>${tool.name}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-        
-        // Research Skills
-        if (skills.research && skills.research.length > 0) {
-            skillsHTML += `
-                <div class="skills-category">
-                    <h3>Research</h3>
-                    <ul class="skills-list">
-                        ${skills.research.map(skill => `<li><i class="fas fa-search"></i>${skill}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-        
-        // Development Skills
-        if (skills.development && skills.development.length > 0) {
-            skillsHTML += `
-                <div class="skills-category">
-                    <h3>Development</h3>
-                    <ul class="skills-list">
-                        ${skills.development.map(skill => `<li><i class="fas fa-code"></i>${skill}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-        
-        // Collaboration Skills
-        if (skills.collaboration && skills.collaboration.length > 0) {
-            skillsHTML += `
-                <div class="skills-category">
-                    <h3>Collaboration</h3>
-                    <ul class="skills-list">
-                        ${skills.collaboration.map(skill => `<li><i class="fas fa-users"></i>${skill}</li>`).join('')}
-                    </ul>
+                    <div class="skills-chart">
+                        ${skills.designTools.map(tool => `
+                            <div class="skill-item">
+                                <div class="skill-name">${tool.name}</div>
+                                <div class="skill-bar">
+                                    <div class="skill-level" style="width: ${tool.level}%"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             `;
         }
@@ -152,14 +150,23 @@ function populateExperience(experience) {
         let timelineHTML = '';
         
         experience.forEach(job => {
+            // Check if job has valid logos
+            const hasLogos = job.logo && (
+                (typeof job.logo === 'object' && (job.logo.light || job.logo.dark)) ||
+                (typeof job.logo === 'string' && job.logo)
+            );
+            
             timelineHTML += `
                 <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>${job.position}</h3>
-                        <h4>${job.company}</h4>
+                    <div class="company-header">
+                        ${hasLogos ? `<div class="company-logo"><img src="${getResumeLogoUrl(job)}" alt="${job.company}"></div>` : ''}
+                        <h3 class="company-name">${job.company}</h3>
+                    </div>
+                    <div class="role">
+                        <h4>${job.position}</h4>
                         <span class="timeline-date-badge">${job.period}</span>
-                        <p class="job-location">${job.locationType} • ${job.positionType}</p>
-                        <ul class="job-duties">
+                        <p class="location">${job.locationType} • ${job.positionType}</p>
+                        <ul class="role-duties">
                             ${job.duties.map(duty => `<li>${duty}</li>`).join('')}
                         </ul>
                     </div>
@@ -202,10 +209,40 @@ function populateCertifications(certifications) {
         
         certifications.forEach(cert => {
             const li = document.createElement('li');
-            li.textContent = cert;
+            const certItem = document.createElement('div');
+            certItem.className = 'certification-item';
+            
+            // Extract date if it exists in parentheses
+            const dateMatch = cert.match(/\((.*?)\)/);
+            const date = dateMatch ? dateMatch[1] : null;
+            const name = dateMatch ? cert.replace(/\((.*?)\)/, '').trim() : cert;
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'certification-name';
+            nameSpan.textContent = name;
+            
+            certItem.appendChild(nameSpan);
+            
+            if (date) {
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'certification-date';
+                dateSpan.textContent = date;
+                certItem.appendChild(dateSpan);
+            }
+            
+            // Add level badge if it's a professional certificate
+            if (name.toLowerCase().includes('professional certificate')) {
+                const levelBadge = document.createElement('span');
+                levelBadge.className = 'certification-badge';
+                levelBadge.textContent = 'Professional';
+                certItem.appendChild(levelBadge);
+            }
+            
+            li.appendChild(certItem);
             list.appendChild(li);
         });
         
+        certificationsSection.innerHTML = ''; // Clear existing content
         certificationsSection.appendChild(list);
     }
 }
@@ -213,11 +250,12 @@ function populateCertifications(certifications) {
 function populateLanguages(languages) {
     const languagesList = document.querySelector('.sidebar-languages');
     if (languagesList && languages && languages.length > 0) {
-        languages.forEach(lang => {
-            const li = document.createElement('li');
-            li.innerHTML = `${lang.name} <span class="language-level">${lang.level}</span>`;
-            languagesList.appendChild(li);
-        });
+        languagesList.innerHTML = languages.map(lang => `
+            <li>
+                ${lang.name}
+                <span class="language-level">${lang.level}</span>
+            </li>
+        `).join('');
     }
 }
 
@@ -236,3 +274,46 @@ function populateHonors(honors) {
         honorsSection.appendChild(list);
     }
 }
+
+// Function to get the appropriate logo URL based on current theme
+function getResumeLogoUrl(job) {
+    if (!job.logo) return '';
+    
+    let isDarkMode = false;
+    
+    // Check for manual theme setting first
+    if (document.documentElement.classList.contains('dark-theme')) {
+        isDarkMode = true;
+    } else if (document.documentElement.classList.contains('light-theme')) {
+        isDarkMode = false;
+    } else {
+        // Then check system preference
+        isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    
+    // If the logo is an object with dark/light variants
+    if (typeof job.logo === 'object') {
+        return isDarkMode ? job.logo.dark : job.logo.light;
+    }
+    
+    // If it's a single string URL, return as is
+    return job.logo;
+}
+
+// Function to update all company logos based on current theme
+function updateResumeLogos() {
+    const logoImages = document.querySelectorAll('.company-logo img');
+    logoImages.forEach(img => {
+        const timelineItem = img.closest('.timeline-item');
+        if (timelineItem) {
+            const companyName = timelineItem.querySelector('.company-name').textContent;
+            const job = window.resumeData.experience.find(j => j.company === companyName);
+            if (job) {
+                img.src = getResumeLogoUrl(job);
+            }
+        }
+    });
+}
+
+// Make updateResumeLogos available globally
+window.updateResumeLogos = updateResumeLogos;

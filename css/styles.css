@@ -32,9 +32,11 @@ body {
 
 /* Page Container */
 .page-container {
-    min-height: 100vh;
-    padding-top: 80px; /* Adjust based on header height */
-    background: transparent;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Page Header */
@@ -2301,4 +2303,335 @@ footer {
 
 .dyslexic-label {
     font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+/* Portfolio Controls */
+.portfolio-controls {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: var(--surface-color);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-controls {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.filter-select[multiple] {
+    height: 120px;
+}
+
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.sort-controls label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.sort-select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .portfolio-controls {
+        background: var(--surface-color-dark);
+    }
+    
+    .filter-select,
+    .sort-select {
+        background: var(--background-color-dark);
+        border-color: var(--border-color-dark);
+        color: var(--text-color-dark);
+    }
+}
+
+/* Project Company Information */
+.project-company {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--surface-color);
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 0;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+.project-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: 0 0 12px 12px;
+    box-sizing: border-box;
+}
+
+.company-logo {
+    width: auto;
+    height: 32px;
+    margin-right: 1rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.company-logo img {
+    width: auto;
+    height: 32px;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+}
+
+.company-website {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.company-website i {
+    font-size: 0.9em;
+    margin-left: 0.25rem;
+}
+
+.company-website:hover {
+    background: var(--primary-color-dark);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .project-company {
+        background: var(--surface-color-dark);
+    }
+    
+    .company-logo img {
+        filter: brightness(0) invert(1);
+    }
+    
+    .company-website {
+        background: var(--primary-color-dark);
+    }
+    
+    .company-website:hover {
+        background: var(--primary-color);
+    }
+}
+
+/* Portfolio Section */
+.portfolio-section {
+    margin-bottom: 3rem;
+    background: rgba(128, 128, 128, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Project Company Information */
+.project-company {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--surface-color);
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 0;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+.project-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: 0 0 12px 12px;
+    box-sizing: border-box;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .portfolio-section {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .project-company {
+        background: var(--surface-color-dark);
+    }
+    
+    .company-logo img {
+        filter: brightness(0) invert(1);
+    }
+    
+    .company-website {
+        background: var(--primary-color-dark);
+    }
+    
+    .company-website:hover {
+        background: var(--primary-color);
+    }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .page-container {
+        padding: 0 32px; /* Maintain padding on tablet */
+    }
+    
+    .project-content {
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .page-container {
+        padding: 0 32px; /* Maintain padding on mobile */
+    }
+    
+    .project-company {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .company-logo {
+        width: 100px;
+    }
+    
+    .company-name {
+        font-size: 1.1rem;
+    }
+    
+    .project-content {
+        padding: 1rem;
+    }
+}
+
+/* Company Logo Styles */
+.company-logo {
+    width: auto;
+    height: 32px;
+    margin-right: 1rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.company-logo img {
+    width: auto;
+    height: 32px;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+}
+
+/* Dark mode adjustments for logos */
+.dark-theme .company-logo img {
+    filter: brightness(0) invert(1);
+}
+
+/* Company header styles */
+.company-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.company-name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Timeline item styles */
+.timeline-item {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+}
+
+.role {
+    margin-top: 1rem;
+}
+
+.role-duties {
+    margin-top: 1rem;
+    padding-left: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .company-logo {
+        height: 32px;
+        margin-bottom: 8px;
+    }
+    
+    .company-logo img {
+        height: 32px;
+    }
+    
+    .company-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .company-logo {
+        margin-bottom: 8px;
+    }
 }
