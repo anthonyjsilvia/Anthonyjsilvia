@@ -71,7 +71,6 @@ function initHeader() {
                         </div>
                         <h1 style="color: var(--primary-color);">Anthony Silvia</h1>
                     </div>
-                    <!--span>UX Designer & Developer</span-->
                 </a>
             </div>
             <nav class="header-nav" id="main-nav">
@@ -482,6 +481,56 @@ function setupMobileMenu() {
     // CSS fix for menu responsiveness
     const style = document.createElement('style');
     style.textContent = `
+        /* OpenDyslexic Font Face Declarations */
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.woff2') format('woff2'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.woff') format('woff'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.otf') format('opentype'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.eot') format('embedded-opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.woff2') format('woff2'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.woff') format('woff'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.otf') format('opentype'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.eot') format('embedded-opentype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.woff2') format('woff2'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.woff') format('woff'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.otf') format('opentype'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.eot') format('embedded-opentype');
+            font-weight: normal;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.woff2') format('woff2'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.woff') format('woff'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.otf') format('opentype'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.eot') format('embedded-opentype');
+            font-weight: bold;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        /* OpenDyslexic toggle class */
+        .dyslexic-font *:not(.fas):not(.fab):not(.far):not(.fa) {
+            font-family: 'OpenDyslexic', sans-serif !important;
+        }
+
         /* Desktop Menu Styles */
         @media (min-width: 769px) {
             .mobile-menu-btn {
@@ -512,6 +561,29 @@ function setupMobileMenu() {
                 opacity: 1 !important;
                 transform: none !important;
                 margin-bottom: 0 !important;
+            }
+
+            .header-nav a {
+                text-decoration: none !important;
+            }
+            
+            .header-nav a:hover {
+                text-decoration: none !important;
+            }
+            
+            .header-nav a.active {
+                position: relative !important;
+                border-top: 2px solid var(--primary-color) !important;
+                border-left: 2px solid var(--primary-color) !important;
+                border-right: 2px solid var(--primary-color) !important;
+                border-bottom: 2px solid var(--primary-color) !important;
+                border-radius: 12px !important;
+                padding: 8px 16px !important;
+                margin-top: -2px !important;
+            }
+            
+            .header-nav a.active::after {
+                display: none !important;
             }
             
             .menu-close-btn {
@@ -620,6 +692,50 @@ function setupMobileMenu() {
                 display: block !important;
                 width: 100% !important;
             }
+
+            /* Font Toggle Button Styles */
+            .font-toggle {
+                background: none;
+                border: none;
+                color: var(--text-color);
+                cursor: pointer;
+                padding: 8px;
+                margin-right: 15px;
+                border-radius: 50%;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .font-toggle:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+
+            .font-toggle.active {
+                color: var(--primary-color);
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+
+            .font-toggle i {
+                font-size: 1.2rem;
+            }
+
+            @media (max-width: 768px) {
+                .font-toggle {
+                    margin-right: 15px;
+                }
+            }
+        }
+        
+        .logo h1 {
+            font-size: 1rem !important;
+            margin: 0 !important;
+            color: var(--primary-color) !important;
+        }
+        
+        .header-nav a {
+            text-decoration: none !important;
         }
     `;
     document.head.appendChild(style);

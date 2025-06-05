@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
     const savedTransparency = localStorage.getItem('transparency') === 'false' ? false : true;
     const savedReducedMotion = localStorage.getItem('reducedMotion') === 'true' ? true : false;
+    const savedDyslexicFont = localStorage.getItem('dyslexicFont') === 'enabled' ? true : false;
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
     if (savedTheme === 'dark') {
@@ -23,6 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.classList.add('reduced-motion');
     }
 
+    // Set initial dyslexic font state
+    if (savedDyslexicFont) {
+        document.body.classList.add('dyslexic-font');
+    }
+
     // Create theme modal if it doesn't exist
     if (!document.querySelector('.theme-modal')) {
         const themeModal = document.createElement('div');
@@ -33,13 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
         themeModal.innerHTML = `
             <div class="theme-modal-content">
                 <div class="theme-modal-header">
-                    <h3 id="theme-modal-title">Theme Preferences</h3>
+                    <h3 id="theme-modal-title">Accessibility</h3>
                     <button class="theme-modal-close" aria-label="Close theme preferences">&times;</button>
                 </div>
+                <div class="theme-description" aria-live="polite"></div>
                 <div class="theme-options">
                     <label for="theme-select" class="visually-hidden">Select theme preference</label>
                     <select id="theme-select" class="theme-select" aria-label="Select theme preference">
-                        <option value="system">Match System</option>
+                        <option value="system">Auto (Match System)</option>
                         <option value="light">Light Mode</option>
                         <option value="dark">Dark Mode</option>
                     </select>
@@ -48,17 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="transparency-toggle">
                         <label class="toggle-label">
                             <input type="checkbox" id="transparency-toggle" ${savedTransparency ? 'checked' : ''}>
-                            <span class="toggle-text">Enable Transparency</span>
+                            <span class="toggle-text">Transparency Effect</span>
                         </label>
                     </div>
-                    <div class="motion-toggle">
+                    <div class="motion-toggle transparency-toggle">
                         <label class="toggle-label">
                             <input type="checkbox" id="motion-toggle" ${savedReducedMotion ? 'checked' : ''}>
                             <span class="toggle-text">Reduce Animations</span>
                         </label>
                     </div>
+                    <div class="dyslexic-toggle transparency-toggle">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="dyslexic-toggle" ${savedDyslexicFont ? 'checked' : ''}>
+                            <span class="toggle-text dyslexic-label">Dyslexic Friendly Font</span>
+                        </label>
+                    </div>
                 </div>
-                <div class="theme-description" aria-live="polite"></div>
             </div>
         `;
         document.body.appendChild(themeModal);
@@ -128,6 +140,61 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Add OpenDyslexic font styles
+    const fontStyle = document.createElement('style');
+    fontStyle.textContent = `
+        /* OpenDyslexic Font Face Declarations */
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.woff2') format('woff2'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.woff') format('woff'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.otf') format('opentype'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.eot') format('embedded-opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.woff2') format('woff2'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.woff') format('woff'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.otf') format('opentype'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.eot') format('embedded-opentype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.woff2') format('woff2'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.woff') format('woff'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.otf') format('opentype'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.eot') format('embedded-opentype');
+            font-weight: normal;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.woff2') format('woff2'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.woff') format('woff'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.otf') format('opentype'),
+                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.eot') format('embedded-opentype');
+            font-weight: bold;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        /* OpenDyslexic toggle class */
+        .dyslexic-font *:not(.fas):not(.fab):not(.far):not(.fa) {
+            font-family: 'OpenDyslexic', sans-serif !important;
+        }
+    `;
+    document.head.appendChild(fontStyle);
+
     // Get elements
     const themeBtn = document.querySelector('.theme-btn');
     const modalClose = document.querySelector('.theme-modal-close');
@@ -135,6 +202,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeDescription = document.querySelector('.theme-description');
     const transparencyToggle = document.querySelector('#transparency-toggle');
     const motionToggle = document.querySelector('#motion-toggle');
+    const dyslexicToggle = document.querySelector('#dyslexic-toggle');
+
+    // Function to show and auto-hide theme description
+    let themeDescriptionTimeout;
+    function showThemeDescription(message) {
+        clearTimeout(themeDescriptionTimeout);
+        themeDescription.textContent = message;
+        themeDescription.style.display = 'block';
+        themeDescriptionTimeout = setTimeout(() => {
+            themeDescription.style.display = 'none';
+        }, 10000);
+    }
 
     // Set initial select value based on current theme
     if (savedTheme) {
@@ -143,6 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
         themeSelect.value = 'system';
     }
 
+    // Hide theme description by default
+    themeDescription.style.display = 'none';
+
     // Function to update theme description
     function updateThemeDescription(theme) {
         const descriptions = {
@@ -150,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             light: 'Light theme is now active',
             dark: 'Dark theme is now active'
         };
-        themeDescription.textContent = descriptions[theme];
+        showThemeDescription(descriptions[theme]);
     }
 
     // Handle transparency toggle
@@ -162,11 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.classList.add('no-transparency');
         }
         localStorage.setItem('transparency', isTransparent);
-        
-        // Update description
-        themeDescription.textContent = isTransparent ? 
+        showThemeDescription(isTransparent ? 
             'Transparency effects are now enabled' : 
-            'Transparency effects are now disabled';
+            'Transparency effects are now disabled');
     });
 
     // Handle motion toggle
@@ -178,11 +258,23 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.classList.remove('reduced-motion');
         }
         localStorage.setItem('reducedMotion', reducedMotion);
-        
-        // Update description
-        themeDescription.textContent = reducedMotion ? 
+        showThemeDescription(reducedMotion ? 
             'Animations are now reduced' : 
-            'Animations are now enabled';
+            'Animations are now enabled');
+    });
+
+    // Handle dyslexic font toggle
+    dyslexicToggle.addEventListener('change', (e) => {
+        const isDyslexic = e.target.checked;
+        if (isDyslexic) {
+            document.body.classList.add('dyslexic-font');
+        } else {
+            document.body.classList.remove('dyslexic-font');
+        }
+        localStorage.setItem('dyslexicFont', isDyslexic ? 'enabled' : 'disabled');
+        showThemeDescription(isDyslexic ? 
+            'OpenDyslexic font is now enabled' : 
+            'Default font is now active');
     });
 
     // Show modal when accessibility button is clicked
@@ -225,11 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle theme selection
     themeSelect.addEventListener('change', () => {
         const selectedTheme = themeSelect.value;
-        
         // Remove existing theme classes
         document.documentElement.classList.remove('dark-theme', 'light-theme');
         document.documentElement.removeAttribute('data-prefers-dark');
-
         if (selectedTheme === 'dark') {
             document.documentElement.classList.add('dark-theme');
             localStorage.setItem('theme', 'dark');
@@ -243,17 +333,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.documentElement.setAttribute('data-prefers-dark', 'true');
             }
         }
-        
-        // Update theme description
         updateThemeDescription(selectedTheme);
-        
         // Dispatch event for theme change
         document.dispatchEvent(new Event('themeChanged'));
-        
-        // Close the modal after selection
-        themeModal.classList.remove('active');
-        themeBtn.setAttribute('aria-expanded', 'false');
-        themeBtn.focus();
     });
 
     // Listen for OS theme preference changes
