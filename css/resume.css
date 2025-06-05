@@ -437,3 +437,42 @@
     font-weight: 500;
     letter-spacing: 0.01em;
 }
+
+/* Contact Information */
+.contact-container {
+    background-color: var(--card-bg-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+    transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.contact-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.contact-info p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+}
+
+.contact-info i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.contact-info a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color var(--transition-normal);
+}
+
+.contact-info a:hover {
+    color: var(--primary-color);
+}

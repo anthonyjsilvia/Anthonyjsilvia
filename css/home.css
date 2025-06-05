@@ -527,3 +527,215 @@
       padding: 24px 20px;
     }
   }
+
+.circular-profile {
+    width: 354px;
+    height: 354px;
+    margin: 2rem auto;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.circular-profile:hover {
+    transform: scale(1.05);
+}
+
+.circular-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mission-section {
+    text-align: center;
+    padding: 4rem 0;
+    margin-top: 2rem;
+}
+
+.section-subtitle {
+    display: inline-block;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.section-subtitle i {
+    margin-right: 0.5rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.section-description {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-content {
+    display: flex;
+    gap: 4rem;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 1rem 0;
+}
+
+.about-image {
+    flex: 1;
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.about-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.about-text h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.about-text p {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .about-content {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .about-image {
+        max-width: 100%;
+    }
+}
+
+.about-section {
+    margin-bottom: 2.5rem;
+}
+
+.about-section:last-child {
+    margin-bottom: 0;
+}
+
+.about-section h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.about-section p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}
+
+.testimonial-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+[data-theme="dark"] .testimonial-card {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial-content {
+    margin-bottom: 1.5rem;
+}
+
+.testimonial-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.testimonial-author {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+}
+
+.author-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.author-info p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.author-info span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+}
+
+.section-divider {
+    width: 100%;
+    height: 3px;
+    margin: 4rem 0;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.4) 20%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0.4) 80%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .section-divider {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.2) 20%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0.2) 80%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}

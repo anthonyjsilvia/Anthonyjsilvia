@@ -10,9 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the header component
     initHeader();
     
-    // Initialize the theme switcher
-    initThemeSwitcher();
-    
     // Initialize mobile optimizations
     initMobileOptimizations();
     
@@ -21,6 +18,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize loader (optional)
     hideLoader();
+
+    // Add scroll handling for header shadow
+    let scrollTimer;
+    const header = document.getElementById('main-header');
+    
+    window.addEventListener('scroll', function() {
+        // Add shadow when scrolling
+        header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        
+        // Clear the previous timer
+        clearTimeout(scrollTimer);
+        
+        // Set a new timer to remove shadow after scrolling stops
+        scrollTimer = setTimeout(function() {
+            header.style.boxShadow = 'none';
+        }, 150); // Wait 150ms after scrolling stops before removing shadow
+    });
 });
 
 /**
@@ -43,14 +57,12 @@ function initHeader() {
     
     // Navigation items with paths to separate pages
     const navItems = [
-        { label: 'Home', icon: 'fas fa-home', href: 'index.html' },
-        { label: 'About', icon: 'fas fa-user', href: 'about.html' },
+        { label: 'About Me', icon: 'fas fa-home', href: 'index.html' },
         { label: 'Resume', icon: 'fas fa-briefcase', href: 'resume.html' },
         //{ label: 'Disciplines', icon: 'fas fa-puzzle-piece', href: 'services.html' },
         //{ label: 'Skills', icon: 'fas fa-shapes', href: 'skills.html' },
         { label: 'Portfolio', icon: 'fas fa-grip-vertical', href: 'portfolio.html' },
-        { label: 'Testimonials', icon: 'far fa-comment', href: 'testimonials.html' },
-        //{ label: 'Contact', icon: 'fas fa-envelope', href: 'contact.html' }
+        { label: 'Contact Me', icon: 'fas fa-envelope', href: 'contact.html' }
     ];
     
     // Create header HTML
@@ -58,7 +70,12 @@ function initHeader() {
         <div class="header-container">
             <div class="logo">
                 <a href="index.html">
-                    <h1 style="color: var(--primary-color);">Anthony Silvia</h1>
+                    <div class="logo-content">
+                        <div class="profile-image-small">
+                            <img src="assets/images/me.jpg" alt="Anthony Silvia">
+                        </div>
+                        <h1 style="color: var(--primary-color);">Anthony Silvia</h1>
+                    </div>
                     <!--span>UX Designer & Developer</span-->
                 </a>
             </div>
@@ -74,6 +91,11 @@ function initHeader() {
                 </ul>
             </nav>
             <div class="mobile-menu-btn" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="mobile-close-btn" id="menu-close" style="display: none;">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -97,9 +119,10 @@ function initHeader() {
                 // Only trigger mobile menu close if we're in mobile view
                 if (window.innerWidth <= 768) {
                     const mobileMenuBtn = document.getElementById('menu-toggle');
+                    const mobileCloseBtn = document.getElementById('menu-close');
                     const mobileNav = document.getElementById('main-nav');
                     
-                    if (!mobileNav || !mobileMenuBtn) {
+                    if (!mobileNav || !mobileMenuBtn || !mobileCloseBtn) {
                         console.error('ERROR: Menu elements not found when link clicked');
                         return;
                     }
@@ -113,7 +136,14 @@ function initHeader() {
                     
                     // Delay the closing of the menu to allow for animation
                     setTimeout(() => {
-                        mobileMenuBtn.classList.remove('active');
+                        // Hide close button, show menu button
+                        mobileCloseBtn.style.display = 'none';
+                        mobileCloseBtn.style.visibility = 'hidden';
+                        mobileCloseBtn.style.opacity = '0';
+                        mobileMenuBtn.style.display = 'flex';
+                        mobileMenuBtn.style.visibility = 'visible';
+                        mobileMenuBtn.style.opacity = '1';
+                        
                         mobileNav.classList.remove('active');
                         document.body.classList.remove('menu-open');
                         
@@ -131,10 +161,10 @@ function initHeader() {
                             document.querySelectorAll('.header-nav li').forEach(item => {
                                 item.removeAttribute('style');
                             });
-                        }, 500);
+                        }, 300);
                         
                         console.log('Menu closed via link click');
-                    }, 300);
+                    }, 100);
                 }
             } catch (error) {
                 console.error('ERROR in nav link click handler:', error);
@@ -148,14 +178,15 @@ function initHeader() {
             // Only trigger on mobile
             if (window.innerWidth <= 768) {
                 const mobileMenuBtn = document.getElementById('menu-toggle');
+                const mobileCloseBtn = document.getElementById('menu-close');
                 const mobileNav = document.getElementById('main-nav');
                 
-                if (!mobileNav || !mobileMenuBtn) {
+                if (!mobileNav || !mobileMenuBtn || !mobileCloseBtn) {
                     console.error('ERROR: Menu elements not found in document click handler');
                     return;
                 }
                 
-                if (!mobileMenuBtn.contains(event.target) && !mobileNav.contains(event.target) && mobileNav.classList.contains('active')) {
+                if (!mobileMenuBtn.contains(event.target) && !mobileCloseBtn.contains(event.target) && !mobileNav.contains(event.target) && mobileNav.classList.contains('active')) {
                     console.log('Click outside detected, closing menu');
                     
                     // Add staggered exit animation
@@ -167,7 +198,14 @@ function initHeader() {
                     
                     // Delay the closing of the menu to allow for animation
                     setTimeout(() => {
-                        mobileMenuBtn.classList.remove('active');
+                        // Hide close button, show menu button
+                        mobileCloseBtn.style.display = 'none';
+                        mobileCloseBtn.style.visibility = 'hidden';
+                        mobileCloseBtn.style.opacity = '0';
+                        mobileMenuBtn.style.display = 'flex';
+                        mobileMenuBtn.style.visibility = 'visible';
+                        mobileMenuBtn.style.opacity = '1';
+                        
                         mobileNav.classList.remove('active');
                         document.body.classList.remove('menu-open');
                         
@@ -185,8 +223,8 @@ function initHeader() {
                             document.querySelectorAll('.header-nav li').forEach(item => {
                                 item.removeAttribute('style');
                             });
-                        }, 500);
-                    }, 300);
+                        }, 300);
+                    }, 100);
                 }
             }
         } catch (error) {
@@ -257,11 +295,12 @@ function setupMobileMenu() {
     
     // Menu elements
     const mobileMenuBtn = document.getElementById('menu-toggle');
+    const mobileCloseBtn = document.getElementById('menu-close');
     const mobileNav = document.getElementById('main-nav');
     
     // Check if elements exist and log results
-    if (!mobileMenuBtn) {
-        console.error('ERROR: Mobile menu button (#menu-toggle) not found in the DOM!');
+    if (!mobileMenuBtn || !mobileCloseBtn) {
+        console.error('ERROR: Mobile menu buttons not found in the DOM!');
         return;
     }
     
@@ -272,6 +311,7 @@ function setupMobileMenu() {
     
     console.log('Menu elements found:', {
         menuButton: mobileMenuBtn,
+        closeButton: mobileCloseBtn,
         navigation: mobileNav
     });
     
@@ -289,11 +329,9 @@ function setupMobileMenu() {
             mobileNav.style.height = '0';
             mobileNav.style.pointerEvents = 'none';
             mobileNav.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
-            document.body.classList.remove('menu-open');
-            
-            // Make sure mobile menu button is visible
             mobileMenuBtn.style.display = 'block';
+            mobileCloseBtn.style.display = 'none';
+            document.body.classList.remove('menu-open');
         } else {
             // Desktop view - show menu by default
             mobileNav.style.display = 'block';
@@ -302,8 +340,9 @@ function setupMobileMenu() {
             mobileNav.style.height = 'auto';
             mobileNav.style.pointerEvents = 'auto';
             
-            // Hide mobile menu button
+            // Hide mobile buttons
             mobileMenuBtn.style.display = 'none';
+            mobileCloseBtn.style.display = 'none';
             
             // Reset any animation styles
             document.querySelectorAll('.header-nav li').forEach(item => {
@@ -344,110 +383,104 @@ function setupMobileMenu() {
         console.error('ERROR checking nav styles:', e);
     }
     
-    // Enhanced click handler with error tracking
+    // Open menu handler
     mobileMenuBtn.addEventListener('click', function(e) {
         try {
             console.log('Mobile menu button clicked');
-            
-            // Prevent default
             e.preventDefault();
             
-            // Check if menu is currently active
-            const isActive = mobileNav.classList.contains('active');
-            console.log('Is menu currently active?', isActive);
+            // Hide menu button, show close button
+            mobileMenuBtn.style.display = 'none';
+            mobileMenuBtn.style.visibility = 'hidden';
+            mobileMenuBtn.style.opacity = '0';
+            mobileCloseBtn.style.display = 'flex';
+            mobileCloseBtn.style.visibility = 'visible';
+            mobileCloseBtn.style.opacity = '1';
             
-            if (isActive) {
-                // CLOSE MENU
-                console.log('Closing menu...');
-                
-                // Transform X back to hamburger
-                mobileMenuBtn.classList.remove('active');
-                
-                // Add exit animation to menu items first
-                document.querySelectorAll('.header-nav li').forEach((item, index) => {
-                    item.style.transitionDelay = (0.05 * index) + 's';
-                    item.style.opacity = '0';
-                    item.style.transform = 'translateX(-20px)';
-                });
-                
-                // Wait briefly for item animation to start
-                setTimeout(() => {
-                    // Remove active class from navigation
-                    mobileNav.classList.remove('active');
-                    document.body.classList.remove('menu-open');
-                    
-                    // Force styles for closure
-                    mobileNav.style.height = '0';
-                    mobileNav.style.opacity = '0';
-                    
-                    // Wait for transition to complete before hiding completely
-                    setTimeout(() => {
-                        mobileNav.style.visibility = 'hidden';
-                        mobileNav.style.display = 'none';
-                        mobileNav.style.pointerEvents = 'none';
-                        
-                        // Reset item styles
-                        document.querySelectorAll('.header-nav li').forEach(item => {
-                            item.removeAttribute('style');
-                        });
-                    }, 500);
-                }, 100);
-                
-            } else {
-                // OPEN MENU
-                console.log('Opening menu...');
-                
-                // Transform hamburger button into X
-                mobileMenuBtn.classList.add('active');
-                
-                // Reset any leftover styles
-                document.querySelectorAll('.header-nav li').forEach(item => {
-                    item.removeAttribute('style');
-                    item.style.opacity = '0';
-                    item.style.transform = 'translateX(-20px)';
-                });
-                
-                // Show menu immediately but invisible
-                mobileNav.style.display = 'block';
-                mobileNav.style.visibility = 'visible';
-                mobileNav.style.pointerEvents = 'auto';
-                mobileNav.style.backgroundColor = 'var(--bg-color, #ffffff)';
-                
-                // Force reflow to ensure transitions work
-                void mobileNav.offsetWidth;
-                
-                // Add active class and start transition
-                mobileNav.classList.add('active');
-                document.body.classList.add('menu-open');
-                
-                // Update styles to trigger transition
-                mobileNav.style.opacity = '1';
-                mobileNav.style.height = 'calc(100vh - 60px)';
-                
-                // Animate menu items with delay
-                setTimeout(() => {
-                    document.querySelectorAll('.header-nav li').forEach((item, index) => {
-                        item.style.transitionDelay = (0.1 + 0.05 * index) + 's';
-                        item.style.opacity = '1';
-                        item.style.transform = 'translateX(0)';
-                    });
-                }, 200);
-            }
+            // Reset any leftover styles
+            document.querySelectorAll('.header-nav li').forEach(item => {
+                item.removeAttribute('style');
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+            });
             
-            // Debug info after state change
+            // Show menu immediately but invisible
+            mobileNav.style.display = 'block';
+            mobileNav.style.visibility = 'visible';
+            mobileNav.style.pointerEvents = 'auto';
+            mobileNav.style.backgroundColor = 'var(--header-bg)';
+            
+            // Force reflow to ensure transitions work
+            void mobileNav.offsetWidth;
+            
+            // Add active class and start transition
+            mobileNav.classList.add('active');
+            document.body.classList.add('menu-open');
+            
+            // Update styles to trigger transition
+            mobileNav.style.opacity = '1';
+            mobileNav.style.height = 'calc(100vh - 80px)';
+            
+            // Animate menu items with delay
             setTimeout(() => {
-                const navStylesAfterClick = window.getComputedStyle(mobileNav);
-                console.log('Nav styles after click:', {
-                    height: navStylesAfterClick.height,
-                    opacity: navStylesAfterClick.opacity,
-                    visibility: navStylesAfterClick.visibility,
-                    display: navStylesAfterClick.display,
-                    classList: Array.from(mobileNav.classList)
+                document.querySelectorAll('.header-nav li').forEach((item, index) => {
+                    item.style.transitionDelay = (0.1 + 0.05 * index) + 's';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
                 });
-            }, 50);
+            }, 100);
             
         } catch (error) {
-            console.error('ERROR in mobile menu click handler:', error);
+            console.error('ERROR in mobile menu open handler:', error);
+        }
+    });
+    
+    // Close menu handler
+    mobileCloseBtn.addEventListener('click', function(e) {
+        try {
+            console.log('Mobile close button clicked');
+            e.preventDefault();
+            
+            // Hide close button, show menu button
+            mobileCloseBtn.style.display = 'none';
+            mobileCloseBtn.style.visibility = 'hidden';
+            mobileCloseBtn.style.opacity = '0';
+            mobileMenuBtn.style.display = 'flex';
+            mobileMenuBtn.style.visibility = 'visible';
+            mobileMenuBtn.style.opacity = '1';
+            
+            // Add exit animation to menu items first
+            document.querySelectorAll('.header-nav li').forEach((item, index) => {
+                item.style.transitionDelay = (0.05 * index) + 's';
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+            });
+            
+            // Wait briefly for item animation to start
+            setTimeout(() => {
+                // Remove active class from navigation
+                mobileNav.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                
+                // Force styles for closure
+                mobileNav.style.height = '0';
+                mobileNav.style.opacity = '0';
+                
+                // Wait for transition to complete before hiding completely
+                setTimeout(() => {
+                    mobileNav.style.visibility = 'hidden';
+                    mobileNav.style.display = 'none';
+                    mobileNav.style.pointerEvents = 'none';
+                    
+                    // Reset item styles
+                    document.querySelectorAll('.header-nav li').forEach(item => {
+                        item.removeAttribute('style');
+                    });
+                }, 300);
+            }, 100);
+            
+        } catch (error) {
+            console.error('ERROR in mobile menu close handler:', error);
         }
     });
     
@@ -600,9 +633,6 @@ function setupMobileMenu() {
     console.log('Menu event handlers initialized successfully');
     console.log('Added responsive CSS fixes for menu visibility');
     
-    // We're removing the separate close button since we're using the hamburger-to-X transform
-    // No need for an additional close button when the hamburger menu turns into an X
-    
     // Verify that everything is set up correctly
     setTimeout(() => {
         try {
@@ -637,100 +667,6 @@ function setupMobileMenu() {
             console.error('ERROR in final verification:', error);
         }
     }, 1000);
-}
-
-/**
- * Theme Switcher
- * Handles dark/light mode toggling
- */
-function initThemeSwitcher() {
-    // Check if theme switcher already exists
-    if (document.querySelector('.theme-switcher')) {
-        return;
-    }
-    
-    // Check for saved theme preference or use OS preference
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Set the theme based on saved preference or OS preference
-    if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark-theme');
-    } else if (savedTheme === 'light') {
-        document.documentElement.classList.add('light-theme');
-    } else if (prefersDark) {
-        document.documentElement.setAttribute('data-prefers-dark', 'true');
-    }
-    
-    // Create and add theme switcher button to the DOM
-    const themeSwitcher = document.createElement('div');
-    themeSwitcher.className = 'theme-switcher';
-    
-    const themeBtn = document.createElement('button');
-    themeBtn.className = 'theme-btn';
-    themeBtn.setAttribute('aria-label', 'Toggle dark/light mode');
-    
-    // Set icon based on current theme
-    updateThemeIcon(themeBtn);
-    
-    themeBtn.addEventListener('click', toggleTheme);
-    themeSwitcher.appendChild(themeBtn);
-    document.body.appendChild(themeSwitcher);
-    
-    // Handle theme toggle
-    function toggleTheme() {
-        if (document.documentElement.classList.contains('dark-theme')) {
-            // Switch to light mode
-            document.documentElement.classList.remove('dark-theme');
-            document.documentElement.classList.add('light-theme');
-            localStorage.setItem('theme', 'light');
-        } else if (document.documentElement.classList.contains('light-theme')) {
-            // Switch to system preference
-            document.documentElement.classList.remove('light-theme');
-            localStorage.removeItem('theme');
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.setAttribute('data-prefers-dark', 'true');
-            } else {
-                document.documentElement.removeAttribute('data-prefers-dark');
-            }
-        } else {
-            // Switch to dark mode
-            document.documentElement.classList.add('dark-theme');
-            document.documentElement.removeAttribute('data-prefers-dark');
-            localStorage.setItem('theme', 'dark');
-        }
-        
-        // Update the theme icon
-        updateThemeIcon(document.querySelector('.theme-btn'));
-    }
-    
-    // Update the theme icon based on current theme
-    function updateThemeIcon(button) {
-        if (document.documentElement.classList.contains('dark-theme')) {
-            button.innerHTML = '<i class="fas fa-sun"></i>'; // Use sun icon for dark mode
-        } else if (document.documentElement.classList.contains('light-theme')) {
-            button.innerHTML = '<i class="fas fa-moon"></i>'; // Use moon icon for light mode
-        } else {
-            // System preference
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                button.innerHTML = '<i class="fas fa-sun"></i>';
-            } else {
-                button.innerHTML = '<i class="fas fa-moon"></i>';
-            }
-        }
-    }
-    
-    // Listen for OS theme preference changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem('theme')) {
-            if (e.matches) {
-                document.documentElement.setAttribute('data-prefers-dark', 'true');
-            } else {
-                document.documentElement.removeAttribute('data-prefers-dark');
-            }
-            updateThemeIcon(document.querySelector('.theme-btn'));
-        }
-    });
 }
 
 /**
