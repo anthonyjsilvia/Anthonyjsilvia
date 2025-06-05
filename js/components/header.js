@@ -20,20 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
     hideLoader();
 
     // Add scroll handling for header shadow
-    let scrollTimer;
     const header = document.getElementById('main-header');
     
     window.addEventListener('scroll', function() {
-        // Add shadow when scrolling
-        header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
-        
-        // Clear the previous timer
-        clearTimeout(scrollTimer);
-        
-        // Set a new timer to remove shadow after scrolling stops
-        scrollTimer = setTimeout(function() {
+        // Add shadow when page has been scrolled
+        if (window.pageYOffset > 0) {
+            header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+        } else {
             header.style.boxShadow = 'none';
-        }, 150); // Wait 150ms after scrolling stops before removing shadow
+        }
     });
 });
 

@@ -3,6 +3,122 @@
 * Main stylesheet with dark/light mode support and mobile fixes
 */
 
+/* Import portfolio styles */
+@import 'portfolio.css';
+
+/* Reset and base styles */
+:root {
+    --primary-color: #007AFF;
+    --text-color: #333;
+    --text-secondary: #666;
+    --bg-primary: transparent;
+    --bg-secondary: #f5f5f5;
+    --bg-dark-primary: #1a1a1a;
+    --bg-dark-secondary: #2d2d2d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background: transparent;
+}
+
+/* Page Container */
+.page-container {
+    min-height: 100vh;
+    padding-top: 80px; /* Adjust based on header height */
+    background: transparent;
+}
+
+/* Page Header */
+.page-header {
+    text-align: center;
+    margin: 32px 0 var(--spacing-xl);
+    padding: 0;
+}
+
+.page-subtitle {
+    display: inline-block;
+    color: var(--primary-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+}
+
+.page-subtitle i {
+    margin-right: 5px;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.3;
+}
+
+.page-description {
+    max-width: 700px;
+    margin: 0 auto;
+    color: var(--text-muted);
+}
+
+.highlight {
+    color: var(--primary-color);
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: #fff;
+        --text-secondary: #ccc;
+        --bg-primary: transparent;
+        --bg-secondary: var(--bg-dark-secondary);
+    }
+}
+
+/* Loading Indicator */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--bg-secondary);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Hide loader when content is loaded */
+.loaded .loader {
+    display: none;
+}
+
 /* ---------- Variables & Resets ---------- */
 :root {
     /* Base Colors */
@@ -582,40 +698,6 @@ img {
 
 .contact-btn:hover i {
     color: white;
-}
-
-/* ---------- Page Headers ---------- */
-.page-header {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
-}
-
-.page-subtitle {
-    display: inline-block;
-    background-color: rgba(52, 152, 219, 0.1);
-    color: var(--primary-color);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-bottom: var(--spacing-xs);
-}
-
-.page-subtitle i {
-    margin-right: 5px;
-}
-
-.page-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-sm);
-    line-height: 1.3;
-}
-
-.page-description {
-    max-width: 700px;
-    margin: 0 auto;
-    color: var(--text-muted);
 }
 
 /* ---------- About Page ---------- */
@@ -1677,7 +1759,6 @@ footer {
 }
 
 .project-card {
-    background: var(--card-bg-color);
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1692,7 +1773,6 @@ footer {
     width: 100%;
     padding-top: 56.25%; /* 16:9 Aspect Ratio */
     position: relative;
-    background-color: var(--bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1737,7 +1817,6 @@ footer {
 }
 
 .category-tag {
-    background: var(--bg-secondary);
     color: var(--text-color);
     padding: 0.25rem 0.75rem;
     border-radius: 15px;

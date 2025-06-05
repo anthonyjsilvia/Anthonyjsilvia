@@ -23,44 +23,46 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.classList.add('reduced-motion');
     }
 
-    // Create theme modal
-    const themeModal = document.createElement('div');
-    themeModal.className = 'theme-modal';
-    themeModal.setAttribute('role', 'dialog');
-    themeModal.setAttribute('aria-labelledby', 'theme-modal-title');
-    themeModal.setAttribute('aria-modal', 'true');
-    themeModal.innerHTML = `
-        <div class="theme-modal-content">
-            <div class="theme-modal-header">
-                <h3 id="theme-modal-title">Theme Preferences</h3>
-                <button class="theme-modal-close" aria-label="Close theme preferences">&times;</button>
-            </div>
-            <div class="theme-options">
-                <label for="theme-select" class="visually-hidden">Select theme preference</label>
-                <select id="theme-select" class="theme-select" aria-label="Select theme preference">
-                    <option value="system">Match System</option>
-                    <option value="light">Light Mode</option>
-                    <option value="dark">Dark Mode</option>
-                </select>
-            </div>
-            <div class="accessibility-toggles">
-                <div class="transparency-toggle">
-                    <label class="toggle-label">
-                        <input type="checkbox" id="transparency-toggle" ${savedTransparency ? 'checked' : ''}>
-                        <span class="toggle-text">Enable Transparency</span>
-                    </label>
+    // Create theme modal if it doesn't exist
+    if (!document.querySelector('.theme-modal')) {
+        const themeModal = document.createElement('div');
+        themeModal.className = 'theme-modal';
+        themeModal.setAttribute('role', 'dialog');
+        themeModal.setAttribute('aria-labelledby', 'theme-modal-title');
+        themeModal.setAttribute('aria-modal', 'true');
+        themeModal.innerHTML = `
+            <div class="theme-modal-content">
+                <div class="theme-modal-header">
+                    <h3 id="theme-modal-title">Theme Preferences</h3>
+                    <button class="theme-modal-close" aria-label="Close theme preferences">&times;</button>
                 </div>
-                <div class="motion-toggle">
-                    <label class="toggle-label">
-                        <input type="checkbox" id="motion-toggle" ${savedReducedMotion ? 'checked' : ''}>
-                        <span class="toggle-text">Reduce Animations</span>
-                    </label>
+                <div class="theme-options">
+                    <label for="theme-select" class="visually-hidden">Select theme preference</label>
+                    <select id="theme-select" class="theme-select" aria-label="Select theme preference">
+                        <option value="system">Match System</option>
+                        <option value="light">Light Mode</option>
+                        <option value="dark">Dark Mode</option>
+                    </select>
                 </div>
+                <div class="accessibility-toggles">
+                    <div class="transparency-toggle">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="transparency-toggle" ${savedTransparency ? 'checked' : ''}>
+                            <span class="toggle-text">Enable Transparency</span>
+                        </label>
+                    </div>
+                    <div class="motion-toggle">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="motion-toggle" ${savedReducedMotion ? 'checked' : ''}>
+                            <span class="toggle-text">Reduce Animations</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="theme-description" aria-live="polite"></div>
             </div>
-            <div class="theme-description" aria-live="polite"></div>
-        </div>
-    `;
-    document.body.appendChild(themeModal);
+        `;
+        document.body.appendChild(themeModal);
+    }
 
     // Create accessibility button if it doesn't exist
     if (!document.querySelector('.theme-switcher')) {
@@ -187,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        const themeModal = document.querySelector('.theme-modal');
         themeModal.classList.add('active');
         themeBtn.setAttribute('aria-expanded', 'true');
         modalClose.focus();
@@ -194,12 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close modal when close button is clicked
     modalClose.addEventListener('click', () => {
+        const themeModal = document.querySelector('.theme-modal');
         themeModal.classList.remove('active');
         themeBtn.setAttribute('aria-expanded', 'false');
         themeBtn.focus();
     });
 
     // Close modal when clicking outside
+    const themeModal = document.querySelector('.theme-modal');
     themeModal.addEventListener('click', (e) => {
         if (e.target === themeModal) {
             themeModal.classList.remove('active');

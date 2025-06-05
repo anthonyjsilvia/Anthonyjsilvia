@@ -739,3 +739,71 @@
     );
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
+
+/* Dark Theme Specific Styles */
+.dark-theme .section-divider {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.2) 20%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0.2) 80%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-theme .testimonial-content p {
+    color: var(--text-muted);
+}
+
+.dark-theme .testimonial-author {
+    border-color: var(--border-color);
+}
+
+.dark-theme .author-info h3 {
+    color: var(--text-color);
+}
+
+.dark-theme .author-info p {
+    color: var(--text-muted);
+}
+
+.dark-theme .author-info span {
+    color: var(--text-muted);
+}
+
+/* System preference dark mode */
+@media (prefers-color-scheme: dark) {
+    :root:not(.light-theme) .section-divider {
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.2) 20%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0.2) 80%,
+            rgba(255, 255, 255, 0.05) 100%
+        );
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    :root:not(.light-theme) .testimonial-content p {
+        color: var(--text-muted);
+    }
+    
+    :root:not(.light-theme) .testimonial-author {
+        border-color: var(--border-color);
+    }
+    
+    :root:not(.light-theme) .author-info h3 {
+        color: var(--text-color);
+    }
+    
+    :root:not(.light-theme) .author-info p {
+        color: var(--text-muted);
+    }
+    
+    :root:not(.light-theme) .author-info span {
+        color: var(--text-muted);
+    }
+}

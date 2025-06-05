@@ -113,4 +113,75 @@ async function initializePortfolio() {
 }
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', initializePortfolio); 
+document.addEventListener('DOMContentLoaded', initializePortfolio);
+
+// Fetch and display portfolio projects
+async function loadPortfolio() {
+    try {
+        const response = await fetch('/data/portfolio.json');
+        const data = await response.json();
+        
+        // Sort projects by displayOrder
+        const sortedProjects = data.projects.sort((a, b) => a.displayOrder - b.displayOrder);
+        
+        const portfolioSections = document.querySelector('.portfolio-sections');
+        
+        // Create sections for each project
+        sortedProjects.forEach((project, index) => {
+            const section = createProjectSection(project, index);
+            portfolioSections.appendChild(section);
+        });
+        
+    } catch (error) {
+        console.error('Error loading portfolio:', error);
+    }
+}
+
+function createProjectSection(project, index) {
+    const section = document.createElement('section');
+    section.className = 'portfolio-section';
+    section.id = `project-${index}`;
+    
+    const imageUrl = project.image !== 'none' ? project.image : '/assets/images/project-placeholder.png';
+    
+    // Check if the link is a NodeDa link
+    const isNodeDaLink = project.link.includes('nodeda.com');
+    const linkText = isNodeDaLink ? 'View Project Website' : 'View Project';
+    const linkIcon = isNodeDaLink ? '<i class="fas fa-external-link-alt"></i>' : '';
+    
+    const content = `
+        <div class="project-content">
+            <div class="project-image">
+                <img src="${imageUrl}" alt="${project.title}">
+            </div>
+            <div class="project-details">
+                <h2 class="project-title">${project.title}</h2>
+                <h3 class="project-subtitle">${project.subtitle}</h3>
+                <p class="project-description">${project.description}</p>
+                
+                <div class="project-categories">
+                    ${project.categories.map(category => 
+                        `<span class="category-tag">${category}</span>`
+                    ).join('')}
+                </div>
+                
+                <div class="project-links">
+                    ${project.link !== 'none' ? 
+                        `<a href="${project.link}" class="project-link primary-link" target="_blank">
+                            ${linkIcon} ${linkText}
+                        </a>` : ''}
+                    ${project.github !== 'disabled' ? 
+                        `<a href="${project.github}" class="project-link secondary-link" target="_blank">
+                            <i class="fab fa-github"></i> Contribute with GitHub
+                        </a>` : ''}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    section.innerHTML = content;
+    return section;
+}
+
+// Load portfolio when DOM is ready
+document.addEventListener('DOMContentLoaded', loadPortfolio); 
