@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="powered-by" style="display: flex; align-items: center; gap: 6px;">
                         <span>Powered by</span>
                         <a href="https://nodeda.com" target="_blank" style="display: flex; align-items: center;">
-                            <img src="https://nodeda.com/logos/NodeDa.white.svg" alt="NodeDa" class="nodeda-logo" id="nodeda-logo" style="height: 1em;">
+                            <img src="https://nodeda.com/logos/NodeDa.cloud.white.svg" alt="NodeDa" class="nodeda-logo" id="nodeda-logo" style="height: 1em;">
                         </a>
                     </div>
                 </div>
