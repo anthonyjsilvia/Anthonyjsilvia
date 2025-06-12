@@ -732,6 +732,8 @@ function setupMobileMenu() {
             font-size: 1.5rem !important;
             margin: 0 !important;
             color: var(--primary-color) !important;
+            font-family: 'Manrope', sans-serif !important;
+            font-weight: 700 !important;
         }
         
         .dyslexic-font .logo h1 {

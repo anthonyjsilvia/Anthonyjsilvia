@@ -15,6 +15,7 @@
     --bg-secondary: #f5f5f5;
     --bg-dark-primary: #1a1a1a;
     --bg-dark-secondary: #2d2d2d;
+    --font-primary: 'Manrope', sans-serif;
 }
 
 * {
@@ -24,7 +25,7 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     line-height: 1.6;
     color: var(--text-color);
     background: transparent;
@@ -132,7 +133,7 @@ body {
     --tap-size: 44px;
     
     /* Typography */
-    --font-primary: 'Inter', sans-serif;
+    --font-primary: 'Manrope', sans-serif;
     
     /* Spacing */
     --spacing-xs: 0.5rem;

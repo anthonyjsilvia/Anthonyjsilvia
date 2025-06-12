@@ -24,15 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     <!-- Center: Social Links -->
                     <div class="footer-social" style="display: flex; gap: 15px; justify-content: center;">
                         <a href="https://linkedin.com/in/anthonyjsilvia" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.behance.net/anthonysilvia" aria-label="Behance"><i class="fab fa-behance"></i></a>
                         <a href="https://github.com/anthonyjsilvia" aria-label="GitHub"><i class="fab fa-github"></i></a>
                     </div>
                     
                     <!-- Right: Powered by -->
                     <div class="powered-by" style="display: flex; align-items: center; gap: 6px;">
-                        <span>Powered by</span>
+                        <span>Hosted on</span>
                         <a href="https://nodeda.com" target="_blank" style="display: flex; align-items: center;">
-                            <img src="https://nodeda.com/logos/NodeDa.cloud.white.svg" alt="NodeDa" class="nodeda-logo" id="nodeda-logo" style="height: 1em;">
+                            <img src="https://nodeda.com/logos/NodeDa.cloud.white.svg" alt="NodeDa" class="nodeda-logo" id="nodeda-logo" style="height: 1.5em;">
                         </a>
                     </div>
                 </div>
@@ -75,8 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Set the logo source based on theme
         // White logo for dark mode, black logo for light mode
         logo.src = isDarkMode 
-            ? 'https://nodeda.com/logos/NodeDa.white.svg' 
-            : 'https://nodeda.com/logos/NodeDa.black.svg';
+            ? 'https://nodeda.com/logos/NodeDa.cloud.white.svg' 
+            : 'https://nodeda.com/logos/NodeDa.cloud.black.svg';
     }
     
     // Function to fetch current year from an internet time source

@@ -6,7 +6,7 @@
       "email": "contact@anthonyisilvia.com",
       "phone": "704-775-9266",
       "website": "anthonyjsilvia.com",
-      "linkedin": "linkedin.com/in/anthonysilvia"
+      "linkedin": "https://www.linkedin.com/in/anthonyjsilvia/"
     }
   },
   "professionalSummary": "Hi, I'm Anthony Silvia—a dynamic problem-solver at the intersection of software design, innovation, and user-centric solutions. I currently serve as an Associate Product Designer at Lowe's, crafting seamless experiences for customers and internal teams. At the same time, I'm the Principal at NodeDa, where I lead the development of groundbreaking tools like live transcription software (NodeDa Lingo) and other amazing projects. With a strong foundation in UX research, web development, and startup growth, I specialize in delivering intuitive, scalable solutions that solve real-world problems while pushing the boundaries of technology.",
@@ -96,23 +96,6 @@
       ]
     },
     {
-      "company": "Lowe's Companies, Inc.",
-      "logo": {
-        "light": "/assets/images/lowes/Lowes_logo_pms_280.png",
-        "dark": "/assets/images/lowes/lowes_logo_white.png"
-      },
-      "position": "Various Retail Roles",
-      "positionType": "Full-time",
-      "locationType": "On-site",
-      "period": "February 2019 - September 2022",
-      "industry": ["Retail"],
-      "duties": [
-        "Provided exceptional customer service, winning multiple awards for addressing complex needs and fostering positive interactions",
-        "Developed strong product knowledge in flooring and installation sales to meet customer needs and drive sales",
-        "Managed and trained cashiers, coordinated scheduling, and upheld operational efficiency as a Head Cashier"
-      ]
-    },
-    {
       "company": "Freelance",
       "position": "Web Designer",
       "positionType": "Part-time",
@@ -124,61 +107,6 @@
         "Designed websites for small businesses, focusing on user-friendly interfaces and engaging designs",
         "Collaborated with startups under NDAs to create visually appealing and functional websites",
         "Utilized skills in graphic design, UX/UI principles, and coding to bring clients' visions to life"
-      ]
-    },
-    {
-      "company": "Fry's Food and Drug",
-      "logo": {
-        "light": "/assets/images/kroger/kroger.blue.svg",
-        "dark": "/assets/images/kroger/kroger.white.svg"
-      },
-      "position": "File Maintenance Clerk",
-      "positionType": "Part-time",
-      "locationType": "On-site",
-      "period": "August 2018 - February 2019",
-      "industry": ["Retail"],
-      "location": "Scottsdale, AZ : 75th and McDowell Location",
-      "duties": [
-        "Provided exceptional customer service by utilizing strong communication and listening skills to assist individual customers and small groups",
-        "Demonstrated attention to detail and self-motivation in a fast-paced environment at Fry's Food and Drug",
-        "Created simple solutions to complex conversations, showcasing excellent problem-solving skills",
-        "Developed strong customer service and communication skills while working at the 75th and McDowell location in Scottsdale, AZ"
-      ]
-    },
-    {
-      "company": "Lowe's Companies, Inc.",
-      "logo": {
-        "light": "/assets/images/lowes/Lowes_logo_pms_280.png",
-        "dark": "/assets/images/lowes/lowes_logo_white.png"
-      },
-      "position": "Cashier",
-      "positionType": "Part-time",
-      "locationType": "On-site",
-      "period": "November 2017 - May 2018",
-      "industry": ["Retail"],
-      "location": "Wasilla, Alaska, United States",
-      "duties": [
-        "Provided excellent customer service by utilizing strong communication and listening skills to assist individual customers and small groups",
-        "Demonstrated attention to detail and self-motivation while working in a fast-paced environment",
-        "Applied problem-solving skills to create simple solutions during complex conversations with customers"
-      ]
-    },
-    {
-      "company": "Three Bears Alaska, Inc.",
-      "logo": {
-        "light": "/assets/images/threebears/3-bears-logo.jpg.png",
-        "dark": "/assets/images/threebears/3-bears-logo.jpg.png"
-      },
-      "position": "Grocery Stocker",
-      "positionType": "Part-time",
-      "locationType": "On-site",
-      "period": "August 2017 - November 2017",
-      "industry": ["Retail"],
-      "location": "Wasilla, Alaska, United States",
-      "duties": [
-        "Provided excellent customer service by engaging with customers in a friendly manner and offering simple solutions to their needs",
-        "Demonstrated strong communication and listening skills to effectively interact with small groups and individual customers",
-        "Maintained a detail-oriented approach while working in a fast-paced environment"
       ]
     },
     {
