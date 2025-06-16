@@ -20,8 +20,8 @@ class StarryText {
         const star = document.createElement('div');
         star.className = 'star';
         
-        // Random size between 1 and 3 pixels
-        const size = Math.random() * 2 + 1;
+        // Random size between 3 and 6 pixels
+        const size = Math.random() * 3 + 3;
         star.style.width = `${size}px`;
         star.style.height = `${size}px`;
         
@@ -32,7 +32,10 @@ class StarryText {
         star.style.top = `${y}%`;
         
         // Random initial opacity
-        star.style.opacity = Math.random();
+        star.style.opacity = Math.random() * 0.5 + 0.5;
+        
+        // Random rotation
+        star.style.transform = `rotate(${Math.random() * 360}deg)`;
         
         this.container.appendChild(star);
         this.stars.push(star);
@@ -45,7 +48,7 @@ class StarryText {
             
             // Create twinkling animation
             const animate = () => {
-                star.style.opacity = Math.random();
+                star.style.opacity = Math.random() * 0.5 + 0.5;
                 setTimeout(animate, duration * 1000);
             };
             

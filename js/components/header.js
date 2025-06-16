@@ -99,10 +99,11 @@ function initHeader() {
     
     // Inject header HTML
     header.innerHTML = headerHTML;
-    console.log('Header HTML injected');
+    console.log('Header HTML injected, menu button:', document.getElementById('menu-toggle'));
     
     // Mobile menu functionality with enhanced error logging
-    setupMobileMenu();
+    // Ensure listeners are attached after DOM is updated
+    setTimeout(setupMobileMenu, 0);
     
     // Close menu when links are clicked on mobile
     const navLinks = document.querySelectorAll('.header-nav a');
@@ -291,6 +292,7 @@ function setupMobileMenu() {
     const mobileMenuBtn = document.getElementById('menu-toggle');
     const mobileCloseBtn = document.getElementById('menu-close');
     const mobileNav = document.getElementById('main-nav');
+    const header = document.getElementById('main-header');
     
     // Check if elements exist and log results
     if (!mobileMenuBtn || !mobileCloseBtn) {
@@ -303,45 +305,21 @@ function setupMobileMenu() {
         return;
     }
     
-    console.log('Menu elements found:', {
-        menuButton: mobileMenuBtn,
-        closeButton: mobileCloseBtn,
-        navigation: mobileNav
-    });
-    
     // Function to set menu state based on viewport width
     function setMenuStateByViewport() {
-        // Check if we're in mobile view or desktop view
         const isMobileView = window.innerWidth <= 768;
-        console.log('Setting menu state based on viewport width. Mobile view:', isMobileView);
-        
         if (isMobileView) {
             // Mobile view - hide menu initially
-            mobileNav.style.display = 'none';
-            mobileNav.style.visibility = 'hidden';
-            mobileNav.style.opacity = '0';
-            mobileNav.style.height = '0';
-            mobileNav.style.pointerEvents = 'none';
             mobileNav.classList.remove('active');
-            mobileMenuBtn.style.display = 'block';
+            header.classList.remove('menu-open');
+            mobileMenuBtn.style.display = 'flex';
             mobileCloseBtn.style.display = 'none';
-            document.body.classList.remove('menu-open');
         } else {
             // Desktop view - show menu by default
-            mobileNav.style.display = 'block';
-            mobileNav.style.visibility = 'visible';
-            mobileNav.style.opacity = '1';
-            mobileNav.style.height = 'auto';
-            mobileNav.style.pointerEvents = 'auto';
-            
-            // Hide mobile buttons
+            mobileNav.classList.add('active');
+            header.classList.remove('menu-open');
             mobileMenuBtn.style.display = 'none';
             mobileCloseBtn.style.display = 'none';
-            
-            // Reset any animation styles
-            document.querySelectorAll('.header-nav li').forEach(item => {
-                item.removeAttribute('style');
-            });
         }
     }
     
@@ -351,439 +329,22 @@ function setupMobileMenu() {
     // Listen for window resize to update menu state
     window.addEventListener('resize', setMenuStateByViewport);
     
-    // Verify CSS classes are properly defined
-    try {
-        const cssTest = window.getComputedStyle(mobileMenuBtn);
-        console.log('Mobile button CSS display:', cssTest.display);
-        if (cssTest.display === 'none' && window.innerWidth <= 768) {
-            console.warn('WARNING: Mobile menu button has display:none on mobile - it may be hidden by CSS');
-        }
-    } catch (e) {
-        console.error('ERROR checking CSS styles:', e);
-    }
-    
-    // Verify mobile nav initial state
-    try {
-        const navStyles = window.getComputedStyle(mobileNav);
-        console.log('Nav initial state:', {
-            height: navStyles.height,
-            opacity: navStyles.opacity,
-            visibility: navStyles.visibility,
-            display: navStyles.display,
-            position: navStyles.position,
-            zIndex: navStyles.zIndex
-        });
-    } catch (e) {
-        console.error('ERROR checking nav styles:', e);
-    }
-    
     // Open menu handler
     mobileMenuBtn.addEventListener('click', function(e) {
-        try {
-            console.log('Mobile menu button clicked');
-            e.preventDefault();
-            
-            // Hide menu button, show close button
-            mobileMenuBtn.style.display = 'none';
-            mobileMenuBtn.style.visibility = 'hidden';
-            mobileMenuBtn.style.opacity = '0';
-            mobileCloseBtn.style.display = 'flex';
-            mobileCloseBtn.style.visibility = 'visible';
-            mobileCloseBtn.style.opacity = '1';
-            
-            // Reset any leftover styles
-            document.querySelectorAll('.header-nav li').forEach(item => {
-                item.removeAttribute('style');
-                item.style.opacity = '0';
-                item.style.transform = 'translateX(-20px)';
-            });
-            
-            // Show menu immediately but invisible
-            mobileNav.style.display = 'block';
-            mobileNav.style.visibility = 'visible';
-            mobileNav.style.pointerEvents = 'auto';
-            mobileNav.style.backgroundColor = 'var(--header-bg)';
-            
-            // Force reflow to ensure transitions work
-            void mobileNav.offsetWidth;
-            
-            // Add active class and start transition
-            mobileNav.classList.add('active');
-            document.body.classList.add('menu-open');
-            
-            // Update styles to trigger transition
-            mobileNav.style.opacity = '1';
-            mobileNav.style.height = 'calc(100vh - 80px)';
-            
-            // Animate menu items with delay
-            setTimeout(() => {
-                document.querySelectorAll('.header-nav li').forEach((item, index) => {
-                    item.style.transitionDelay = (0.1 + 0.05 * index) + 's';
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateX(0)';
-                });
-            }, 100);
-            
-        } catch (error) {
-            console.error('ERROR in mobile menu open handler:', error);
-        }
+        e.preventDefault();
+        mobileMenuBtn.classList.add('active');
+        mobileNav.classList.add('active');
+        header.classList.add('menu-open');
+        console.log('Mobile menu opened, .active class added to .header-nav');
     });
     
     // Close menu handler
     mobileCloseBtn.addEventListener('click', function(e) {
-        try {
-            console.log('Mobile close button clicked');
-            e.preventDefault();
-            
-            // Hide close button, show menu button
-            mobileCloseBtn.style.display = 'none';
-            mobileCloseBtn.style.visibility = 'hidden';
-            mobileCloseBtn.style.opacity = '0';
-            mobileMenuBtn.style.display = 'flex';
-            mobileMenuBtn.style.visibility = 'visible';
-            mobileMenuBtn.style.opacity = '1';
-            
-            // Add exit animation to menu items first
-            document.querySelectorAll('.header-nav li').forEach((item, index) => {
-                item.style.transitionDelay = (0.05 * index) + 's';
-                item.style.opacity = '0';
-                item.style.transform = 'translateX(-20px)';
-            });
-            
-            // Wait briefly for item animation to start
-            setTimeout(() => {
-                // Remove active class from navigation
-                mobileNav.classList.remove('active');
-                document.body.classList.remove('menu-open');
-                
-                // Force styles for closure
-                mobileNav.style.height = '0';
-                mobileNav.style.opacity = '0';
-                
-                // Wait for transition to complete before hiding completely
-                setTimeout(() => {
-                    mobileNav.style.visibility = 'hidden';
-                    mobileNav.style.display = 'none';
-                    mobileNav.style.pointerEvents = 'none';
-                    
-                    // Reset item styles
-                    document.querySelectorAll('.header-nav li').forEach(item => {
-                        item.removeAttribute('style');
-                    });
-                }, 300);
-            }, 100);
-            
-        } catch (error) {
-            console.error('ERROR in mobile menu close handler:', error);
-        }
+        e.preventDefault();
+        mobileMenuBtn.classList.remove('active');
+        mobileNav.classList.remove('active');
+        header.classList.remove('menu-open');
     });
-    
-    // CSS fix for menu responsiveness
-    const style = document.createElement('style');
-    style.textContent = `
-        /* OpenDyslexic Font Face Declarations */
-        @font-face {
-            font-family: 'OpenDyslexic';
-            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.woff2') format('woff2'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.woff') format('woff'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.otf') format('opentype'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.eot') format('embedded-opentype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'OpenDyslexic';
-            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.woff2') format('woff2'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.woff') format('woff'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.otf') format('opentype'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.eot') format('embedded-opentype');
-            font-weight: bold;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'OpenDyslexic';
-            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.woff2') format('woff2'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.woff') format('woff'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.otf') format('opentype'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.eot') format('embedded-opentype');
-            font-weight: normal;
-            font-style: italic;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'OpenDyslexic';
-            src: url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.woff2') format('woff2'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.woff') format('woff'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.otf') format('opentype'),
-                 url('../assets/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.eot') format('embedded-opentype');
-            font-weight: bold;
-            font-style: italic;
-            font-display: swap;
-        }
-
-        /* OpenDyslexic toggle class */
-        .dyslexic-font *:not(.fas):not(.fab):not(.far):not(.fa) {
-            font-family: 'OpenDyslexic', sans-serif !important;
-        }
-
-        /* Desktop Menu Styles */
-        @media (min-width: 769px) {
-            .mobile-menu-btn {
-                display: none !important;
-            }
-            
-            .header-nav {
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                height: auto !important;
-                pointer-events: auto !important;
-                position: static !important;
-                background: transparent !important;
-                width: auto !important;
-                overflow: visible !important;
-            }
-            
-            .header-nav ul {
-                display: flex !important;
-                flex-direction: row !important;
-                gap: 1.5rem !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            
-            .header-nav li {
-                opacity: 1 !important;
-                transform: none !important;
-                margin-bottom: 0 !important;
-            }
-
-            .header-nav a {
-                text-decoration: none !important;
-            }
-            
-            .header-nav a:hover {
-                text-decoration: none !important;
-            }
-            
-            .header-nav a.active {
-                position: relative !important;
-                border-top: 2px solid var(--primary-color) !important;
-                border-left: 2px solid var(--primary-color) !important;
-                border-right: 2px solid var(--primary-color) !important;
-                border-bottom: 2px solid var(--primary-color) !important;
-                border-radius: 12px !important;
-                padding: 8px 16px !important;
-                margin-top: -2px !important;
-            }
-            
-            .header-nav a.active::after {
-                display: none !important;
-            }
-            
-            .menu-close-btn {
-                display: none !important;
-            }
-        }
-        
-        /* Mobile Menu Styles */
-        @media (max-width: 768px) {
-            /* Hamburger to X animation */
-            .mobile-menu-btn {
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: space-between !important;
-                width: 30px !important;
-                height: 20px !important;
-                position: relative !important;
-                cursor: pointer !important;
-                z-index: 1002 !important;
-            }
-            
-            .mobile-menu-btn span {
-                display: block !important;
-                height: 2px !important;
-                width: 100% !important;
-                background-color: var(--text-color) !important;
-                border-radius: 1px !important;
-                transition: transform 0.3s ease, opacity 0.3s ease !important;
-                transform-origin: center !important;
-                position: absolute !important;
-            }
-            
-            .mobile-menu-btn span:nth-child(1) {
-                top: 0 !important;
-            }
-            
-            .mobile-menu-btn span:nth-child(2) {
-                top: 9px !important;
-            }
-            
-            .mobile-menu-btn span:nth-child(3) {
-                top: 18px !important;
-            }
-            
-            /* X state */
-            .mobile-menu-btn.active span:nth-child(1) {
-                top: 9px !important;
-                transform: rotate(45deg) !important;
-            }
-            
-            .mobile-menu-btn.active span:nth-child(2) {
-                opacity: 0 !important;
-                transform: translateX(-20px) !important;
-            }
-            
-            .mobile-menu-btn.active span:nth-child(3) {
-                top: 9px !important;
-                transform: rotate(-45deg) !important;
-            }
-            
-            /* Mobile Menu Background and Visibility */
-            .header-nav {
-                position: fixed !important;
-                top: 60px !important;
-                left: 0 !important;
-                width: 100% !important;
-                background-color: var(--bg-color, #ffffff) !important;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-                z-index: 1000 !important;
-                overflow-y: auto !important;
-                transition: opacity 0.3s ease, height 0.3s ease !important;
-            }
-            
-            body.menu-open {
-                overflow: hidden !important;
-            }
-            
-            /* Ensure menu visibility when active */
-            .header-nav.active {
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                height: calc(100vh - 60px) !important;
-                overflow-y: auto !important;
-                pointer-events: auto !important;
-                background-color: var(--bg-color, #ffffff) !important;
-                border-top: 1px solid rgba(0,0,0,0.1) !important;
-            }
-            
-            /* Menu items visibility */
-            .header-nav ul {
-                padding: 20px !important;
-                margin-top: 20px !important;
-                flex-direction: column !important;
-            }
-            
-            .header-nav li {
-                opacity: 1 !important;
-                transform: translateX(0) !important;
-                margin-bottom: 15px !important;
-            }
-            
-            .header-nav a {
-                font-size: 1.2rem !important;
-                padding: 12px 0 !important;
-                display: block !important;
-                width: 100% !important;
-            }
-
-            /* Font Toggle Button Styles */
-            .font-toggle {
-                background: none;
-                border: none;
-                color: var(--text-color);
-                cursor: pointer;
-                padding: 8px;
-                margin-right: 15px;
-                border-radius: 50%;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .font-toggle:hover {
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-
-            .font-toggle.active {
-                color: var(--primary-color);
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-
-            .font-toggle i {
-                font-size: 1.2rem;
-            }
-
-            @media (max-width: 768px) {
-                .font-toggle {
-                    margin-right: 15px;
-                }
-            }
-        }
-        
-        .logo h1 {
-            font-size: 1.5rem !important;
-            margin: 0 !important;
-            color: var(--primary-color) !important;
-            font-family: 'Manrope', sans-serif !important;
-            font-weight: 700 !important;
-        }
-        
-        .dyslexic-font .logo h1 {
-            font-size: 1rem !important;
-        }
-        
-        .header-nav a {
-            text-decoration: none !important;
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Log successful setup
-    console.log('Menu event handlers initialized successfully');
-    console.log('Added responsive CSS fixes for menu visibility');
-    
-    // Verify that everything is set up correctly
-    setTimeout(() => {
-        try {
-            console.log('Performing final verification of menu setup...');
-            const finalCheck = {
-                menuButton: !!document.getElementById('menu-toggle'),
-                navigation: !!document.getElementById('main-nav'),
-                cssLoaded: document.styleSheets.length > 0
-            };
-            console.log('Final check results:', finalCheck);
-            
-            // Test menu button display in current view
-            const isMobileView = window.innerWidth <= 768;
-            if (isMobileView) {
-                const menuBtn = document.getElementById('menu-toggle');
-                const btnStyles = menuBtn ? window.getComputedStyle(menuBtn) : null;
-                console.log('Mobile view detected, menu button display:', btnStyles ? btnStyles.display : 'element not found');
-                
-                if (btnStyles && btnStyles.display === 'none') {
-                    console.error('ERROR: Mobile menu button is hidden (display:none) in mobile view!');
-                }
-            } else {
-                console.log('Desktop view detected, menu should be visible');
-                const nav = document.getElementById('main-nav');
-                const navStyles = nav ? window.getComputedStyle(nav) : null;
-                
-                if (navStyles && (navStyles.display === 'none' || navStyles.visibility === 'hidden')) {
-                    console.error('ERROR: Desktop menu is hidden in desktop view!');
-                }
-            }
-        } catch (error) {
-            console.error('ERROR in final verification:', error);
-        }
-    }, 1000);
 }
 
 /**
@@ -912,3 +473,14 @@ function hideLoader() {
         }, 500);
     }
 }
+
+// Add header.css and fonts.css stylesheets
+const headerStylesheet = document.createElement('link');
+headerStylesheet.rel = 'stylesheet';
+headerStylesheet.href = 'css/header.css';
+document.head.appendChild(headerStylesheet);
+
+const fontsStylesheet = document.createElement('link');
+fontsStylesheet.rel = 'stylesheet';
+fontsStylesheet.href = 'css/fonts.css';
+document.head.appendChild(fontsStylesheet);

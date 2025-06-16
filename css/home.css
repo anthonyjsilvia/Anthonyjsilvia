@@ -147,7 +147,7 @@
   
   .hero-content {
     flex: 1;
-    max-width: 620px;
+    width: 60%;
     animation: fadeInUp 0.8s var(--animation-timing) both;
     animation-delay: 0.3s;
   }
@@ -159,13 +159,99 @@
     margin-bottom: 12px;
     color: #333333;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .title-line {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    text-align: left;
+  }
+  
+  .hero-title .highlight,
+  .hero-title .night-stars {
+    position: relative;
+    display: inline-block;
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    margin: 0.5rem 0;
+    text-align: left;
   }
   
   .hero-title .highlight {
-    position: relative;
-    display: inline-block;
     color: var(--highlight-color);
-    z-index: 1;
+  }
+  
+  .day-text {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Hide static versions by default and when transparency is enabled */
+  .static-day-text,
+  .static-night-text {
+    display: none !important;
+  }
+
+  /* When transparency is disabled, hide animated versions and show static ones */
+  .no-transparency .day-text,
+  .no-transparency .night-stars {
+    display: none !important;
+  }
+
+  .no-transparency .static-day-text,
+  .no-transparency .static-night-text {
+    display: inline-block !important;
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    margin: 0.5rem 0;
+    text-align: left;
+  }
+
+  .no-transparency .static-day-text {
+    color: var(--highlight-color);
+  }
+
+  .no-transparency .static-night-text {
+    color: var(--text-color);
+  }
+  
+  .clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  
+  .clouds::before,
+  .clouds::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 25%,
+      rgba(255, 255, 255, 0.3) 75%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: cloudMove 8s linear infinite;
+  }
+  
+  .clouds::after {
+    animation-delay: -4s;
+    opacity: 0.5;
+  }
+  
+  @keyframes cloudMove {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
   
   .hero-title .highlight::before {
@@ -180,6 +266,28 @@
   }
   
   /* Night Stars Effect */
+  .star {
+    position: absolute;
+    background-color: transparent;
+    pointer-events: none;
+  }
+
+  .star::before,
+  .star::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+
+  .star::after {
+    transform: rotate(45deg);
+  }
+
   .night-stars {
     position: relative;
     display: inline-block;
@@ -194,20 +302,20 @@
     height: 100%;
     pointer-events: none;
   }
-
-  .star {
-    position: absolute;
-    background-color: #fff;
-    border-radius: 50%;
-    pointer-events: none;
-  }
   
   .hero-description {
-    font-size: 1.125rem;
-    font-weight: 400;
+    flex: 1;
+    width: 40%;
+    padding-left: 2rem;
+    font-size: 1.25rem;
+    line-height: 1.6;
     color: var(--text-muted);
-    margin-bottom: 36px;
-    max-width: 540px;
+    animation: fadeInUp 0.8s var(--animation-timing) both;
+    animation-delay: 0.5s;
+  }
+  
+  .hero-description p {
+    margin: 0;
   }
   
   /* Experience Stats */
@@ -467,14 +575,15 @@
   
   @media (max-width: 900px) {
     .hero {
-      flex-direction: column-reverse;
-      gap: 50px;
-      padding: 30px 0;
-      text-align: center;
+      flex-direction: column;
+      text-align: left;
+      gap: 2rem;
     }
-    
-    .hero-content {
-      max-width: 100%;
+
+    .hero-content,
+    .hero-description {
+      width: 100%;
+      padding-left: 0;
     }
     
     .hero-title::after {
@@ -495,16 +604,16 @@
   
   @media (max-width: 576px) {
     .hero {
-      padding: 20px 0;
+      padding: 120px 0 40px;
       gap: 40px;
     }
     
     .hero-title {
-      font-size: 2.25rem;
+      font-size: 3rem;
     }
     
     .hero-description {
-      font-size: 1rem;
+      font-size: 1.33rem;
     }
     
     .experience-stats {
@@ -945,4 +1054,15 @@
     display: block;
     font-size: 0.8rem;
     color: var(--text-tertiary);
+}
+
+.titles-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 24px;
+}
+
+.titles-container .section-title {
+    margin: 0;
 }
