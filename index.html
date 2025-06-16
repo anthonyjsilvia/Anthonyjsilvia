@@ -127,6 +127,32 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-preview">
+                                <p>"Anthony worked directly on my team and continues to support us from an adjacent team within the same vertical. I had the pleasure of interviewing him when he was joining Lowe's. He was recruited from our stores into our internal talent incubator (Launchpad) program by one of our senior executives, and a few years ago—has it really been that long?!—he officially joined our team.</p>
+                                <p>If you're ever stranded on a deserted island, you want an Anthony. He's a true Swiss Army knife of a designer: deeply versatile, incredibly hardworking, and endlessly curious. He's the first to raise his hand, has no ego, and is remarkably open to coaching and feedback. On top of that, he's kind, funny, sweet-natured, and always ready to lend a hand.</p>
+                            </div>
+                            <div class="testimonial-full" style="display: none;">
+                                <p>Practically speaking, Anthony has been instrumental in maturing our usability testing practice. He builds complex prototypes quickly and manages the tactical side of testing—from organizing logistics and writing scripts to conducting and moderating interviews. He's a flexible designer who can drop into any product space and ramp up fast. He collaborates well with a range of Product Management styles and can hold his own in technical conversations, thanks to his background in coding. He often brings fresh ideas and alternative approaches we hadn't considered, pushing our thinking forward.</p>
+                                <p>Anthony is an absolute joy to have on the team. I'm so grateful he chose to stay in Enterprise—especially in Post-Selling. He has a bright, rewarding career ahead of him."</p>
+                            </div>
+                            <button class="show-more-btn" onclick="toggleTestimonial(this)">Show More</button>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-image">
+                                <img src="assets/images/recommendations/kludlow.jpeg" alt="Kristin Ludlow">
+                            </div>
+                            <div class="author-info">
+                                <h3>Kristin Ludlow</h3>
+                                <p>Senior UX Leader <span>Lowe's Companies, Inc. (2025)</span></p>
+                                <a href="https://www.linkedin.com/in/kristinludlow/" target="_blank" rel="noopener noreferrer" class="linkedin-link">
+                                    <i class="fab fa-linkedin"></i> LinkedIn
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -195,6 +221,48 @@
             }, 500);
         });
     </script>
+
+    <script>
+        function toggleTestimonial(button) {
+            const testimonialCard = button.closest('.testimonial-card');
+            const preview = testimonialCard.querySelector('.testimonial-preview');
+            const full = testimonialCard.querySelector('.testimonial-full');
+            
+            if (full.style.display === 'none') {
+                full.style.display = 'block';
+                button.textContent = 'Show Less';
+            } else {
+                full.style.display = 'none';
+                button.textContent = 'Show More';
+            }
+        }
+    </script>
+
+    <style>
+        .show-more-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 0.9em;
+            padding: 5px 0;
+            margin-top: 10px;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .show-more-btn:hover {
+            opacity: 0.8;
+        }
+
+        .testimonial-preview {
+            margin-bottom: 10px;
+        }
+
+        .testimonial-full {
+            margin-top: 10px;
+        }
+    </style>
 
 </body>
 </html>
