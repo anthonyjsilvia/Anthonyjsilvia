@@ -1,0 +1,14 @@
+{
+  "name": "anthony-silvia-portfolio-root",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "cd NextGen && npm install && npm run build",
+    "start": "cd NextGen && npm start",
+    "dev": "cd NextGen && npm run dev"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
