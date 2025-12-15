@@ -1,0 +1,15 @@
+@import '../styles/styles.css';
+@import '../styles/home.css';
+@import '../styles/resume.css';
+@import '../styles/portfolio.css';
+@import '../styles/fonts.css';
+
+/* Override body padding-top for homepage - hero fills entire viewport */
+body {
+  padding-top: 0;
+}
+
+/* Add padding-top only for non-homepage pages */
+body:not(.home-page) {
+  padding-top: 80px;
+}
