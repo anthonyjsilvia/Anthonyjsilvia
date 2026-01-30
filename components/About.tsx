@@ -1,49 +1,32 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Lightbulb, Target, Rocket } from "lucide-react";
-
-const strengths = [
-  {
-    icon: Lightbulb,
-    title: "Innovative Design",
-    description: "Designing user-friendly platforms for modern business needs",
-  },
-  {
-    icon: Target,
-    title: "Accessibility Focus",
-    description: "Leading teams with collaborative energy and a focus on accessibility",
-  },
-  {
-    icon: Rocket,
-    title: "Scalable Solutions",
-    description: "Keeping startups lean, efficient, and scalable with robust tech stacks",
-  },
-];
+import Image from "next/image";
 
 export default function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const shouldReduceMotion = useReducedMotion();
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: shouldReduceMotion ? 0 : 0.15,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: shouldReduceMotion ? 0 : 0.6,
         ease: "easeOut",
       },
     },
@@ -53,10 +36,10 @@ export default function About() {
     <section
       id="about"
       ref={ref}
-      className="py-24 md:py-32 bg-white dark:bg-gray-900"
+      className="py-24 md:py-32 bg-white dark:bg-black"
       aria-labelledby="about-heading"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -65,84 +48,103 @@ export default function About() {
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2
               id="about-heading"
-              className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6"
+              className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6"
             >
-              About Me
+              About
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full" />
+            <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full" />
           </motion.div>
 
-          <motion.div
-            variants={itemVariants}
-            className="max-w-4xl mx-auto mb-16"
-          >
-            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-              Hi, I&apos;m <strong className="text-gray-900 dark:text-white">Anthony Silvia</strong>—a dynamic
-              problem-solver at the intersection of software design, innovation,
-              and user-centric solutions. I currently serve as an{" "}
-              <strong className="text-gray-900 dark:text-white">Associate Product Designer</strong> at
-              Lowe&apos;s, crafting seamless experiences for customers and
-              internal teams.
-            </p>
-            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-              At the same time, I&apos;m the <strong className="text-gray-900 dark:text-white">Principal at NodeDa</strong>, where I lead the
-              development of groundbreaking tools like live transcription software
-              (NodeDa Lingo) and other amazing projects.
-            </p>
-            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-              With a strong foundation in UX research, web development, and
-              startup growth, I specialize in delivering intuitive, scalable
-              solutions that solve real-world problems while pushing the
-              boundaries of technology.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            className="grid md:grid-cols-3 gap-8 mt-16"
-          >
-            {strengths.map((strength, index) => {
-              const Icon = strength.icon;
-              return (
+          {/* Image and Content Layout */}
+          <div className="grid md:grid-cols-[280px_1fr] gap-12 items-start mb-12">
+            {/* Profile Image */}
+            <motion.div
+              variants={itemVariants}
+              className="flex justify-center md:justify-start"
+            >
+              <div className="relative">
                 <motion.div
-                  key={strength.title}
-                  className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                  transition={{ delay: index * 0.1 + 0.3 }}
+                  className="rounded-full overflow-hidden shadow-2xl border-4 border-[var(--border-light)]"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                  transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.3 }}
                 >
-                  <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-6">
-                    <Icon className="w-8 h-8 text-white" aria-hidden="true" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                    {strength.title}
-                  </h3>
-                  <p className="text-gray-700 dark:text-gray-300">
-                    {strength.description}
-                  </p>
+                  <Image
+                    src="/me.PNG"
+                    alt="Anthony Silvia - Product Designer"
+                    width={280}
+                    height={280}
+                    className="rounded-full object-cover w-[280px] h-[280px]"
+                    priority
+                  />
                 </motion.div>
-              );
-            })}
-          </motion.div>
+                {/* Decorative ring */}
+                <div 
+                  className="absolute inset-0 rounded-full border-2 border-[var(--primary)] opacity-20"
+                  aria-hidden="true"
+                />
+              </div>
+            </motion.div>
 
+            {/* Text Content */}
+            <motion.div
+              variants={itemVariants}
+              className="space-y-6 text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed text-lg"
+            >
+              <p className="text-xl font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)] leading-relaxed">
+                I am a Product Designer focused on building scalable, accessible
+                enterprise systems grounded in real-world workflows and operational
+                constraints.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Main Content - Full Width */}
           <motion.div
             variants={itemVariants}
-            className="mt-16 p-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl text-white text-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-            transition={{ delay: 0.6 }}
+            className="space-y-6 text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed text-lg max-w-4xl mx-auto"
           >
-            <p className="text-lg md:text-xl font-medium">
-              Fun fact: I&apos;m passionate about transforming complex problems
-              into elegant solutions—fueled by caffeine-free herbal tea and a
-              knack for building Lego apartments in my downtime.
-            </p>
+            <div className="prose prose-lg max-w-none">
+              <p>
+                I currently work as an Associate Product Designer at Lowe&apos;s, where
+                I design and refine internal and customer-facing systems that
+                support complex, high-volume retail operations. My work centers
+                on improving usability, reducing workflow efficiency, and translating
+                research insights into practical design decisions that align product,
+                engineering, and business needs.
+              </p>
+              <p>
+                Alongside my enterprise work, I founded NodeDa as an independent
+                product design practice. Through NodeDa, I have led end-to-end product design efforts, including the design and launch of
+                independent applications and selective consulting engagements.
+                This experience has strengthened my ability to take ownership
+                across the full product lifecycle, from discovery and definition through
+                delivery, iteration, and post-launch learning.
+              </p>
+              <p>
+                My background spans UX research, system design, accessibility-first design practices, and cross-functional collaboration. I am
+                experienced in designing within WCAG 2.2 AA and AAA standards
+                while balancing legacy systems, technical constraints, and
+                operational realities.
+              </p>
+              <p>
+                I approach design with a focus on clarity, accountability, and long-term impact. I value thoughtful tradeoffs, strong collaboration, and
+                solutions that perform reliably at scale.
+              </p>
+              <p>
+                Outside of work, I enjoy camping and spending time outdoors, which
+                reinforces my appreciation for practical systems that function well
+                under real-world conditions.
+              </p>
+              <p>
+                I am open to connecting with others working on enterprise platforms,
+                operational systems, and products that require disciplined design
+                thinking and durable execution.
+              </p>
+            </div>
           </motion.div>
         </motion.div>
       </div>
     </section>
   );
 }
-
-

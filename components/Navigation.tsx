@@ -1,21 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const navItems = [
-  { name: "Home", href: "#hero" },
-  { name: "About", href: "#about" },
   { name: "Experience", href: "#experience" },
-  { name: "Skills", href: "#skills" },
-  { name: "Projects", href: "#projects" },
+  { name: "Portfolio", href: "#portfolio" },
+  { name: "Resume", href: "/resume.pdf", external: true },
   { name: "Contact", href: "#contact" },
 ];
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,11 +24,15 @@ export default function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (href: string, external?: boolean) => {
+    if (external) {
+      setIsOpen(false);
+      return;
+    }
     setIsOpen(false);
     const element = document.querySelector(href);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      element.scrollIntoView({ behavior: shouldReduceMotion ? "auto" : "smooth", block: "start" });
     }
   };
 
@@ -37,7 +40,7 @@ export default function Navigation() {
     <nav
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg"
+          ? "bg-white/95 dark:bg-black/95 backdrop-blur-md shadow-lg border-b border-[var(--border-light)]"
           : "bg-transparent"
       }`}
       role="navigation"
@@ -51,10 +54,10 @@ export default function Navigation() {
               e.preventDefault();
               handleNavClick("#hero");
             }}
-            className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 rounded"
+            className="text-xl md:text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] hover:text-[var(--primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded"
             aria-label="Anthony Silvia - Home"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
+            whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
           >
             Anthony Silvia
           </motion.a>
@@ -66,14 +69,18 @@ export default function Navigation() {
                 key={item.name}
                 href={item.href}
                 onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.href);
+                  if (!item.external) {
+                    e.preventDefault();
+                    handleNavClick(item.href);
+                  }
                 }}
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 rounded px-2 py-1"
-                initial={{ opacity: 0, y: -20 }}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+                className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] hover:text-[var(--primary)] font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded px-2 py-1"
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                aria-label={`Navigate to ${item.name} section`}
+                transition={{ delay: shouldReduceMotion ? 0 : index * 0.1 }}
+                aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
               >
                 {item.name}
               </motion.a>
@@ -82,7 +89,7 @@ export default function Navigation() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="md:hidden p-2 rounded-lg text-[var(--text-primary)] dark:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] dark:hover:bg-[var(--bg-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
             onClick={() => setIsOpen(!isOpen)}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
@@ -102,11 +109,11 @@ export default function Navigation() {
         {isOpen && (
           <motion.div
             id="mobile-menu"
-            className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
+            className="md:hidden bg-white dark:bg-black border-t border-[var(--border-light)]"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
           >
             <div className="px-4 pt-2 pb-4 space-y-2">
               {navItems.map((item, index) => (
@@ -114,14 +121,18 @@ export default function Navigation() {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => {
-                    e.preventDefault();
-                    handleNavClick(item.href);
+                    if (!item.external) {
+                      e.preventDefault();
+                      handleNavClick(item.href);
+                    }
                   }}
-                  className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  initial={{ opacity: 0, x: -20 }}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  className="block px-4 py-3 text-[var(--text-primary)] dark:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] dark:hover:bg-[var(--bg-secondary)] rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
+                  initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  aria-label={`Navigate to ${item.name} section`}
+                  transition={{ delay: shouldReduceMotion ? 0 : index * 0.05 }}
+                  aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
                 >
                   {item.name}
                 </motion.a>
@@ -133,5 +144,3 @@ export default function Navigation() {
     </nav>
   );
 }
-
-

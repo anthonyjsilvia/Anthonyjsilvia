@@ -1,39 +1,20 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 
-const skillCategories = [
-  {
-    title: "Top Skills",
-    skills: [
-      { name: "Data Analysis", level: 90 },
-      { name: "Account Management", level: 85 },
-      { name: "Financial Analysis", level: 80 },
-    ],
-    color: "from-blue-600 to-blue-700",
-  },
-  {
-    title: "Design & Development",
-    skills: [
-      { name: "UX Research", level: 95 },
-      { name: "Web Development", level: 90 },
-      { name: "Figma", level: 95 },
-      { name: "UI/UX Design", level: 92 },
-      { name: "Accessibility (WCAG)", level: 90 },
-    ],
-    color: "from-purple-600 to-purple-700",
-  },
-  {
-    title: "Languages",
-    skills: [
-      { name: "English (Native)", level: 100 },
-      { name: "American Sign Language (Elementary)", level: 40 },
-      { name: "Español (Elementary)", level: 40 },
-    ],
-    color: "from-amber-600 to-amber-700",
-  },
+// EXACT LinkedIn content - word-for-word
+const topSkills = [
+  "Data Analysis",
+  "Account Management",
+  "Financial Analysis",
+];
+
+const languages = [
+  { name: "American Sign Language", level: "Elementary" },
+  { name: "English", level: "Native or Bilingual" },
+  { name: "Español", level: "Elementary" },
 ];
 
 const certifications = [
@@ -44,29 +25,34 @@ const certifications = [
   "Introduction to Statistics (STAT1001)",
 ];
 
-const honors = ["Honor Roll", "Dean's List", "President's List"];
+const honorsAwards = [
+  "Honor Roll",
+  "Deans List",
+  "Presidents list",
+];
 
 export default function Skills() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const shouldReduceMotion = useReducedMotion();
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: shouldReduceMotion ? 0 : 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
+        duration: shouldReduceMotion ? 0 : 0.5,
       },
     },
   };
@@ -75,139 +61,129 @@ export default function Skills() {
     <section
       id="skills"
       ref={ref}
-      className="py-24 md:py-32 bg-white dark:bg-gray-900"
+      className="py-24 md:py-32 bg-white dark:bg-black"
       aria-labelledby="skills-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: -20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
         >
           <h2
             id="skills-heading"
-            className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6"
+            className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6"
           >
-            Skills & Achievements
+            Skills & Certifications
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full" />
+          <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full" />
         </motion.div>
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid md:grid-cols-3 gap-8 mb-16"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
         >
-          {skillCategories.map((category, categoryIndex) => (
-            <motion.div
-              key={category.title}
-              variants={itemVariants}
-              className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-lg"
-            >
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                {category.title}
-              </h3>
-              <div className="space-y-6">
-                {category.skills.map((skill, skillIndex) => (
-                  <div key={skill.name}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-900 dark:text-white font-medium">
-                        {skill.name}
-                      </span>
-                      <span className="text-gray-600 dark:text-gray-400 text-sm">
-                        {skill.level}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3 overflow-hidden">
-                      <motion.div
-                        className={`h-full bg-gradient-to-r ${category.color} rounded-full`}
-                        initial={{ width: 0 }}
-                        animate={
-                          isInView
-                            ? { width: `${skill.level}%` }
-                            : { width: 0 }
-                        }
-                        transition={{
-                          delay: categoryIndex * 0.2 + skillIndex * 0.1,
-                          duration: 1,
-                          ease: "easeOut",
-                        }}
-                        aria-label={`${skill.name} skill level: ${skill.level}%`}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-8">
+          {/* Top Skills */}
           <motion.div
-            className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-lg"
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
+            variants={itemVariants}
+            className="bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] p-8 rounded-2xl shadow-lg border border-[var(--border-light)]"
           >
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-              Certifications
+            <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6">
+              Top Skills
             </h3>
             <ul className="space-y-3">
-              {certifications.map((cert, index) => (
-                <motion.li
-                  key={cert}
-                  className="flex items-center gap-3 text-gray-700 dark:text-gray-300"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={
-                    isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
-                  }
-                  transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+              {topSkills.map((skill, index) => (
+                <li
+                  key={skill}
+                  className="flex items-center gap-3 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]"
                 >
                   <span
-                    className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600"
+                    className="w-2 h-2 rounded-full bg-[var(--primary)]"
                     aria-hidden="true"
                   />
-                  {cert}
-                </motion.li>
+                  {skill}
+                </li>
               ))}
             </ul>
           </motion.div>
 
+          {/* Languages */}
           <motion.div
-            className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-gray-800 dark:to-gray-700 p-8 rounded-2xl shadow-lg"
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
+            variants={itemVariants}
+            className="bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] p-8 rounded-2xl shadow-lg border border-[var(--border-light)]"
           >
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6">
+              Languages
+            </h3>
+            <ul className="space-y-3">
+              {languages.map((lang, index) => (
+                <li
+                  key={lang.name}
+                  className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)]"
+                >
+                  <span className="font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)]">
+                    {lang.name}
+                  </span>
+                  {" "}({lang.level})
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Honors & Awards */}
+          <motion.div
+            variants={itemVariants}
+            className="bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] p-8 rounded-2xl shadow-lg border border-[var(--border-light)]"
+          >
+            <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6">
               Honors & Awards
             </h3>
             <ul className="space-y-3">
-              {honors.map((honor, index) => (
-                <motion.li
+              {honorsAwards.map((honor, index) => (
+                <li
                   key={honor}
-                  className="flex items-center gap-3 text-gray-700 dark:text-gray-300"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={
-                    isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }
-                  }
-                  transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+                  className="flex items-center gap-3 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]"
                 >
                   <span
-                    className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-600 to-orange-600"
+                    className="w-2 h-2 rounded-full bg-[var(--accent)]"
                     aria-hidden="true"
                   />
                   {honor}
-                </motion.li>
+                </li>
               ))}
             </ul>
           </motion.div>
-        </div>
+        </motion.div>
+
+        {/* Certifications */}
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+          transition={{ delay: shouldReduceMotion ? 0 : 0.4, duration: shouldReduceMotion ? 0 : 0.6 }}
+          className="bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] p-8 rounded-2xl shadow-lg border border-[var(--border-light)]"
+        >
+          <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6">
+            Certifications
+          </h3>
+          <ul className="space-y-3">
+            {certifications.map((cert, index) => (
+              <li
+                key={cert}
+                className="flex items-center gap-3 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]"
+              >
+                <span
+                  className="w-2 h-2 rounded-full bg-[var(--secondary)]"
+                  aria-hidden="true"
+                />
+                {cert}
+              </li>
+            ))}
+          </ul>
+        </motion.div>
       </div>
     </section>
   );
 }
-
-
