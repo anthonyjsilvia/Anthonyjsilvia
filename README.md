@@ -64,13 +64,15 @@ npm start
 Create a `.env.local` file in the root directory with the following variables for Firebase integration:
 
 ```env
-# Firebase Configuration (Required for contact form with Firestore)
+# Firebase Configuration (required for Firestore contact form and Google Analytics)
 NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
 NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+# Google Analytics via Firebase (optional but recommended)
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
 
 ### Getting Firebase Configuration Values
@@ -82,7 +84,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
 5. Click on the web app icon (`</>`) or "Add app" if you haven't created one
 6. Copy the configuration values from the `firebaseConfig` object
 
-**Note**: The contact form will work without Firebase (it will fall back to a mailto link), but for storing form submissions in Firestore, Firebase configuration is required.
+**Note**: The contact form will work without Firebase (it will fall back to a mailto link), but for storing form submissions in Firestore, Firebase configuration is required. For **Google Analytics** (Firebase Analytics) site-wide, set `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` to your measurement ID (e.g. `G-XXXXXXXXXX`) from Firebase Console → Project Settings → General → Your apps → SDK setup and configuration.
 
 ### Firestore Setup (Optional - for contact form)
 

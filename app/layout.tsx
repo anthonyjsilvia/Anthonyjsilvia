@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AnalyticsProvider from "@/components/AnalyticsProvider";
 
 export const metadata: Metadata = {
   title: "Anthony Silvia - Product Designer | Enterprise UX, Operational Workflows & Accessible Systems",
@@ -74,6 +75,7 @@ export default function RootLayout({
         <link rel="canonical" href="https://anthonyjsilvia.com" />
       </head>
       <body className="antialiased">
+        <AnalyticsProvider />
         {children}
       </body>
     </html>

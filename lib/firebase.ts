@@ -1,9 +1,9 @@
 /**
  * Firebase Configuration
- * 
+ *
  * This file initializes Firebase using the modular Web SDK.
  * All Firebase config values should be set via environment variables.
- * 
+ *
  * Required environment variables:
  * - NEXT_PUBLIC_FIREBASE_API_KEY
  * - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
@@ -11,14 +11,16 @@
  * - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
  * - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
  * - NEXT_PUBLIC_FIREBASE_APP_ID
- * 
- * Optional (for Firestore):
+ *
+ * Optional:
+ * - NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID (for Google Analytics via Firebase)
  * - NEXT_PUBLIC_FIREBASE_DATABASE_URL (if using Realtime Database)
  */
 
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
+import { getAnalytics, Analytics, isSupported } from 'firebase/analytics';
 
 // Firebase configuration interface
 interface FirebaseConfig {
@@ -28,6 +30,7 @@ interface FirebaseConfig {
   storageBucket: string;
   messagingSenderId: string;
   appId: string;
+  measurementId?: string;
   databaseURL?: string;
 }
 
@@ -40,6 +43,7 @@ const getFirebaseConfig = (): FirebaseConfig => {
     storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || '',
     messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '',
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || undefined,
   };
 
   // Validate required config values
@@ -70,15 +74,17 @@ const getFirebaseConfig = (): FirebaseConfig => {
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
 let db: Firestore | undefined;
+let analytics: Analytics | null = null;
 
 const initializeFirebase = (): {
   app: FirebaseApp;
   auth: Auth;
   db: Firestore;
+  analytics: Analytics | null;
 } => {
   // Return existing instances if already initialized
   if (app && auth && db) {
-    return { app, auth, db };
+    return { app, auth, db, analytics };
   }
 
   // Check if Firebase is already initialized
@@ -101,7 +107,22 @@ const initializeFirebase = (): {
   auth = getAuth(app);
   db = getFirestore(app);
 
-  return { app, auth, db };
+  // Analytics is initialized asynchronously in the client (see AnalyticsProvider)
+  return { app, auth, db, analytics };
+};
+
+/**
+ * Initialize and return Firebase Analytics (client-only).
+ * Call this from a client component after mount.
+ */
+export const getFirebaseAnalytics = async (): Promise<Analytics | null> => {
+  if (typeof window === 'undefined') return null;
+  const supported = await isSupported();
+  if (!supported) return null;
+  if (analytics) return analytics;
+  const { app: firebaseApp } = initializeFirebase();
+  analytics = getAnalytics(firebaseApp);
+  return analytics;
 };
 
 // Export initialized Firebase services
@@ -110,9 +131,9 @@ export const getFirebase = (): {
   app: FirebaseApp;
   auth: Auth;
   db: Firestore;
+  analytics: Analytics | null;
 } => {
   if (typeof window === 'undefined') {
-    // Server-side: return a safe placeholder or throw
     throw new Error(
       'Firebase should only be initialized on the client side. ' +
       'Use getFirebase() within useEffect or client components only.'
