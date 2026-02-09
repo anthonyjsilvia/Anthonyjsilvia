@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Anthony Silvia - Product Designer | Enterprise UX, Operational Workflows & Accessible Systems",
     description: "Product Designer focused on building scalable, accessible enterprise systems grounded in real-world workflows and operational constraints.",
-    url: "https://anthonyjsilvia.com",
+    url: "https://anthonysilvia.com",
     siteName: "Anthony Silvia Portfolio",
     type: "website",
     locale: "en_US",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Anthony Silvia - Product Designer | Enterprise UX, Operational Workflows & Accessible Systems",
     description: "Product Designer focused on building scalable, accessible enterprise systems grounded in real-world workflows and operational constraints.",
-    creator: "@anthonyjsilvia", // Update if you have a Twitter handle
+    creator: "@anthonysilvia", // Update if you have a Twitter handle
     images: ["/og-image.jpg"], // You can add a Twitter image later
   },
   robots: {
@@ -72,7 +72,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <link rel="canonical" href="https://anthonyjsilvia.com" />
+        <link rel="canonical" href="https://anthonysilvia.com" />
       </head>
       <body className="antialiased">
         <AnalyticsProvider />

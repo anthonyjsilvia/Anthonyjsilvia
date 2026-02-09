@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/_next/'],
       },
     ],
-    sitemap: 'https://anthonyjsilvia.com/sitemap.xml',
+    sitemap: 'https://anthonysilvia.com/sitemap.xml',
   }
 }

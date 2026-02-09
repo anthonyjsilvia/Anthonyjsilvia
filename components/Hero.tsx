@@ -114,7 +114,7 @@ export default function Hero() {
           </motion.a>
 
           <motion.a
-            href="https://www.linkedin.com/in/anthonyjsilvia"
+            href="https://www.linkedin.com/in/anthonysilvia"
             target="_blank"
             rel="noopener noreferrer"
             className="px-8 py-4 bg-white dark:bg-[var(--bg-secondary)] text-[var(--text-primary)] dark:text-[var(--text-primary)] rounded-lg font-semibold text-lg border-2 border-[var(--border-light)] hover:border-[var(--primary)] dark:hover:border-[var(--primary)] transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
@@ -127,11 +127,24 @@ export default function Hero() {
           </motion.a>
 
           <motion.a
-            href="mailto:contact@anthonyjsilvia.com"
+            href="https://shutterda.com/Anthony"
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-8 py-4 bg-white dark:bg-[var(--bg-secondary)] text-[var(--text-primary)] dark:text-[var(--text-primary)] rounded-lg font-semibold text-lg border-2 border-[var(--border-light)] hover:border-[var(--primary)] dark:hover:border-[var(--primary)] transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-            aria-label="Send email to contact@anthonyjsilvia.com"
+            aria-label="Visit ShutterDa portfolio (opens in new tab)"
+          >
+            <img src="/nodeda/ShutterDa.svg" alt="" className="w-5 h-5 brightness-0 dark:invert" aria-hidden="true" />
+            ShutterDa
+          </motion.a>
+
+          <motion.a
+            href="mailto:contact@anthonysilvia.com"
+            className="px-8 py-4 bg-white dark:bg-[var(--bg-secondary)] text-[var(--text-primary)] dark:text-[var(--text-primary)] rounded-lg font-semibold text-lg border-2 border-[var(--border-light)] hover:border-[var(--primary)] dark:hover:border-[var(--primary)] transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
+            whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
+            whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
+            aria-label="Send email to contact@anthonysilvia.com"
           >
             <Mail className="w-5 h-5" aria-hidden="true" />
             Email

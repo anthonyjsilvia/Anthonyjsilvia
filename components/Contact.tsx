@@ -7,9 +7,10 @@ import { Mail, Linkedin, Globe } from "lucide-react";
 
 // Contact information
 const contactInfo = {
-  email: "contact@anthonyjsilvia.com",
-  linkedin: "www.linkedin.com/in/anthonyjsilvia",
-  personal: "anthonyjsilvia.com",
+  email: "contact@anthonysilvia.com",
+  linkedin: "www.linkedin.com/in/anthonysilvia",
+  personal: "anthonysilvia.com",
+  shutterda: "https://shutterda.com/Anthony",
 };
 
 export default function Contact() {
@@ -129,6 +130,27 @@ export default function Contact() {
                 </div>
                 <div className="text-[var(--text-primary)] dark:text-[var(--text-primary)] font-semibold">
                   {contactInfo.personal}
+                </div>
+              </div>
+            </motion.a>
+
+            <motion.a
+              href={contactInfo.shutterda}
+              target="_blank"
+              rel="noopener noreferrer"
+              variants={itemVariants}
+              className="flex items-center gap-4 p-6 bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] rounded-xl hover:bg-[var(--bg-tertiary)] dark:hover:bg-[var(--bg-tertiary)] transition-all group focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] border border-[var(--border-light)]"
+              aria-label="Visit ShutterDa portfolio (opens in new tab)"
+            >
+              <div className="w-12 h-12 rounded-lg bg-[var(--primary)] flex items-center justify-center flex-shrink-0 p-1.5">
+                <img src="/nodeda/ShutterDa.svg" alt="" className="w-full h-full object-contain brightness-0 invert" aria-hidden="true" />
+              </div>
+              <div>
+                <div className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] text-sm font-medium mb-1">
+                  ShutterDa
+                </div>
+                <div className="text-[var(--text-primary)] dark:text-[var(--text-primary)] font-semibold">
+                  shutterda.com/Anthony
                 </div>
               </div>
             </motion.a>

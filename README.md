@@ -35,7 +35,7 @@ A premium, accessible portfolio website built with Next.js 15.1.6, featuring WCA
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd Anthonyjsilvia
+cd anthonysilvia
 ```
 
 2. Install dependencies:
@@ -303,7 +303,7 @@ This project is private and proprietary.
 
 ## Support
 
-For questions or issues, contact: contact@anthonyjsilvia.com
+For questions or issues, contact: contact@anthonysilvia.com
 
 ---
 
