@@ -170,4 +170,35 @@ select:focus-visible {
   }
 }
 
+/* Nav scroll progress — smooth, no React re-renders */
+.nav-scroll-root {
+  --scroll-progress: 0;
+}
+
+.nav-progress-fill {
+  width: calc(var(--scroll-progress, 0) * 100%);
+  transition: width 0.15s ease-out;
+}
+
+.nav-gradient-text {
+  background-image: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff calc(var(--scroll-progress, 0) * 100%),
+    var(--text-primary) calc(var(--scroll-progress, 0) * 100%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nav-menu-icon {
+  color: var(--text-primary);
+  transition: color 0.15s ease-out;
+}
+
+.nav-scroll-root[data-progress-high="true"] .nav-menu-icon {
+  color: #ffffff;
+}
+
 

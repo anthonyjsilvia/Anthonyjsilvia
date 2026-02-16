@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useScroll, useSpring, useReducedMotion } from "framer-motion";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Experience from "@/components/Experience";
@@ -12,13 +11,6 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 export default function Home() {
-  const { scrollYProgress } = useScroll();
-  const shouldReduceMotion = useReducedMotion();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -39,13 +31,6 @@ export default function Home() {
         Skip to main content
       </a>
       <Navigation />
-      {!shouldReduceMotion && (
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-[var(--primary)] z-50 origin-left"
-          style={{ scaleX }}
-          aria-hidden="true"
-        />
-      )}
       <Hero />
       <About />
       <Experience />

@@ -4,13 +4,33 @@ import { motion, useReducedMotion } from "framer-motion";
 import { FileText, Linkedin, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const FADE_START = 0; // start fading as soon as user scrolls
+const FADE_END = 0.27; // finish fading after ~27% of viewport (0.4 / 1.5)
+
 export default function Hero() {
   const [mounted, setMounted] = useState(false);
+  const [bgOpacity, setBgOpacity] = useState(1);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    const handleScroll = () => {
+      const vh = window.innerHeight;
+      const scrollY = window.scrollY;
+      const fadeRange = vh * FADE_END;
+      const progress = Math.min(1, scrollY / fadeRange);
+      setBgOpacity(1 - progress);
+    };
+
+    handleScroll(); // set initial
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [shouldReduceMotion]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -39,11 +59,18 @@ export default function Hero() {
     return (
       <section
         id="hero"
-        className="min-h-screen flex items-center justify-center bg-white dark:bg-black"
+        className="min-h-screen flex items-center justify-center relative overflow-hidden"
         aria-label="Hero section"
       >
-        <div className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-black dark:text-white">
+        <img
+          src="/homepage/ashero.PNG"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+        <div className="relative z-10 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-white">
             Anthony Silvia
           </h1>
         </div>
@@ -57,14 +84,23 @@ export default function Hero() {
       className="min-h-screen flex items-center justify-center relative overflow-hidden bg-white dark:bg-black"
       aria-label="Hero section"
     >
-      {/* Subtle background accent - AAA compliant */}
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--primary)] opacity-5 dark:opacity-10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--secondary)] opacity-5 dark:opacity-10 rounded-full blur-3xl" />
+      {/* Full-viewport background image + overlay — fade on scroll */}
+      <div
+        className="absolute inset-0 transition-opacity duration-100 ease-out"
+        style={{ opacity: shouldReduceMotion ? 1 : bgOpacity }}
+        aria-hidden="true"
+      >
+        <img
+          src="/homepage/ashero.PNG"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-center min-h-screen"
+        />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       <motion.div
-        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-opacity duration-100 ease-out"
+        style={{ opacity: shouldReduceMotion ? 1 : bgOpacity }}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -74,7 +110,7 @@ export default function Hero() {
           variants={itemVariants}
           className="flex justify-center mb-6"
         >
-          <div className="inline-flex items-center px-4 py-2 bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] rounded-full text-[var(--text-secondary)] dark:text-[var(--text-secondary)] text-sm font-medium border border-[var(--border-light)]">
+          <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium border border-white/30">
             Charlotte Metro
           </div>
         </motion.div>
@@ -82,7 +118,7 @@ export default function Hero() {
         {/* Name */}
         <motion.h1
           variants={itemVariants}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-[var(--text-primary)] dark:text-[var(--text-primary)]"
+          className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white drop-shadow-lg"
         >
           Anthony Silvia
         </motion.h1>
@@ -90,7 +126,7 @@ export default function Hero() {
         {/* Headline - EXACT from LinkedIn */}
         <motion.p
           variants={itemVariants}
-          className="text-xl md:text-2xl lg:text-3xl text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-8 max-w-4xl mx-auto leading-relaxed font-medium"
+          className="text-xl md:text-2xl lg:text-3xl text-white/95 mb-8 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-md"
         >
           Product Designer | Enterprise UX, Operational Workflows & Accessible Systems
         </motion.p>
@@ -117,7 +153,7 @@ export default function Hero() {
             href="https://www.linkedin.com/in/anthonysilvia"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-4 bg-white dark:bg-[var(--bg-secondary)] text-[var(--text-primary)] dark:text-[var(--text-primary)] rounded-lg font-semibold text-lg border-2 border-[var(--border-light)] hover:border-[var(--primary)] dark:hover:border-[var(--primary)] transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
+            className="px-8 py-4 bg-white/95 dark:bg-white/10 text-[var(--text-primary)] dark:text-white rounded-lg font-semibold text-lg border-2 border-white/30 hover:border-white hover:bg-white hover:text-[var(--primary)] dark:hover:bg-white/20 transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
             aria-label="Visit LinkedIn profile (opens in new tab)"
@@ -130,7 +166,7 @@ export default function Hero() {
             href="https://shutterda.com/Anthony"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-4 bg-white dark:bg-[var(--bg-secondary)] text-[var(--text-primary)] dark:text-[var(--text-primary)] rounded-lg font-semibold text-lg border-2 border-[var(--border-light)] hover:border-[var(--primary)] dark:hover:border-[var(--primary)] transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
+            className="px-8 py-4 bg-white/95 dark:bg-white/10 text-[var(--text-primary)] dark:text-white rounded-lg font-semibold text-lg border-2 border-white/30 hover:border-white hover:bg-white hover:text-[var(--primary)] dark:hover:bg-white/20 transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
             aria-label="Visit ShutterDa portfolio (opens in new tab)"
@@ -141,7 +177,7 @@ export default function Hero() {
 
           <motion.a
             href="mailto:contact@anthonysilvia.com"
-            className="px-8 py-4 bg-white dark:bg-[var(--bg-secondary)] text-[var(--text-primary)] dark:text-[var(--text-primary)] rounded-lg font-semibold text-lg border-2 border-[var(--border-light)] hover:border-[var(--primary)] dark:hover:border-[var(--primary)] transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
+            className="px-8 py-4 bg-white/95 dark:bg-white/10 text-[var(--text-primary)] dark:text-white rounded-lg font-semibold text-lg border-2 border-white/30 hover:border-white hover:bg-white hover:text-[var(--primary)] dark:hover:bg-white/20 transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
             aria-label="Send email to contact@anthonysilvia.com"
