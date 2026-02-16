@@ -170,7 +170,7 @@ select:focus-visible {
   }
 }
 
-/* Nav scroll progress — smooth, no React re-renders */
+/* Nav scroll progress: smooth, no React re-renders */
 .nav-scroll-root {
   --scroll-progress: 0;
 }
@@ -199,6 +199,84 @@ select:focus-visible {
 
 .nav-scroll-root[data-progress-high="true"] .nav-menu-icon {
   color: #ffffff;
+}
+
+/* Active state: current section link */
+.nav-link[data-active="true"] {
+  font-weight: 700;
+  text-underline-offset: 0.25em;
+  text-decoration: underline;
+}
+
+/* Brand link never has an underline (active or hover) */
+.nav-brand,
+.nav-brand:hover,
+.nav-brand[data-active="true"] {
+  text-decoration: none !important;
+}
+
+/* Hover state: nav item links only (not the Anthony Silvia brand) */
+.nav-item-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  opacity: 0.9;
+}
+
+/* Cover states: match the section under the nav (parent component style) */
+
+/* Hero: dark background → light nav (transparent dark, white text) */
+.nav-scroll-root[data-cover="hero"] .nav-cover-bg {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.nav-scroll-root[data-cover="hero"] {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.nav-scroll-root[data-cover="hero"] .nav-progress-fill {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.nav-scroll-root[data-cover="hero"] .nav-gradient-text {
+  background-image: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff calc(var(--scroll-progress, 0) * 100%),
+    #ffffff calc(var(--scroll-progress, 0) * 100%)
+  );
+  color: transparent;
+}
+
+.nav-scroll-root[data-cover="hero"] .nav-menu-icon {
+  color: #ffffff;
+}
+
+.nav-scroll-root[data-cover="hero"] .nav-mobile-menu {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-scroll-root[data-cover="hero"] .nav-mobile-menu a {
+  color: #ffffff;
+}
+
+.nav-scroll-root[data-cover="hero"] .nav-mobile-menu a:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Secondary (Experience, Education, Footer): match bg-secondary */
+.nav-scroll-root[data-cover="secondary"] .nav-cover-bg {
+  background: color-mix(in srgb, var(--bg-secondary) 97%, transparent);
+}
+
+.nav-scroll-root[data-cover="secondary"] {
+  border-color: var(--border-light);
+}
+
+.nav-scroll-root[data-cover="secondary"] .nav-mobile-menu {
+  background: color-mix(in srgb, var(--bg-secondary) 99%, transparent);
+  border-color: var(--border-light);
 }
 
 

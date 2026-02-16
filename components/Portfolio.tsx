@@ -148,7 +148,15 @@ export default function Portfolio() {
           >
             Portfolio
           </h2>
-          <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full" />
+          <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full mb-4" />
+          <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] text-center">
+            <a
+              href="/evidence"
+              className="text-[var(--primary)] dark:text-[var(--primary)] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded px-1"
+            >
+              Evidence - How I work
+            </a>
+          </p>
         </motion.div>
 
         <motion.div

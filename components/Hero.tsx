@@ -84,7 +84,7 @@ export default function Hero() {
       className="min-h-screen flex items-center justify-center relative overflow-hidden bg-white dark:bg-black"
       aria-label="Hero section"
     >
-      {/* Full-viewport background image + overlay — fade on scroll */}
+      {/* Full-viewport background image + overlay: fade on scroll */}
       <div
         className="absolute inset-0 transition-opacity duration-100 ease-out"
         style={{ opacity: shouldReduceMotion ? 1 : bgOpacity }}
@@ -123,7 +123,7 @@ export default function Hero() {
           Anthony Silvia
         </motion.h1>
 
-        {/* Headline — transitioning to PM; product design roots, enterprise & accessibility */}
+        {/* Headline: transitioning to PM; product design roots, enterprise & accessibility */}
         <motion.p
           variants={itemVariants}
           className="text-xl md:text-2xl lg:text-3xl text-white/95 mb-8 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-md"

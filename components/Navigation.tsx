@@ -1,25 +1,42 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const navItems = [
   { name: "Experience", href: "#experience" },
   { name: "Portfolio", href: "#portfolio" },
+  { name: "Evidence", href: "/evidence", internalPage: true },
   { name: "Resume", href: "/resume.pdf", external: true },
   { name: "Contact", href: "#contact" },
 ];
 
+/** Section IDs that can be "under" the nav; order matches page flow. */
+const COVER_SECTION_IDS = ["hero", "about", "experience", "portfolio", "education", "contact"] as const;
+
+/** Vertical offset from top of viewport to the point we use to decide which section is under the nav (nav bar center). */
+const COVER_OFFSET_PX = 100;
+
+type CoverState = "hero" | "default" | "secondary";
+
+function getCoverState(sectionId: string | null): CoverState {
+  if (sectionId === "hero") return "hero";
+  if (sectionId === "experience" || sectionId === "education") return "secondary";
+  return "default";
+}
+
 export default function Navigation() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [coverState, setCoverState] = useState<CoverState>("default");
+  const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const navRef = useRef<HTMLElement>(null);
   const rafId = useRef<number | null>(null);
 
   useEffect(() => {
-    if (shouldReduceMotion) return;
-
     const updateProgress = () => {
       const scrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -43,7 +60,34 @@ export default function Navigation() {
       window.removeEventListener("scroll", handleScroll);
       if (rafId.current !== null) cancelAnimationFrame(rafId.current);
     };
-  }, [shouldReduceMotion]);
+  }, []);
+
+  /* Cover state and current section: which section is under the nav (style + active link) */
+  useEffect(() => {
+    const updateCover = () => {
+      let sectionId: string | null = null;
+      const y = COVER_OFFSET_PX;
+      for (const id of COVER_SECTION_IDS) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= y && rect.bottom >= y) {
+          sectionId = id;
+          break;
+        }
+      }
+      setCurrentSectionId(sectionId);
+      setCoverState(getCoverState(sectionId));
+    };
+
+    updateCover();
+    window.addEventListener("scroll", updateCover, { passive: true });
+    window.addEventListener("resize", updateCover);
+    return () => {
+      window.removeEventListener("scroll", updateCover);
+      window.removeEventListener("resize", updateCover);
+    };
+  }, []);
 
   const handleNavClick = (href: string, external?: boolean) => {
     if (external) {
@@ -60,16 +104,17 @@ export default function Navigation() {
   return (
     <nav
       ref={navRef}
-      className="nav-scroll-root fixed top-4 left-4 right-4 z-40 rounded-[32px] overflow-hidden shadow-lg border border-[var(--border-light)] backdrop-blur-md"
+      className="nav-scroll-root fixed top-4 left-4 right-4 z-40 rounded-[32px] overflow-hidden shadow-lg border border-[var(--border-light)] backdrop-blur-md transition-colors duration-200"
+      data-cover={coverState}
       role="navigation"
       aria-label="Main navigation"
     >
-      {/* Base layer (unfilled area) */}
+      {/* Base layer (unfilled area): overridden by cover-state CSS */}
       <div
-        className="absolute inset-0 bg-white/95 dark:bg-black/95"
+        className="nav-cover-bg absolute inset-0 bg-white/95 dark:bg-black/95"
         aria-hidden="true"
       />
-      {/* Blue progress fill — width driven by CSS variable for smooth updates */}
+      {/* Progress fill: overridden by cover-state CSS */}
       <div
         className="nav-progress-fill absolute inset-y-0 left-0 bg-[var(--primary)]"
         aria-hidden="true"
@@ -80,14 +125,18 @@ export default function Navigation() {
         <div className="w-full px-4 sm:px-5">
           <div className="flex justify-between items-center h-16 md:h-20">
             <motion.a
-              href="#hero"
+              href="/"
               onClick={(e) => {
-                e.preventDefault();
-                handleNavClick("#hero");
+                if (pathname === "/") {
+                  e.preventDefault();
+                  handleNavClick("#hero");
+                }
               }}
-              className="text-xl md:text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-transparent rounded-lg inline-block"
+              className="text-xl md:text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-transparent rounded-lg inline-block nav-link nav-brand"
+              data-active={currentSectionId === "hero" ? "true" : undefined}
               style={{ color: "inherit" }}
               aria-label="Anthony Silvia - Home"
+              aria-current={currentSectionId === "hero" ? "page" : undefined}
               whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
               whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
             >
@@ -96,81 +145,106 @@ export default function Navigation() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">
-              {navItems.map((item, index) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  onClick={(e) => {
-                    if (!item.external) {
-                      e.preventDefault();
-                      handleNavClick(item.href);
-                    }
-                  }}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  className="font-medium focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded-lg px-2 py-1 hover:opacity-80 inline-block"
-                  style={{ color: "inherit" }}
-                  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: shouldReduceMotion ? 0 : index * 0.1 }}
-                  aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
-                >
-                  {item.name}
-                </motion.a>
-              ))}
+              {navItems.map((item, index) => {
+                const isActive =
+                  "internalPage" in item && item.internalPage
+                    ? pathname === "/evidence"
+                    : !item.external && item.href === `#${currentSectionId}`;
+                return (
+                  <motion.a
+                    key={item.name}
+                    href={item.href}
+                    onClick={(e) => {
+                      if (!item.external && !("internalPage" in item && item.internalPage)) {
+                        e.preventDefault();
+                        handleNavClick(item.href);
+                      } else if ("internalPage" in item && item.internalPage) {
+                        setIsOpen(false);
+                      }
+                    }}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    className="font-medium focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded-lg px-2 py-1 inline-block nav-link nav-item-link"
+                    data-active={isActive ? "true" : undefined}
+                    style={{ color: "inherit" }}
+                    initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: shouldReduceMotion ? 0 : index * 0.1 }}
+                    aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {item.name}
+                  </motion.a>
+                );
+              })}
             </div>
 
-            {/* Mobile Menu Button — icon color via CSS from data-progress-high */}
-            <button
+            {/* Mobile Menu Button: same scale feedback as desktop brand link */}
+            <motion.button
+              type="button"
               className="nav-menu-icon md:hidden p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
               onClick={() => setIsOpen(!isOpen)}
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
               aria-label="Toggle navigation menu"
+              whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
+              whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
             >
               {isOpen ? (
                 <X className="h-6 w-6" aria-hidden="true" />
               ) : (
                 <Menu className="h-6 w-6" aria-hidden="true" />
               )}
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu: background matches cover state via parent data-cover */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             id="mobile-menu"
-            className="md:hidden bg-white/98 dark:bg-black/98 border-t border-[var(--border-light)]"
+            className="nav-mobile-menu md:hidden bg-white/98 dark:bg-black/98 border-t border-[var(--border-light)]"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
           >
             <div className="px-4 pt-2 pb-4 space-y-2 rounded-b-[32px]">
-              {navItems.map((item, index) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  onClick={(e) => {
-                    if (!item.external) {
-                      e.preventDefault();
-                      handleNavClick(item.href);
-                    }
-                  }}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  className="block px-4 py-3 text-[var(--text-primary)] dark:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] dark:hover:bg-[var(--bg-secondary)] rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
-                  initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: shouldReduceMotion ? 0 : index * 0.05 }}
-                  aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
-                >
-                  {item.name}
-                </motion.a>
-              ))}
+              {navItems.map((item, index) => {
+                const isActive =
+                  "internalPage" in item && item.internalPage
+                    ? pathname === "/evidence"
+                    : !item.external && item.href === `#${currentSectionId}`;
+                return (
+                  <motion.a
+                    key={item.name}
+                    href={item.href}
+                    onClick={(e) => {
+                      if (!item.external && !("internalPage" in item && item.internalPage)) {
+                        e.preventDefault();
+                        handleNavClick(item.href);
+                      } else if ("internalPage" in item && item.internalPage) {
+                        setIsOpen(false);
+                      }
+                    }}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    className="block px-4 py-3 text-[var(--text-primary)] dark:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] dark:hover:bg-[var(--bg-secondary)] rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] nav-link nav-item-link"
+                    data-active={isActive ? "true" : undefined}
+                    initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: shouldReduceMotion ? 0 : index * 0.05 }}
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+                    whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+                    aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {item.name}
+                  </motion.a>
+                );
+              })}
             </div>
           </motion.div>
         )}

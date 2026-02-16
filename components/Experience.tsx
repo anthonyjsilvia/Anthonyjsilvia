@@ -47,22 +47,6 @@ const experiences = [
       },
     ],
   },
-  {
-    company: "Matanuska-Susitna Borough School District",
-    totalYears: "6 months",
-    roles: [
-      {
-        title: "Web Design Intern",
-        period: "April 2016 - September 2016 (6 months)",
-        location: "Palmer, Alaska, United States",
-        bullets: [
-          "Supported the design and maintenance of the Matanuska-Susitna Borough School District website, improving usability and content clarity for public-facing users.",
-          "Edited and updated site content to enhance user experience, accessibility, and information accuracy across district pages.",
-          "Provided technical support for website changes and assisted with iParent customer support, gaining hands-on experience with real-world user issues.",
-        ],
-      },
-    ],
-  },
 ];
 
 export default function Experience() {
