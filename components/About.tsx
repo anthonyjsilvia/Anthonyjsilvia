@@ -71,7 +71,7 @@ export default function About() {
                 >
                   <Image
                     src="/me.PNG"
-                    alt="Anthony Silvia - Product Designer"
+                    alt="Anthony Silvia"
                     width={280}
                     height={280}
                     className="rounded-full object-cover w-[280px] h-[280px]"
@@ -92,9 +92,7 @@ export default function About() {
               className="space-y-6 text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed text-lg"
             >
               <p className="text-xl font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)] leading-relaxed">
-                I am a Product Designer focused on building scalable, accessible
-                enterprise systems grounded in real-world workflows and operational
-                constraints.
+                I am a project-focused product professional with a foundation in UX, dedicated to delivering outcomes that create real value for users and the business.
               </p>
             </motion.div>
           </div>
@@ -106,40 +104,13 @@ export default function About() {
           >
             <div className="prose prose-lg max-w-none">
               <p>
-                I currently work as an Associate Product Designer at Lowe&apos;s, where
-                I design and refine internal and customer-facing systems that
-                support complex, high-volume retail operations. My work centers
-                on improving usability, reducing workflow efficiency, and translating
-                research insights into practical design decisions that align product,
-                engineering, and business needs.
+                I currently work as an Associate Product Designer at Lowe&apos;s, where I lead and contribute to projects that support complex, high-volume retail operations. My work centers on improving usability, increasing workflow efficiency, and aligning design decisions with product, engineering, and operational goals. I focus on moving initiatives forward, reducing friction in processes, and ensuring that solutions are practical, scalable, and measurable.
               </p>
               <p>
-                Alongside my enterprise work, I founded NodeDa as an independent
-                product design practice. Through NodeDa, I have led end-to-end product design efforts, including the design and launch of
-                independent applications and selective consulting engagements.
-                This experience has strengthened my ability to take ownership
-                across the full product lifecycle, from discovery and definition through
-                delivery, iteration, and post-launch learning.
+                Alongside my enterprise work, I founded NodeDa as an independent product design practice. Through NodeDa, I have led end-to-end projects, including the design and launch of independent applications and selective consulting engagements. This experience strengthened my ability to take ownership across the full lifecycle, from discovery and definition through delivery, iteration, and post-launch evaluation.
               </p>
               <p>
-                My background spans UX research, system design, accessibility-first design practices, and cross-functional collaboration. I am
-                experienced in designing within WCAG 2.2 AA and AAA standards
-                while balancing legacy systems, technical constraints, and
-                operational realities.
-              </p>
-              <p>
-                I approach design with a focus on clarity, accountability, and long-term impact. I value thoughtful tradeoffs, strong collaboration, and
-                solutions that perform reliably at scale.
-              </p>
-              <p>
-                Outside of work, I enjoy camping and spending time outdoors, which
-                reinforces my appreciation for practical systems that function well
-                under real-world conditions.
-              </p>
-              <p>
-                I am open to connecting with others working on enterprise platforms,
-                operational systems, and products that require disciplined design
-                thinking and durable execution.
+                My background spans UX research, system design, accessibility-first practices, and cross-functional coordination. I am experienced in working within WCAG 2.2 AA and AAA standards while balancing legacy systems, technical constraints, timelines, and operational realities.
               </p>
             </div>
           </motion.div>
