@@ -2,9 +2,57 @@
 
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { ExternalLink, Lock, Shield, X, FileText, Globe } from "lucide-react";
+
+/** NodeDa projects: try iframe first, fall back to globe placeholder if it fails to load */
+function EmbedPreview({ project }: { project: { title: string; link: string; color: string } }) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const loadedRef = useRef(false);
+  loadedRef.current = loaded;
+
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      if (!loadedRef.current) setFailed(true);
+    }, 5000);
+    return () => clearTimeout(t);
+  }, []);
+
+  const showIframe = loaded && !failed;
+
+  return (
+    <div className="relative w-full h-64 overflow-hidden bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)]">
+      <iframe
+        src={project.link}
+        title={`Preview: ${project.title}`}
+        className={`absolute inset-0 w-full h-full border-0 ${showIframe ? "z-10 opacity-100" : "opacity-0 pointer-events-none"}`}
+        sandbox="allow-scripts allow-same-origin"
+        onLoad={() => setLoaded(true)}
+      />
+      {!showIframe && (
+        <div
+          className="absolute inset-0 flex items-center justify-center z-20"
+          style={{ backgroundColor: project.color }}
+          aria-hidden="true"
+        >
+          <div className="absolute inset-0 opacity-10" style={{
+            backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`
+          }} />
+          <div className="relative z-10 text-white text-center p-8">
+            <div className="flex items-center justify-center mb-4">
+              <Globe className="w-16 h-16 opacity-80" />
+            </div>
+            <p className="text-sm font-semibold opacity-90 mb-1">Website</p>
+            <p className="text-xs opacity-70">View live site</p>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 const projects = [
   {
@@ -61,6 +109,34 @@ const projects = [
     isConfidential: true,
   },
   {
+    title: "Cookbook By NodeDa",
+    subtitle: "Cloud-based cookbook ecosystem",
+    description:
+      "Recipe and cooking app by NodeDa. Independent product design and development.",
+    category: "Product Design",
+    technologies: ["UX Design", "Mobile Design", "iOS", "Product Design", "Product Management"],
+    image: null,
+    link: "https://cookbook.nodeda.com",
+    linkText: "Visit cookbook.nodeda.com",
+    color: "#3993C5",
+    period: "NodeDa",
+    embedWithIframe: true,
+  },
+  {
+    title: "ShutterDa",
+    subtitle: "ShutterDa",
+    description:
+      "Photography and portfolio platform. Design and product work through NodeDa.",
+    category: "Product Design",
+    technologies: ["UX Design", "Web Design", "Product Design", "Product Management"],
+    image: null,
+    link: "https://shutterda.com",
+    linkText: "Visit ShutterDa.com",
+    color: "#3993C5",
+    period: "NodeDa",
+    embedWithIframe: true,
+  },
+  {
     title: "Herbswift",
     subtitle: "Herbswift",
     description:
@@ -90,7 +166,7 @@ const projects = [
     description:
       "Served as webmaster, managing and maintaining the company website, ensuring optimal performance and user experience. The website has been updated since my tenure.",
     category: "Web Development",
-    technologies: ["Web Development", "Web Design", "Website Management", "Content Management"],
+    technologies: ["Web Development", "Web Design", "Website Management", "Content Management", "Product Management"],
     image: null,
     link: "https://www.rohdearchitects.com",
     linkText: "Visit Website",
@@ -148,11 +224,11 @@ export default function Portfolio() {
           >
             Portfolio
           </h2>
-          <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full mb-4" />
-          <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] text-center">
+          <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full mb-6" />
+          <p className="text-center mb-2">
             <a
               href="/evidence"
-              className="text-[var(--primary)] dark:text-[var(--primary)] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded px-1"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--primary)] dark:bg-[var(--primary)] text-white font-semibold rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-[var(--bg-secondary)] transition-opacity shadow-md"
             >
               Evidence - How I work
             </a>
@@ -233,6 +309,8 @@ export default function Portfolio() {
                   {/* Subtle overlay */}
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" aria-hidden="true"></div>
                 </div>
+              ) : (project as { embedWithIframe?: boolean }).embedWithIframe && project.link ? (
+                <EmbedPreview project={{ title: project.title, link: project.link, color: project.color }} />
               ) : project.link ? (
                 <div className="relative w-full h-64 flex items-center justify-center overflow-hidden" style={{ backgroundColor: project.color }}>
                   {/* Subtle pattern overlay */}
