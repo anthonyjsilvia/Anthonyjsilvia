@@ -3,6 +3,7 @@ import "./globals.css";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://anthonysilvia.com"),
   title: "Anthony Silvia - Full-Stack Experience Manager | UX, Engineering & Data Integration",
   description: "Full-Stack Experience Manager focused on UX, engineering, and data integration. Associate Product Designer at Lowe's and Principal Consultant at NodeDa.",
   keywords: [
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "https://anthonysilvia.com/homepage/ashero.PNG",
+        url: "/homepage/ashero.PNG",
         width: 1200,
         height: 630,
         alt: "Anthony Silvia - Full-Stack Experience Manager",
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
     title: "Anthony Silvia - Full-Stack Experience Manager | UX, Engineering & Data Integration",
     description: "Full-Stack Experience Manager focused on UX, engineering, and data integration.",
     creator: "@anthonysilvia",
-    images: ["https://anthonysilvia.com/homepage/ashero.PNG"],
+    images: ["/homepage/ashero.PNG"],
   },
   robots: {
     index: true,
