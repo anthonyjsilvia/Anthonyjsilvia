@@ -128,7 +128,7 @@ export default function Hero() {
           variants={itemVariants}
           className="text-xl md:text-2xl lg:text-3xl text-white/95 mb-8 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-md"
         >
-          Project Manager · Product Designer focused on building scalable, accessible enterprise systems grounded in real-world workflows and operational constraints.
+          Full-Stack Experience Manager | UX, Engineering & Data Integration
         </motion.p>
 
         {/* CTA Row - View Resume, LinkedIn, Email */}
