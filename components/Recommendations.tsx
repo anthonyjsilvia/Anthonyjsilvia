@@ -4,7 +4,7 @@ import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { X, ChevronRight } from "lucide-react";
 
 const recommendations = [
   {
@@ -124,10 +124,13 @@ export default function Recommendations() {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 50vw, 25vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 text-left opacity-0 group-hover:opacity-100 transition-opacity">
-                  <p className="text-white font-semibold text-sm drop-shadow-md">{rec.name}</p>
-                  <p className="text-white/90 text-xs drop-shadow-md">{rec.role}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-0 left-0 right-0 p-3 text-left flex items-end justify-between gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                  <div>
+                    <p className="text-white font-semibold text-sm drop-shadow-md">{rec.name}</p>
+                    <p className="text-white/90 text-xs drop-shadow-md">{rec.role}</p>
+                  </div>
+                  <ChevronRight className="w-6 h-6 text-white flex-shrink-0 drop-shadow-md md:group-hover:translate-x-0.5 transition-transform" aria-hidden />
                 </div>
               </motion.button>
             ))}
