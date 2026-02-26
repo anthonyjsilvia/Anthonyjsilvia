@@ -11,6 +11,7 @@ import Contact from "@/components/Contact";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FabNav from "@/components/FabNav";
+import AccessibilityButton from "@/components/AccessibilityButton";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -24,13 +25,12 @@ export default function Home() {
   }
 
   return (
-    <main id="main-content" className="min-h-screen">
-      <a 
-        href="#main-content" 
-        className="skip-link"
-        aria-label="Skip to main content"
-      >
+    <main id="main-content" className="min-h-screen" role="main" aria-label="Main content">
+      <a href="#main-content" className="skip-link" aria-label="Skip to main content">
         Skip to main content
+      </a>
+      <a href="#main-nav" className="skip-link" aria-label="Skip to main navigation">
+        Skip to navigation
       </a>
       <Navigation />
       <Hero />
@@ -42,6 +42,7 @@ export default function Home() {
       <Contact />
       <Footer />
       <FabNav />
+      <AccessibilityButton />
     </main>
   );
 }

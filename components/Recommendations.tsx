@@ -146,6 +146,7 @@ export default function Recommendations() {
             onClick={() => setSelected(null)}
             aria-modal="true"
             aria-labelledby="testimonial-name"
+            aria-describedby="testimonial-body"
             role="dialog"
           >
             <motion.div
@@ -160,7 +161,7 @@ export default function Recommendations() {
               <div className="relative w-full h-[33vh] md:w-[320px] md:h-[420px] md:aspect-auto flex-shrink-0 order-first">
                 <Image
                   src={selected.image}
-                  alt=""
+                  alt={`${selected.name}, ${selected.role}`}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 320px"
@@ -172,7 +173,7 @@ export default function Recommendations() {
                   type="button"
                   onClick={() => setSelected(null)}
                   className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)] text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-                  aria-label="Close recommendation"
+                  aria-label="Close recommendation dialog"
                   whileHover={shouldReduceMotion ? {} : { scale: 1.08 }}
                   whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 200, damping: 22 }}
@@ -189,7 +190,7 @@ export default function Recommendations() {
                   {selected.role}
                 </p>
                 <div className="w-full h-px bg-black/[0.18] dark:bg-white/[0.18] mb-4" aria-hidden="true" />
-                <div className="flex-1 min-h-0 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/30 hover:[&::-webkit-scrollbar-thumb]:bg-black/40 dark:[&::-webkit-scrollbar-track]:bg-white/10 dark:[&::-webkit-scrollbar-thumb]:bg-white/30 dark:hover:[&::-webkit-scrollbar-thumb]:bg-white/40">
+                <div className="flex-1 min-h-0 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/30 hover:[&::-webkit-scrollbar-thumb]:bg-black/40 dark:[&::-webkit-scrollbar-track]:bg-white/10 dark:[&::-webkit-scrollbar-thumb]:bg-white/30 dark:hover:[&::-webkit-scrollbar-thumb]:bg-white/40" id="testimonial-body" aria-live="polite">
                   <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                     {selected.testimonial}
                   </p>

@@ -60,7 +60,7 @@ export default function Hero() {
       <section
         id="hero"
         className="min-h-screen flex items-center justify-center relative overflow-hidden"
-        aria-label="Hero section"
+        aria-labelledby="hero-heading"
       >
         <img
           src="/homepage/ashero.PNG"
@@ -70,7 +70,7 @@ export default function Hero() {
         />
         <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
         <div className="relative z-10 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white">
+          <h1 id="hero-heading" className="text-4xl md:text-6xl font-bold text-white">
             Anthony Silvia
           </h1>
         </div>
@@ -82,7 +82,7 @@ export default function Hero() {
     <section
       id="hero"
       className="min-h-screen flex items-center justify-center relative overflow-hidden bg-white dark:bg-black"
-      aria-label="Hero section"
+      aria-labelledby="hero-heading"
     >
       {/* Full-viewport background image + overlay: fade on scroll */}
       <div
@@ -117,6 +117,7 @@ export default function Hero() {
 
         {/* Name */}
         <motion.h1
+          id="hero-heading"
           variants={itemVariants}
           className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white drop-shadow-lg"
         >
@@ -143,7 +144,7 @@ export default function Hero() {
             className="px-8 py-4 bg-[var(--primary)] text-white rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-            aria-label="View Resume (opens in new tab)"
+            aria-label="View resume, opens in new tab"
           >
             <FileText className="w-5 h-5" aria-hidden="true" />
             View Resume
@@ -156,7 +157,7 @@ export default function Hero() {
             className="px-8 py-4 bg-white/95 dark:bg-white/10 text-[var(--text-primary)] dark:text-white rounded-lg font-semibold text-lg border-2 border-white/30 hover:border-white hover:bg-white hover:text-[var(--primary)] dark:hover:bg-white/20 transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-            aria-label="Visit LinkedIn profile (opens in new tab)"
+            aria-label="Open LinkedIn profile in new tab"
           >
             <Linkedin className="w-5 h-5" aria-hidden="true" />
             LinkedIn
@@ -169,7 +170,7 @@ export default function Hero() {
             className="px-8 py-4 bg-white/95 dark:bg-white/10 text-[var(--text-primary)] dark:text-white rounded-lg font-semibold text-lg border-2 border-white/30 hover:border-white hover:bg-white hover:text-[var(--primary)] dark:hover:bg-white/20 transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-            aria-label="Visit ShutterDa portfolio (opens in new tab)"
+            aria-label="Open ShutterDa portfolio in new tab"
           >
             <img src="/nodeda/ShutterDa.svg" alt="" className="w-5 h-5 brightness-0 dark:invert" aria-hidden="true" />
             ShutterDa
@@ -180,7 +181,7 @@ export default function Hero() {
             className="px-8 py-4 bg-white/95 dark:bg-white/10 text-[var(--text-primary)] dark:text-white rounded-lg font-semibold text-lg border-2 border-white/30 hover:border-white hover:bg-white hover:text-[var(--primary)] dark:hover:bg-white/20 transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-            aria-label="Send email to contact@anthonysilvia.com"
+            aria-label="Send email to contact at anthonysilvia.com"
           >
             <Mail className="w-5 h-5" aria-hidden="true" />
             Email

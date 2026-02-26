@@ -157,7 +157,8 @@ export default function EvidencePage() {
           >
             <Link
               href="/#portfolio"
-              className="inline-flex items-center gap-2 text-[var(--primary)] dark:text-[var(--primary)] font-medium mb-12 hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded px-1 py-0.5"
+              className="mt-10 mb-12 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)] transition-opacity"
+              aria-label="Back to portfolio"
             >
               <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               Back to portfolio
@@ -246,7 +247,8 @@ export default function EvidencePage() {
             <footer className="mt-24 pt-8 border-t border-[var(--border-light)]">
               <Link
                 href="/#portfolio"
-                className="inline-flex items-center gap-2 text-[var(--primary)] dark:text-[var(--primary)] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded px-1 py-0.5"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)] transition-opacity"
+                aria-label="Back to portfolio"
               >
                 <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                 Back to portfolio

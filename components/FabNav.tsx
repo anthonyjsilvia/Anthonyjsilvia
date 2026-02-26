@@ -6,11 +6,11 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Menu, X, ArrowUp } from "lucide-react";
 
 const navItems = [
-  { name: "Experience", href: "#experience" },
-  { name: "Portfolio", href: "#portfolio" },
-  { name: "Evidence", href: "/evidence", internalPage: true },
-  { name: "Resume", href: "/resume.pdf", external: true },
-  { name: "Contact", href: "#contact" },
+  { name: "Experience", href: "#experience", ariaLabel: "Go to Experience section" },
+  { name: "Portfolio", href: "#portfolio", ariaLabel: "Go to Portfolio section" },
+  { name: "Evidence", href: "/evidence", internalPage: true, ariaLabel: "Open Evidence page" },
+  { name: "Resume", href: "/resume.pdf", external: true, ariaLabel: "Open Resume in new tab" },
+  { name: "Contact", href: "#contact", ariaLabel: "Go to Contact section" },
 ];
 
 const liquidSpring = { type: "spring" as const, stiffness: 200, damping: 22 };
@@ -214,12 +214,13 @@ export default function FabNav() {
                           }}
                           target={item.external ? "_blank" : undefined}
                           rel={item.external ? "noopener noreferrer" : undefined}
+                          aria-label={item.ariaLabel}
+                          aria-current={isActive ? "page" : undefined}
                           className={`inline-flex w-full items-center justify-center rounded-xl px-5 py-3.5 text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)] sm:px-6 sm:py-4 sm:text-lg ${
                             isActive
                               ? "bg-[var(--primary)] text-white"
                               : "bg-[var(--bg-secondary)]/90 text-[var(--foreground)] hover:bg-[var(--bg-tertiary)]/90 backdrop-blur-sm"
                           }`}
-                          aria-current={isActive ? "page" : undefined}
                         >
                           {item.name}
                         </a>

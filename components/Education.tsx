@@ -359,6 +359,7 @@ export default function Education() {
                   aria-selected={certTab === tab}
                   aria-controls="cert-content"
                   id={`cert-tab-${tab}`}
+                  aria-label={`Filter certifications by ${CERT_CATEGORY_LABELS[tab]}`}
                   onClick={() => {
                     setCertTab(tab);
                     setShowAllCerts(false);
@@ -405,6 +406,7 @@ export default function Education() {
                 <button
                   type="button"
                   onClick={() => setShowAllCerts(!showAllCerts)}
+                  aria-label={showAllCerts ? "Show fewer certifications" : "Show all certifications"}
                   className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] dark:text-[var(--primary)] hover:underline focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] rounded"
                 >
                   {showAllCerts ? "Show less" : "Show all"}
@@ -439,7 +441,7 @@ export default function Education() {
               type="button"
               onClick={() => setMbaEasterEggOpen(false)}
               className="absolute top-4 right-4 p-1 rounded-lg text-[var(--text-tertiary)] hover:bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
-              aria-label="Close"
+              aria-label="Close quote dialog"
             >
               <X className="w-5 h-5" aria-hidden="true" />
             </button>

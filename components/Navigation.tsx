@@ -96,6 +96,7 @@ export default function Navigation() {
 
   return (
     <nav
+      id="main-nav"
       ref={navRef}
       className="nav-scroll-root fixed top-4 left-4 right-4 z-40 rounded-[32px] overflow-hidden shadow-lg border border-[var(--border-light)] backdrop-blur-md transition-colors duration-200"
       data-cover={coverState}
@@ -161,7 +162,11 @@ export default function Navigation() {
                     initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: shouldReduceMotion ? 0 : index * 0.1 }}
-                    aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
+                    aria-label={item.external
+                      ? `Open ${item.name} in new tab`
+                      : ("internalPage" in item && item.internalPage)
+                        ? `Go to ${item.name} page`
+                        : `Go to ${item.name} section`}
                     aria-current={isActive ? "page" : undefined}
                   >
                     {item.name}

@@ -234,6 +234,7 @@ export default function Portfolio() {
             <a
               href="/evidence"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--primary)] dark:bg-[var(--primary)] text-white font-semibold rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-[var(--bg-secondary)] transition-opacity shadow-md"
+              aria-label="Go to Evidence page, how I work"
             >
               Evidence - How I work
             </a>

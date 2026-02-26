@@ -79,6 +79,50 @@
   }
 }
 
+/* User preference: force light theme (accessibility settings) */
+html.color-scheme-light {
+  --mobile-nav-link: #262626;
+  --background: #ffffff;
+  --foreground: #000000;
+  --text-primary: #000000;
+  --text-secondary: #1a1a1a;
+  --text-tertiary: #2d2d2d;
+  --primary: #0052cc;
+  --primary-dark: #003d99;
+  --primary-light: #0066ff;
+  --secondary: #5c2d91;
+  --secondary-dark: #4a2473;
+  --accent: #b8860b;
+  --accent-dark: #996f09;
+  --border: #000000;
+  --border-light: #333333;
+  --focus-ring: #0052cc;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+}
+
+/* User preference: dark theme (class-based for Tailwind dark:) */
+html.dark {
+  --mobile-nav-link: #e5e5e5;
+  --background: #000000;
+  --foreground: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #e8e8e8;
+  --text-tertiary: #d1d1d1;
+  --primary: #4d9fff;
+  --primary-dark: #0066ff;
+  --primary-light: #80bfff;
+  --secondary: #9d6fd9;
+  --secondary-dark: #7c3aed;
+  --accent: #ffb84d;
+  --accent-dark: #ff9900;
+  --border: #ffffff;
+  --border-light: #cccccc;
+  --focus-ring: #4d9fff;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2d2d2d;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -97,6 +141,121 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* Modern, dyslexia-friendly sans-serif font stack */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+/* OpenDyslexic — dyslexia-friendly typeface (accessibility option) */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/opendyslexic-0.91.12/compiled/OpenDyslexic-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/opendyslexic-0.91.12/compiled/OpenDyslexic-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/opendyslexic-0.91.12/compiled/OpenDyslexic-Bold-Italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+html.use-open-dyslexic,
+html.use-open-dyslexic *,
+html.use-open-dyslexic *::before,
+html.use-open-dyslexic *::after {
+  font-family: "OpenDyslexic", sans-serif !important;
+}
+
+/* Keep apparent font size comparable to default typeface (OpenDyslexic often renders slightly larger at same px) */
+html.use-open-dyslexic {
+  font-size: 97%;
+}
+
+/* Use OpenDyslexic for a specific element only (e.g. the OpenDyslexic toggle label in accessibility settings) */
+.font-open-dyslexic,
+.font-open-dyslexic * {
+  font-family: "OpenDyslexic", sans-serif !important;
+}
+
+/* Accessibility: disable transparency — when enabled, no transparency at all (100% opacity, solid colors) */
+/* Exclude .opacity-0 so hover-reveal overlays (e.g. recommendation cards) stay hidden until hover, then show at 100% */
+html.reduce-transparency *:not(.opacity-0),
+html.reduce-transparency *::before,
+html.reduce-transparency *::after {
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Semi-transparent backgrounds → solid (no transparency) */
+html.reduce-transparency [class*="bg-black/"],
+html.reduce-transparency [class*="bg-black\\/"] {
+  background-color: #000 !important;
+}
+html.reduce-transparency [class*="bg-white/"],
+html.reduce-transparency [class*="bg-white\\/"] {
+  background-color: #fff !important;
+}
+/* Gradient overlays that use transparent/opacity → solid black */
+html.reduce-transparency [class*="from-black/"],
+html.reduce-transparency [class*="from-black\\/"] {
+  background: #000 !important;
+}
+/* Semi-transparent borders → solid */
+html.reduce-transparency [class*="border-white/"],
+html.reduce-transparency [class*="border-white\\/"] {
+  border-color: #fff !important;
+}
+html.reduce-transparency [class*="border-black/"],
+html.reduce-transparency [class*="border-black\\/"] {
+  border-color: #000 !important;
+}
+
+/* Nav bar glass/cover → solid */
+html.reduce-transparency .nav-scroll-root[data-cover="hero"] .nav-cover-bg {
+  background: #000 !important;
+}
+html.reduce-transparency .nav-scroll-root[data-cover="hero"] {
+  border-color: #fff !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+html.reduce-transparency .nav-scroll-root[data-cover="hero"] .nav-progress-fill {
+  background: #fff !important;
+}
+html.reduce-transparency .nav-scroll-root[data-cover="secondary"] .nav-cover-bg {
+  background: var(--bg-secondary) !important;
+}
+
+/* FAB nav glass panel → solid */
+html.reduce-transparency .fab-nav-glass-layer {
+  background: #fff !important;
+}
+@media (prefers-color-scheme: dark) {
+  html.reduce-transparency .fab-nav-glass-layer {
+    background: #000 !important;
+  }
+}
+html.reduce-transparency .fab-nav-glass {
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15) !important;
+}
+@media (prefers-color-scheme: dark) {
+  html.reduce-transparency .fab-nav-glass {
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4) !important;
+  }
 }
 
 /* Apply modern sans-serif to all text elements */
@@ -163,6 +322,21 @@ select:focus-visible {
     transform: none !important;
     animation: none !important;
   }
+}
+
+/* User preference: force reduce motion (accessibility modal) */
+html.force-reduce-motion *,
+html.force-reduce-motion *::before,
+html.force-reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+html.force-reduce-motion [class*="animate"],
+html.force-reduce-motion [class*="motion"] {
+  transform: none !important;
+  animation: none !important;
 }
 
 /* High contrast mode support */
