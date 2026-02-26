@@ -14,6 +14,7 @@
  */
 
 :root {
+  --mobile-nav-link: #262626;
   /* Base colors - Light mode (AAA compliant) */
   --background: #ffffff;
   --foreground: #000000; /* 21:1 contrast on white */
@@ -46,6 +47,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --mobile-nav-link: #e5e5e5;
     /* Dark mode - AAA compliant */
     --background: #000000;
     --foreground: #ffffff; /* 21:1 contrast on black */
@@ -257,10 +259,6 @@ select:focus-visible {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.nav-scroll-root[data-cover="hero"] .nav-mobile-menu a {
-  color: #ffffff;
-}
-
 .nav-scroll-root[data-cover="hero"] .nav-mobile-menu a:hover {
   background: rgba(255, 255, 255, 0.12);
 }
@@ -279,4 +277,65 @@ select:focus-visible {
   border-color: var(--border-light);
 }
 
+/* Mobile menu only: link text forced to primary blue (hex) so nothing can override */
+.nav-mobile-link-text {
+  color: #0052cc !important; /* primary light mode – matches progress bar */
+}
+@media (prefers-color-scheme: dark) {
+  .nav-mobile-link-text {
+    color: #4d9fff !important; /* primary dark mode */
+  }
+}
+
+/* Unselected: full opacity and explicit blue so contrast is consistent */
+.nav-mobile-menu .nav-mobile-link:not(.nav-mobile-link-active) {
+  opacity: 1;
+}
+.nav-mobile-menu .nav-mobile-link:not(.nav-mobile-link-active) .nav-mobile-link-text {
+  color: #0052cc !important;
+}
+@media (prefers-color-scheme: dark) {
+  .nav-mobile-menu .nav-mobile-link:not(.nav-mobile-link-active) .nav-mobile-link-text {
+    color: #4d9fff !important;
+  }
+}
+
+/* Mobile menu only: links use primary blue (progress bar color), hover, and active state */
+@media (max-width: 767px) {
+  .nav-scroll-root .nav-mobile-menu a,
+  .nav-scroll-root[data-cover="hero"] .nav-mobile-menu a {
+    color: var(--primary) !important;
+  }
+}
+.nav-mobile-menu .nav-mobile-link:hover {
+  background: var(--bg-secondary);
+}
+.nav-mobile-menu .nav-link[data-active="true"],
+.nav-mobile-menu .nav-mobile-link-active {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  opacity: 0.7;
+}
+
+/* Force mobile menu link color for accessibility – no transition so it cannot fade (comes last to win) */
+.nav-scroll-root .nav-mobile-menu {
+  color: var(--primary) !important;
+}
+.nav-scroll-root .nav-mobile-menu a.nav-mobile-link {
+  color: var(--primary) !important;
+  transition-property: opacity, transform, background-color !important;
+}
+@media (max-width: 767px) {
+  .nav-scroll-root .nav-mobile-menu,
+  .nav-scroll-root[data-cover="hero"] .nav-mobile-menu,
+  .nav-scroll-root[data-cover="secondary"] .nav-mobile-menu {
+    color: var(--primary) !important;
+  }
+  .nav-scroll-root .nav-mobile-menu a.nav-mobile-link,
+  .nav-scroll-root[data-cover="hero"] .nav-mobile-menu a.nav-mobile-link,
+  .nav-scroll-root[data-cover="secondary"] .nav-mobile-menu a.nav-mobile-link {
+    color: var(--primary) !important;
+    transition-property: opacity, transform, background-color !important;
+  }
+}
 

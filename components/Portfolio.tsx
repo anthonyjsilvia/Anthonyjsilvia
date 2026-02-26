@@ -6,7 +6,7 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { ExternalLink, Lock, Shield, X, FileText, Globe } from "lucide-react";
 
-/** NodeDa projects: try iframe first, fall back to globe placeholder if it fails to load */
+/** NodeDa projects: try iframe first, fall back to clickable placeholder if it fails to load */
 function EmbedPreview({ project }: { project: { title: string; link: string; color: string } }) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -16,7 +16,7 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
   useEffect(() => {
     const t = window.setTimeout(() => {
       if (!loadedRef.current) setFailed(true);
-    }, 5000);
+    }, 8000);
     return () => clearTimeout(t);
   }, []);
 
@@ -30,12 +30,17 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
         className={`absolute inset-0 w-full h-full border-0 ${showIframe ? "z-10 opacity-100" : "opacity-0 pointer-events-none"}`}
         sandbox="allow-scripts allow-same-origin"
         onLoad={() => setLoaded(true)}
+        scrolling="no"
+        referrerPolicy="no-referrer"
       />
       {!showIframe && (
-        <div
-          className="absolute inset-0 flex items-center justify-center z-20"
+        <a
+          href={project.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute inset-0 flex items-center justify-center z-20 group"
           style={{ backgroundColor: project.color }}
-          aria-hidden="true"
+          aria-label={`Open ${project.title} (opens in new tab)`}
         >
           <div className="absolute inset-0 opacity-10" style={{
             backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`
@@ -45,10 +50,10 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
               <Globe className="w-16 h-16 opacity-80" />
             </div>
             <p className="text-sm font-semibold opacity-90 mb-1">Website</p>
-            <p className="text-xs opacity-70">View live site</p>
+            <p className="text-xs opacity-70 group-hover:underline">View live site</p>
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
-        </div>
+        </a>
       )}
     </div>
   );

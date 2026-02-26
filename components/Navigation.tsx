@@ -14,7 +14,7 @@ const navItems = [
 ];
 
 /** Section IDs that can be "under" the nav; order matches page flow. */
-const COVER_SECTION_IDS = ["hero", "about", "experience", "portfolio", "education", "contact"] as const;
+const COVER_SECTION_IDS = ["hero", "about", "experience", "portfolio", "education", "recommendations", "contact"] as const;
 
 /** Vertical offset from top of viewport to the point we use to decide which section is under the nav (nav bar center). */
 const COVER_OFFSET_PX = 100;
@@ -32,15 +32,24 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [coverState, setCoverState] = useState<CoverState>("default");
   const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const navRef = useRef<HTMLElement>(null);
   const rafId = useRef<number | null>(null);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
     const updateProgress = () => {
       const scrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = maxScroll <= 0 ? 0 : Math.min(1, scrollY / maxScroll);
+      let progress = maxScroll <= 0 ? 0 : Math.min(1, scrollY / maxScroll);
+      if (isMobile && isOpen) progress = 0;
       if (navRef.current) {
         navRef.current.style.setProperty("--scroll-progress", String(progress));
         navRef.current.dataset.progressHigh = progress > 0.5 ? "true" : "false";
@@ -60,7 +69,7 @@ export default function Navigation() {
       window.removeEventListener("scroll", handleScroll);
       if (rafId.current !== null) cancelAnimationFrame(rafId.current);
     };
-  }, []);
+  }, [isMobile, isOpen]);
 
   /* Cover state and current section: which section is under the nav (style + active link) */
   useEffect(() => {
@@ -179,10 +188,10 @@ export default function Navigation() {
               })}
             </div>
 
-            {/* Mobile Menu Button: same scale feedback as desktop brand link */}
+            {/* Mobile Menu Button: 8px from right edge of nav bar */}
             <motion.button
               type="button"
-              className="nav-menu-icon md:hidden p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
+              className="nav-menu-icon md:hidden -mr-4 sm:-mr-5 pl-4 pt-4 pb-4 pr-2 rounded-lg focus:outline-none"
               onClick={() => setIsOpen(!isOpen)}
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
@@ -190,11 +199,13 @@ export default function Navigation() {
               whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
               whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
             >
-              {isOpen ? (
-                <X className="h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="h-6 w-6" aria-hidden="true" />
-              )}
+              <span className="inline-flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-[var(--primary)] p-4 text-white">
+                {isOpen ? (
+                  <X className="h-6 w-6" aria-hidden="true" />
+                ) : (
+                  <Menu className="h-6 w-6" aria-hidden="true" />
+                )}
+              </span>
             </motion.button>
           </div>
         </div>
@@ -218,7 +229,7 @@ export default function Navigation() {
                     ? pathname === "/evidence"
                     : !item.external && item.href === `#${currentSectionId}`;
                 return (
-                  <motion.a
+                  <a
                     key={item.name}
                     href={item.href}
                     onClick={(e) => {
@@ -231,18 +242,13 @@ export default function Navigation() {
                     }}
                     target={item.external ? "_blank" : undefined}
                     rel={item.external ? "noopener noreferrer" : undefined}
-                    className="block px-4 py-3 text-[var(--text-primary)] dark:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] dark:hover:bg-[var(--bg-secondary)] rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] nav-link nav-item-link"
+                    className={`block px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] nav-link nav-item-link nav-mobile-link ${isActive ? "nav-mobile-link-active" : ""}`}
                     data-active={isActive ? "true" : undefined}
-                    initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: shouldReduceMotion ? 0 : index * 0.05 }}
-                    whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
-                    whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
                     aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
                     aria-current={isActive ? "page" : undefined}
                   >
-                    {item.name}
-                  </motion.a>
+                    <span className="nav-mobile-link-text">{item.name}</span>
+                  </a>
                 );
               })}
             </div>

@@ -3,7 +3,16 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { Briefcase, Calendar, MapPin, ExternalLink } from "lucide-react";
+
+// NodeDa — projects and former clients, shown as buttons in Experience
+const NODEDA_PROJECTS = [
+  { name: "ShutterDa", href: "https://shutterda.com/", ariaLabel: "Visit ShutterDa (opens in new tab)" },
+  { name: "NodeDa Cookbook", href: "https://nodeda.com/cookbook", ariaLabel: "Visit NodeDa Cookbook (opens in new tab)" },
+];
+const NODEDA_FORMER_CLIENTS = [
+  { name: "Rohde Architects", href: "https://rohdearchitects.com", ariaLabel: "Visit Rohde Architects (opens in new tab)" },
+];
 
 // EXACT LinkedIn Experience entries - word-for-word
 const experiences = [
@@ -142,6 +151,51 @@ export default function Experience() {
                       )}
                     </div>
                   ))}
+
+                {exp.company === "NodeDa" && (
+                  <>
+                    <div className="pt-8 border-t border-[var(--border-light)]">
+                      <h4 className="text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
+                        Projects
+                      </h4>
+                      <div className="flex flex-wrap gap-3">
+                        {NODEDA_PROJECTS.map((project) => (
+                          <a
+                            key={project.name}
+                            href={project.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={project.ariaLabel}
+                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium text-sm hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] transition-opacity"
+                          >
+                            {project.name}
+                            <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="pt-6 border-t border-[var(--border-light)]">
+                      <h4 className="text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
+                        Former clients
+                      </h4>
+                      <div className="flex flex-wrap gap-3">
+                        {NODEDA_FORMER_CLIENTS.map((project) => (
+                          <a
+                            key={project.name}
+                            href={project.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={project.ariaLabel}
+                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium text-sm hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] transition-opacity"
+                          >
+                            {project.name}
+                            <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
                 </div>
               </div>
             </motion.div>
