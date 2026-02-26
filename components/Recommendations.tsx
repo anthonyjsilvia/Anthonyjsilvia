@@ -42,6 +42,47 @@ export default function Recommendations() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
   const [selected, setSelected] = useState<typeof recommendations[0] | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const imageWrapRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef(0);
+  const touchStartScrollTop = useRef(0);
+  const [imagePull, setImagePull] = useState(0);
+
+  // Rubber band: on mobile, when at top and user pulls down, stretch the image; spring back on release
+  const RUBBER_MAX_PX = 120;
+  const RUBBER_DAMPING = 0.4;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!scrollRef.current) return;
+    if (typeof window === "undefined" || window.innerWidth >= 768) return;
+    touchStartY.current = e.touches[0].clientY;
+    touchStartScrollTop.current = scrollRef.current.scrollTop;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!scrollRef.current) return;
+    if (typeof window === "undefined" || window.innerWidth >= 768) return;
+    const scrollTop = scrollRef.current.scrollTop;
+    if (scrollTop > 0) return;
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - touchStartY.current;
+    if (deltaY <= 0) return;
+    e.preventDefault();
+    const pull = Math.min(deltaY * RUBBER_DAMPING, RUBBER_MAX_PX);
+    setImagePull(pull);
+  };
+
+  const handleTouchEnd = () => {
+    setImagePull(0);
+  };
+
+  // Attach touchmove with passive: false so preventDefault() works for rubber band
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || !selected) return;
+    el.addEventListener("touchmove", handleTouchMove, { passive: false });
+    return () => el.removeEventListener("touchmove", handleTouchMove);
+  }, [selected]);
 
   // Prevent page scroll while modal is open
   useEffect(() => {
@@ -51,6 +92,8 @@ export default function Recommendations() {
       return () => {
         document.body.style.overflow = prev;
       };
+    } else {
+      setImagePull(0);
     }
   }, [selected]);
 
@@ -160,28 +203,43 @@ export default function Recommendations() {
               className="relative w-full h-full md:w-auto md:h-[420px] md:max-w-4xl md:max-h-[90vh] flex flex-col md:flex-row bg-white dark:bg-black rounded-none border-0 shadow-none md:rounded-2xl md:shadow-2xl md:border md:border-[var(--border-light)] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Left: image — on mobile max ¼ screen height; desktop sets modal height */}
-              <div className="relative w-full h-[33vh] md:w-[320px] md:h-[420px] md:aspect-auto flex-shrink-0 order-first">
-                <Image
-                  src={selected.image}
-                  alt={`${selected.name}, ${selected.role}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 320px"
-                />
-              </div>
-              {/* Right: content — same height as image; testimonial scrolls */}
-              <div className="flex-1 min-w-0 min-h-0 flex flex-col p-6 md:p-8 pt-12 md:pt-8">
+              {/* Mobile: one scrollable column (image + content). Desktop: side-by-side with scrolling text only. */}
+              <div
+                ref={scrollRef}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
+                className="flex-1 min-h-0 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden"
+              >
+                {/* Image — on mobile: 1:1 square + rubber band when pull-down at top; on desktop fixed left column */}
+                <div
+                  ref={imageWrapRef}
+                  className="relative w-full aspect-square md:w-[320px] md:h-[420px] md:aspect-auto flex-shrink-0 order-first overflow-hidden transition-transform duration-200 ease-out"
+                  style={{
+                    transform: imagePull > 0 ? `translateY(${imagePull}px) scale(${1 + imagePull / 800})` : undefined,
+                  }}
+                >
+                  <Image
+                    src={selected.image}
+                    alt={`${selected.name}, ${selected.role}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 320px"
+                  />
+                </div>
+                {/* Content — on mobile part of same scroll + extra bottom padding to clear FAB/menu; on desktop has its own scroll for testimonial */}
+                <div className="flex-1 min-w-0 min-h-0 flex flex-col p-6 md:p-8 pt-12 md:pt-8 md:pb-8">
                 <motion.button
                   type="button"
                   onClick={() => setSelected(null)}
-                  className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)] text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                  className="absolute top-4 right-4 z-10 flex h-10 items-center gap-2 rounded-full bg-[var(--primary)] px-4 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                   aria-label="Close recommendation dialog"
                   whileHover={shouldReduceMotion ? {} : { scale: 1.08 }}
                   whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 200, damping: 22 }}
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-5 w-5" aria-hidden />
+                  <span>Close</span>
                 </motion.button>
                 <h3
                   id="testimonial-name"
@@ -193,11 +251,12 @@ export default function Recommendations() {
                   {selected.role}
                 </p>
                 <div className="w-full h-px bg-black/[0.18] dark:bg-white/[0.18] mb-4" aria-hidden="true" />
-                <div className="flex-1 min-h-0 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/30 hover:[&::-webkit-scrollbar-thumb]:bg-black/40 dark:[&::-webkit-scrollbar-track]:bg-white/10 dark:[&::-webkit-scrollbar-thumb]:bg-white/30 dark:hover:[&::-webkit-scrollbar-thumb]:bg-white/40" id="testimonial-body" aria-live="polite">
+                <div className="md:flex-1 md:min-h-0 md:overflow-y-auto md:pr-2 pb-[75px] md:pb-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/30 hover:[&::-webkit-scrollbar-thumb]:bg-black/40 dark:[&::-webkit-scrollbar-track]:bg-white/10 dark:[&::-webkit-scrollbar-thumb]:bg-white/30 dark:hover:[&::-webkit-scrollbar-thumb]:bg-white/40" id="testimonial-body" aria-live="polite">
                   <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                     {selected.testimonial}
                   </p>
                 </div>
+              </div>
               </div>
             </motion.div>
           </motion.div>

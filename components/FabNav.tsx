@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Menu, X, ArrowUp } from "lucide-react";
+import { UniversalAccess } from "react-bootstrap-icons";
 
 const navItems = [
   { name: "Experience", href: "#experience", ariaLabel: "Go to Experience section" },
@@ -16,7 +17,11 @@ const navItems = [
 const liquidSpring = { type: "spring" as const, stiffness: 200, damping: 22 };
 const liquidSpringReduced = { type: "spring" as const, stiffness: 320, damping: 28 };
 
-export default function FabNav() {
+type FabNavProps = {
+  onOpenAccessibility?: () => void;
+};
+
+export default function FabNav({ onOpenAccessibility }: FabNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [showFab, setShowFab] = useState(false);
@@ -68,12 +73,11 @@ export default function FabNav() {
 
   return (
     <>
-      {/* FAB stack: back-to-top on all screens when scrolling; menu button mobile only */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col-reverse items-center gap-3">
-        <motion.button
+      {/* Mobile menu button: bottom-left corner */}
+      <motion.button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="md:hidden flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+        className="glass-circle-btn md:hidden fixed bottom-6 left-6 z-50 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-white/80 backdrop-blur-md text-[var(--primary)] shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2),inset_0_2px_0_rgba(255,255,255,0.9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] dark:bg-black/50 dark:backdrop-blur-md dark:shadow-[inset_0_-4px_14px_rgba(0,0,0,0.5),inset_0_2px_0_rgba(255,255,255,0.08)]"
         aria-expanded={open}
         aria-controls="fab-nav-menu"
         aria-label={open ? "Close navigation menu" : "Open navigation menu"}
@@ -105,28 +109,29 @@ export default function FabNav() {
           )}
         </AnimatePresence>
       </motion.button>
-        <AnimatePresence>
-          {showFabs && (
-            <motion.a
-              href="#hero"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToTop();
-              }}
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-              aria-label="Back to top"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={springConfig}
-              whileHover={shouldReduceMotion ? {} : { scale: 1.08 }}
-              whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-            >
-          <ArrowUp className="h-5 w-5" aria-hidden />
-        </motion.a>
-          )}
-        </AnimatePresence>
-      </div>
+
+      {/* Back to top: bottom-right corner, same size as menu button (h-14 w-14) for symmetry */}
+      <AnimatePresence>
+        {showFabs && (
+          <motion.a
+            href="#hero"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToTop();
+            }}
+            className="glass-circle-btn fixed bottom-6 right-6 z-50 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-white/80 backdrop-blur-md text-[var(--primary)] shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2),inset_0_2px_0_rgba(255,255,255,0.9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] dark:bg-black/50 dark:backdrop-blur-md dark:shadow-[inset_0_-4px_14px_rgba(0,0,0,0.5),inset_0_2px_0_rgba(255,255,255,0.08)]"
+            aria-label="Back to top"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={springConfig}
+            whileHover={shouldReduceMotion ? {} : { scale: 1.08 }}
+            whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
+          >
+            <ArrowUp className="h-6 w-6" aria-hidden />
+          </motion.a>
+        )}
+      </AnimatePresence>
 
       {/* Light dim only (no blur) — content behind stays visible for glass effect */}
       <AnimatePresence>
@@ -229,6 +234,24 @@ export default function FabNav() {
                   })}
                 </ul>
               </nav>
+              {/* Accessibility: bottom-right of menu (so it doesn’t overlap the close button on the left) */}
+              {onOpenAccessibility && (
+                <motion.button
+                  type="button"
+                  onClick={() => {
+                    onOpenAccessibility();
+                    setOpen(false);
+                  }}
+                  aria-label="Open accessibility settings"
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 16 }}
+                  transition={{ ...springConfig, delay: 0.03 * navItems.length, opacity: { duration: 0.2 } }}
+                  className="glass-circle-btn absolute bottom-6 right-6 rounded-full h-14 w-14 flex-shrink-0 inline-flex items-center justify-center bg-white/80 backdrop-blur-md text-[var(--primary)] shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2),inset_0_2px_0_rgba(255,255,255,0.9)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)] z-10 md:hidden dark:bg-black/50 dark:backdrop-blur-md dark:shadow-[inset_0_-4px_14px_rgba(0,0,0,0.5),inset_0_2px_0_rgba(255,255,255,0.08)]"
+                >
+                  <UniversalAccess className="h-6 w-6 fill-current" aria-hidden />
+                </motion.button>
+              )}
               </div>
             </motion.div>
           </>

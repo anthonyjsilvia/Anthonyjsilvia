@@ -147,7 +147,7 @@ export default function AccessibilityModal({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
-            className="flex flex-1 flex-col min-h-0 w-full px-8 py-10 sm:px-12 sm:py-12 lg:px-20 lg:py-16"
+            className="flex flex-1 flex-col min-h-0 w-full pl-8 pr-24 py-10 sm:pl-12 sm:pr-28 sm:py-12 lg:pl-20 lg:pr-32 lg:py-16"
           >
             <nav aria-label="Breadcrumb" className="mb-4">
               <Link
@@ -155,7 +155,7 @@ export default function AccessibilityModal({
                 className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] hover:text-[var(--primary)] dark:hover:text-[var(--primary)] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] rounded"
                 onClick={onClose}
               >
-                {origin || "…"}
+                {origin ? origin.replace(/^https?:\/\//i, "") : "…"}
               </Link>
               <span aria-hidden="true" className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mx-1.5">
                 /

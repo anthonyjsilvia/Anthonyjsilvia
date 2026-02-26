@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
+import { UniversalAccess } from "react-bootstrap-icons";
 
 const navItems = [
   { name: "Experience", href: "#experience" },
@@ -18,6 +19,9 @@ const COVER_SECTION_IDS = ["hero", "about", "experience", "portfolio", "educatio
 /** Vertical offset from top of viewport to the point we use to decide which section is under the nav (nav bar center). */
 const COVER_OFFSET_PX = 100;
 
+/** Scroll down past this (px) to collapse nav on mobile; scroll up reveals it again. */
+const MOBILE_COLLAPSE_SCROLL_THRESHOLD = 60;
+
 type CoverState = "hero" | "default" | "secondary";
 
 function getCoverState(sectionId: string | null): CoverState {
@@ -26,13 +30,20 @@ function getCoverState(sectionId: string | null): CoverState {
   return "default";
 }
 
-export default function Navigation() {
+type NavigationProps = {
+  onOpenAccessibility?: () => void;
+};
+
+export default function Navigation({ onOpenAccessibility }: NavigationProps) {
   const pathname = usePathname();
   const [coverState, setCoverState] = useState<CoverState>("default");
   const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const navRef = useRef<HTMLElement>(null);
   const rafId = useRef<number | null>(null);
+  const lastScrollY = useRef(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [navCollapsed, setNavCollapsed] = useState(false);
 
   useEffect(() => {
     const updateProgress = () => {
@@ -59,6 +70,38 @@ export default function Navigation() {
       if (rafId.current !== null) cancelAnimationFrame(rafId.current);
     };
   }, []);
+
+  /* Mobile viewport: only collapse nav on small screens (match md: 768px) */
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = typeof window !== "undefined" && window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) setNavCollapsed(false);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  /* Safari-like: on mobile, collapse to 4px progress bar when scrolling down, expand when scrolling up */
+  useEffect(() => {
+    if (!isMobile) return;
+    const handleScrollCollapse = () => {
+      const scrollY = window.scrollY;
+      const delta = scrollY - lastScrollY.current;
+      lastScrollY.current = scrollY;
+      if (scrollY <= MOBILE_COLLAPSE_SCROLL_THRESHOLD) {
+        setNavCollapsed(false);
+      } else if (delta > 8) {
+        setNavCollapsed(true);
+      } else if (delta < -8) {
+        setNavCollapsed(false);
+      }
+    };
+    lastScrollY.current = typeof window !== "undefined" ? window.scrollY : 0;
+    window.addEventListener("scroll", handleScrollCollapse, { passive: true });
+    return () => window.removeEventListener("scroll", handleScrollCollapse);
+  }, [isMobile]);
 
   /* Cover state and current section: which section is under the nav (style + active link) */
   useEffect(() => {
@@ -100,6 +143,7 @@ export default function Navigation() {
       ref={navRef}
       className="nav-scroll-root fixed top-4 left-4 right-4 z-40 rounded-[32px] overflow-hidden shadow-lg border border-[var(--border-light)] backdrop-blur-md transition-colors duration-200"
       data-cover={coverState}
+      data-nav-collapsed={isMobile && navCollapsed ? "true" : undefined}
       role="navigation"
       aria-label="Main navigation"
     >
@@ -138,7 +182,7 @@ export default function Navigation() {
             </motion.a>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden md:flex items-center space-x-8">
               {navItems.map((item, index) => {
                 const isActive =
                   "internalPage" in item && item.internalPage
@@ -173,6 +217,19 @@ export default function Navigation() {
                   </motion.a>
                 );
               })}
+              {onOpenAccessibility && (
+                <motion.button
+                  type="button"
+                  onClick={onOpenAccessibility}
+                  className="glass-circle-btn font-medium focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded-full h-10 w-10 flex-shrink-0 inline-flex items-center justify-center bg-white/80 backdrop-blur-md text-[var(--primary)] shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2),inset_0_2px_0_rgba(255,255,255,0.9)] dark:bg-black/50 dark:backdrop-blur-md dark:shadow-[inset_0_-4px_14px_rgba(0,0,0,0.5),inset_0_2px_0_rgba(255,255,255,0.08)]"
+                  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: shouldReduceMotion ? 0 : navItems.length * 0.1 }}
+                  aria-label="Open accessibility settings"
+                >
+                  <UniversalAccess className="h-5 w-5 fill-current" aria-hidden />
+                </motion.button>
+              )}
             </div>
           </div>
         </div>

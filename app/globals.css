@@ -258,6 +258,23 @@ html.reduce-transparency .fab-nav-glass {
   }
 }
 
+/* Glass circle buttons (menu, back to top, accessibility) → solid, no blur when reduce transparency */
+html.reduce-transparency .glass-circle-btn {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.reduce-transparency .glass-circle-btn {
+  background: #fff !important;
+}
+@media (prefers-color-scheme: dark) {
+  html.reduce-transparency .glass-circle-btn {
+    background: var(--bg-secondary) !important;
+  }
+}
+html.dark.reduce-transparency .glass-circle-btn {
+  background: var(--bg-secondary) !important;
+}
+
 /* Apply modern sans-serif to all text elements */
 * {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -435,6 +452,32 @@ html.force-reduce-motion [class*="motion"] {
 
 .nav-scroll-root[data-cover="secondary"] {
   border-color: var(--border-light);
+}
+
+/* Mobile only: Safari-like collapse — shrink to 4px progress bar when scrolling down, expand when scrolling up */
+@media (max-width: 767px) {
+  .nav-scroll-root {
+    height: 4rem; /* h-16: explicit so we can transition to 4px */
+    transition: height 0.25s ease-out, border-radius 0.25s ease-out, box-shadow 0.25s ease-out;
+  }
+
+  .nav-scroll-root[data-nav-collapsed="true"] {
+    height: 4px !important;
+    min-height: 4px;
+    border-radius: 2px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .nav-scroll-root[data-nav-collapsed="true"] .nav-gradient-text {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+  }
+
+  .nav-scroll-root .nav-gradient-text {
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+  }
 }
 
 /* FAB nav glass panel: Refraction 80, Depth 20, Dispersion 50, Frost 4, Splay 0 */
