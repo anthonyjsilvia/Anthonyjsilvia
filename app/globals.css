@@ -254,15 +254,6 @@ select:focus-visible {
   color: #ffffff;
 }
 
-.nav-scroll-root[data-cover="hero"] .nav-mobile-menu {
-  background: rgba(0, 0, 0, 0.6);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.nav-scroll-root[data-cover="hero"] .nav-mobile-menu a:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
 /* Secondary (Experience, Education, Footer): match bg-secondary */
 .nav-scroll-root[data-cover="secondary"] .nav-cover-bg {
   background: color-mix(in srgb, var(--bg-secondary) 97%, transparent);
@@ -272,70 +263,46 @@ select:focus-visible {
   border-color: var(--border-light);
 }
 
-.nav-scroll-root[data-cover="secondary"] .nav-mobile-menu {
-  background: color-mix(in srgb, var(--bg-secondary) 99%, transparent);
-  border-color: var(--border-light);
+/* FAB nav glass panel: Refraction 80, Depth 20, Dispersion 50, Frost 4, Splay 0 */
+.fab-nav-glass {
+  isolation: isolate;
+  --glass-refraction: 80;
+  --glass-depth: 20;
+  --glass-dispersion: 50;
+  --glass-frost: 4;
+  --glass-splay: 0;
 }
 
-/* Mobile menu only: link text forced to primary blue (hex) so nothing can override */
-.nav-mobile-link-text {
-  color: #0052cc !important; /* primary light mode – matches progress bar */
+/* Single layer: refraction (blur 80%) + frost (saturate) + depth (opacity). Splay 0 = no spread. */
+.fab-nav-glass-layer {
+  /* Refraction 80 → strong blur; Frost 4 → slight saturate */
+  background: rgba(255, 255, 255, 0.69);
+  backdrop-filter: blur(16px) saturate(132%);
+  -webkit-backdrop-filter: blur(16px) saturate(132%);
 }
+
 @media (prefers-color-scheme: dark) {
-  .nav-mobile-link-text {
-    color: #4d9fff !important; /* primary dark mode */
+  .fab-nav-glass-layer {
+    /* Depth 20 → subtle tint */
+    background: rgba(0, 0, 0, 0.39);
   }
 }
 
-/* Unselected: full opacity and explicit blue so contrast is consistent */
-.nav-mobile-menu .nav-mobile-link:not(.nav-mobile-link-active) {
-  opacity: 1;
+/* Dispersion 50: chromatic shadow (rgb fringing) */
+.fab-nav-glass {
+  box-shadow:
+    0 -4px 24px rgba(0, 0, 0, 0.06),
+    -1px 0 12px rgba(255, 100, 120, 0.02),
+    1px 0 12px rgba(100, 150, 255, 0.02),
+    0 -1px 0 rgba(255, 255, 255, 0.12) inset;
 }
-.nav-mobile-menu .nav-mobile-link:not(.nav-mobile-link-active) .nav-mobile-link-text {
-  color: #0052cc !important;
-}
+
 @media (prefers-color-scheme: dark) {
-  .nav-mobile-menu .nav-mobile-link:not(.nav-mobile-link-active) .nav-mobile-link-text {
-    color: #4d9fff !important;
+  .fab-nav-glass {
+    box-shadow:
+      0 -4px 24px rgba(0, 0, 0, 0.25),
+      -1px 0 12px rgba(255, 120, 140, 0.015),
+      1px 0 12px rgba(120, 160, 255, 0.015),
+      0 -1px 0 rgba(255, 255, 255, 0.05) inset;
   }
 }
-
-/* Mobile menu only: links use primary blue (progress bar color), hover, and active state */
-@media (max-width: 767px) {
-  .nav-scroll-root .nav-mobile-menu a,
-  .nav-scroll-root[data-cover="hero"] .nav-mobile-menu a {
-    color: var(--primary) !important;
-  }
-}
-.nav-mobile-menu .nav-mobile-link:hover {
-  background: var(--bg-secondary);
-}
-.nav-mobile-menu .nav-link[data-active="true"],
-.nav-mobile-menu .nav-mobile-link-active {
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-  opacity: 0.7;
-}
-
-/* Force mobile menu link color for accessibility – no transition so it cannot fade (comes last to win) */
-.nav-scroll-root .nav-mobile-menu {
-  color: var(--primary) !important;
-}
-.nav-scroll-root .nav-mobile-menu a.nav-mobile-link {
-  color: var(--primary) !important;
-  transition-property: opacity, transform, background-color !important;
-}
-@media (max-width: 767px) {
-  .nav-scroll-root .nav-mobile-menu,
-  .nav-scroll-root[data-cover="hero"] .nav-mobile-menu,
-  .nav-scroll-root[data-cover="secondary"] .nav-mobile-menu {
-    color: var(--primary) !important;
-  }
-  .nav-scroll-root .nav-mobile-menu a.nav-mobile-link,
-  .nav-scroll-root[data-cover="hero"] .nav-mobile-menu a.nav-mobile-link,
-  .nav-scroll-root[data-cover="secondary"] .nav-mobile-menu a.nav-mobile-link {
-    color: var(--primary) !important;
-    transition-property: opacity, transform, background-color !important;
-  }
-}
-

@@ -168,14 +168,17 @@ export default function Recommendations() {
               </div>
               {/* Right: content — same height as image; testimonial scrolls */}
               <div className="flex-1 min-w-0 min-h-0 flex flex-col p-6 md:p-8 pt-12 md:pt-8">
-                <button
+                <motion.button
                   type="button"
                   onClick={() => setSelected(null)}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-lg bg-black/20 dark:bg-white/20 text-[var(--text-primary)] hover:bg-black/30 dark:hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
+                  className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)] text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                   aria-label="Close recommendation"
+                  whileHover={shouldReduceMotion ? {} : { scale: 1.08 }}
+                  whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 22 }}
                 >
-                  <X className="w-5 h-5" />
-                </button>
+                  <X className="h-5 w-5" />
+                </motion.button>
                 <h3
                   id="testimonial-name"
                   className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-1"

@@ -10,6 +10,7 @@ import Recommendations from "@/components/Recommendations";
 import Contact from "@/components/Contact";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import FabNav from "@/components/FabNav";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -40,6 +41,7 @@ export default function Home() {
       <Recommendations />
       <Contact />
       <Footer />
+      <FabNav />
     </main>
   );
 }

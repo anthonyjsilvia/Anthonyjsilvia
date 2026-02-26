@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 
 const navItems = [
   { name: "Experience", href: "#experience" },
@@ -29,27 +28,17 @@ function getCoverState(sectionId: string | null): CoverState {
 
 export default function Navigation() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
   const [coverState, setCoverState] = useState<CoverState>("default");
   const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const navRef = useRef<HTMLElement>(null);
   const rafId = useRef<number | null>(null);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
     const updateProgress = () => {
       const scrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      let progress = maxScroll <= 0 ? 0 : Math.min(1, scrollY / maxScroll);
-      if (isMobile && isOpen) progress = 0;
+      const progress = maxScroll <= 0 ? 0 : Math.min(1, scrollY / maxScroll);
       if (navRef.current) {
         navRef.current.style.setProperty("--scroll-progress", String(progress));
         navRef.current.dataset.progressHigh = progress > 0.5 ? "true" : "false";
@@ -69,7 +58,7 @@ export default function Navigation() {
       window.removeEventListener("scroll", handleScroll);
       if (rafId.current !== null) cancelAnimationFrame(rafId.current);
     };
-  }, [isMobile, isOpen]);
+  }, []);
 
   /* Cover state and current section: which section is under the nav (style + active link) */
   useEffect(() => {
@@ -98,12 +87,7 @@ export default function Navigation() {
     };
   }, []);
 
-  const handleNavClick = (href: string, external?: boolean) => {
-    if (external) {
-      setIsOpen(false);
-      return;
-    }
-    setIsOpen(false);
+  const handleNavClick = (href: string) => {
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: shouldReduceMotion ? "auto" : "smooth", block: "start" });
@@ -167,8 +151,6 @@ export default function Navigation() {
                       if (!item.external && !("internalPage" in item && item.internalPage)) {
                         e.preventDefault();
                         handleNavClick(item.href);
-                      } else if ("internalPage" in item && item.internalPage) {
-                        setIsOpen(false);
                       }
                     }}
                     target={item.external ? "_blank" : undefined}
@@ -187,74 +169,9 @@ export default function Navigation() {
                 );
               })}
             </div>
-
-            {/* Mobile Menu Button: 8px from right edge of nav bar */}
-            <motion.button
-              type="button"
-              className="nav-menu-icon md:hidden -mr-4 sm:-mr-5 pl-4 pt-4 pb-4 pr-2 rounded-lg focus:outline-none"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-expanded={isOpen}
-              aria-controls="mobile-menu"
-              aria-label="Toggle navigation menu"
-              whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
-              whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-            >
-              <span className="inline-flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-[var(--primary)] p-4 text-white">
-                {isOpen ? (
-                  <X className="h-6 w-6" aria-hidden="true" />
-                ) : (
-                  <Menu className="h-6 w-6" aria-hidden="true" />
-                )}
-              </span>
-            </motion.button>
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu: background matches cover state via parent data-cover */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            id="mobile-menu"
-            className="nav-mobile-menu md:hidden bg-white/98 dark:bg-black/98 border-t border-[var(--border-light)]"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
-          >
-            <div className="px-4 pt-2 pb-4 space-y-2 rounded-b-[32px]">
-              {navItems.map((item, index) => {
-                const isActive =
-                  "internalPage" in item && item.internalPage
-                    ? pathname === "/evidence"
-                    : !item.external && item.href === `#${currentSectionId}`;
-                return (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    onClick={(e) => {
-                      if (!item.external && !("internalPage" in item && item.internalPage)) {
-                        e.preventDefault();
-                        handleNavClick(item.href);
-                      } else if ("internalPage" in item && item.internalPage) {
-                        setIsOpen(false);
-                      }
-                    }}
-                    target={item.external ? "_blank" : undefined}
-                    rel={item.external ? "noopener noreferrer" : undefined}
-                    className={`block px-4 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] nav-link nav-item-link nav-mobile-link ${isActive ? "nav-mobile-link-active" : ""}`}
-                    data-active={isActive ? "true" : undefined}
-                    aria-label={`Navigate to ${item.name}${item.external ? " (opens in new tab)" : ""}`}
-                    aria-current={isActive ? "page" : undefined}
-                  >
-                    <span className="nav-mobile-link-text">{item.name}</span>
-                  </a>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </nav>
   );
 }
