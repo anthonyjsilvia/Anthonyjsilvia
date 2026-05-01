@@ -170,7 +170,7 @@ export default function EvidencePage() {
               </h1>
               <p className="text-lg text-[var(--text-secondary)] dark:text-[var(--text-secondary)] max-w-3xl">
                 How I work, drawn from two projects: <strong>{PROJECT_A}</strong> and{" "}
-                <strong>Lowe's Pro Supply</strong>. Short, evidence-based bullets on trade-offs,
+                <strong>Lowe&apos;s Pro Supply</strong>. Short, evidence-based bullets on trade-offs,
                 clarity, ambiguity, systems, and what changed between them.
               </p>
             </header>

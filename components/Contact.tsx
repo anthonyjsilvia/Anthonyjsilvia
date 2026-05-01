@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Mail, Linkedin, Globe, Camera, ArrowUpRight } from "lucide-react";
+import ContactMeForm from "./ContactMeForm";
 
 const NODEDA_LOGO_LIGHT = "https://nodeda.com/logos/NodeDa.black.svg";
 const NODEDA_LOGO_DARK = "https://nodeda.com/logos/NodeDa.white.svg";
@@ -11,7 +12,7 @@ const NODEDA_LOGO_DARK = "https://nodeda.com/logos/NodeDa.white.svg";
 // Contact information
 const contactInfo = {
   email: "contact@anthonysilvia.com",
-  linkedin: "www.linkedin.com/in/anthonysilvia",
+  linkedin: "linkedin.com/in/anthonyjsilvia",
   personal: "anthonysilvia.com",
   shutterda: "https://shutterda.com/Anthony",
 };
@@ -128,6 +129,15 @@ export default function Contact() {
           <p className="text-lg text-[var(--text-secondary)] dark:text-[var(--text-secondary)] max-w-xl mx-auto">
             Reach out for projects, collaboration, or just to say hello.
           </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.45, delay: 0.05 }}
+          className="mb-10 md:mb-12"
+        >
+          <ContactMeForm fallbackEmail={contactInfo.email} />
         </motion.div>
 
         {/* Link grid */}

@@ -11,7 +11,10 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const loadedRef = useRef(false);
-  loadedRef.current = loaded;
+
+  useEffect(() => {
+    loadedRef.current = loaded;
+  }, [loaded]);
 
   useEffect(() => {
     const t = window.setTimeout(() => {

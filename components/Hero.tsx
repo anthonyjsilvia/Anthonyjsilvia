@@ -151,7 +151,7 @@ export default function Hero() {
           </motion.a>
 
           <motion.a
-            href="https://www.linkedin.com/in/anthonysilvia"
+            href="https://linkedin.com/in/anthonyjsilvia"
             target="_blank"
             rel="noopener noreferrer"
             className="px-8 py-4 bg-white/95 dark:bg-white/10 text-[var(--text-primary)] dark:text-white rounded-lg font-semibold text-lg border-2 border-white/30 hover:border-white hover:bg-white hover:text-[var(--primary)] dark:hover:bg-white/20 transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] flex items-center gap-2 min-w-[180px] justify-center"
