@@ -138,11 +138,6 @@ export async function POST(req: NextRequest) {
   if (requesterName) payload.requesterName = requesterName;
   if (relatedUrl) payload.relatedUrl = relatedUrl;
 
-  const userAgent = req.headers.get("user-agent");
-  if (userAgent && userAgent.length <= 512) {
-    payload.deviceInfo = userAgent;
-  }
-
   let upstream: Response;
   try {
     upstream = await fetch(url, {
