@@ -1,237 +1,295 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { UniversalAccess } from "react-bootstrap-icons";
+import { Mail } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import SiteSearch from "@/components/SiteSearch";
 
+/**
+ * Top-level navigation items. Every entry is a real page route — the site is
+ * multi-page now, so there are no in-page anchor links to track.
+ *
+ * Contact is intentionally not in this list — it's promoted to a primary CTA
+ * button rendered to the right of the menu (see the Contact CTA in JSX below).
+ */
 const navItems = [
-  { name: "Experience", href: "#experience" },
-  { name: "Portfolio", href: "#portfolio" },
-  { name: "Evidence", href: "/evidence", internalPage: true },
-  { name: "Resume", href: "/resume.pdf", external: true },
-  { name: "Contact", href: "#contact" },
+  { name: "Experience", href: "/experience" },
+  { name: "Portfolio", href: "/portfolio" },
+  { name: "Evidence", href: "/evidence" },
+  { name: "Resume", href: "/resume" },
 ];
 
-/** Section IDs that can be "under" the nav; order matches page flow. */
-const COVER_SECTION_IDS = ["hero", "about", "experience", "portfolio", "education", "recommendations", "contact"] as const;
-
-/** Vertical offset from top of viewport to the point we use to decide which section is under the nav (nav bar center). */
-const COVER_OFFSET_PX = 100;
-
-/** Scroll down past this (px) to collapse nav on mobile; scroll up reveals it again. */
-const MOBILE_COLLAPSE_SCROLL_THRESHOLD = 60;
-
-type CoverState = "hero" | "default" | "secondary";
-
-function getCoverState(sectionId: string | null): CoverState {
-  if (sectionId === "hero") return "hero";
-  if (sectionId === "experience" || sectionId === "education") return "secondary";
-  return "default";
+/**
+ * `true` when the given href is the current route (exact match) or a parent of
+ * the current route (so `/portfolio/case-x` highlights `/portfolio`).
+ */
+function isLinkActive(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
 }
 
-type NavigationProps = {
-  onOpenAccessibility?: () => void;
+/**
+ * iOS 26-style "liquid pill" spring. Snappy enough to feel responsive, with
+ * just enough overshoot (low damping relative to stiffness, moderate mass) to
+ * give the pill that wet, jelly-like settle when it lands on a new item.
+ *
+ * Tuning notes:
+ *   • stiffness ↑ = arrives faster, more rigid
+ *   • damping ↓   = more bounce / wobble
+ *   • mass ↑     = heavier feel, more inertia
+ */
+const liquidSpring = {
+  type: "spring" as const,
+  stiffness: 280,
+  damping: 24,
+  mass: 0.7,
 };
 
-export default function Navigation({ onOpenAccessibility }: NavigationProps) {
-  const pathname = usePathname();
-  const [coverState, setCoverState] = useState<CoverState>("default");
-  const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
+type PillRect = {
+  /** Pixel offset of the pill's left edge from the start of the items row. */
+  left: number;
+  /** Pill width — matches the underlying item's width. */
+  width: number;
+  /** Whether the pill should be visible (false on home with no hover). */
+  visible: boolean;
+};
+
+const INITIAL_PILL: PillRect = { left: 0, width: 0, visible: false };
+
+/**
+ * Navigation — full-width Liquid Glass header bar with an iOS 26-style
+ * morphing pill indicator.
+ *
+ * Hovering or focusing a desktop nav item slides the primary-color "liquid
+ * pill" (with spring physics + slight bounce) from the active route to the
+ * hovered item. On mouse leave, the pill springs back to the active route.
+ * On `/` (home, no active nav item) the pill gently appears on hover and
+ * fades + scales out on leave.
+ *
+ * The pill width morphs to fit each item because the items have different
+ * label lengths — that horizontal-stretch is what gives the motion its
+ * actual liquid quality. Spring physics handle the rest.
+ *
+ * Reduced-motion: pill becomes a static block at the active route only;
+ * hover does nothing.
+ */
+export default function Navigation() {
+  const pathname = usePathname() ?? "/";
   const shouldReduceMotion = useReducedMotion();
-  const navRef = useRef<HTMLElement>(null);
-  const rafId = useRef<number | null>(null);
-  const lastScrollY = useRef(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [navCollapsed, setNavCollapsed] = useState(false);
+  const isHome = pathname === "/";
 
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const [pill, setPill] = useState<PillRect>(INITIAL_PILL);
+
+  const activeIdx = navItems.findIndex((item) => isLinkActive(pathname, item.href));
+  // Hover wins; fall back to the active route; -1 means "no pill anywhere".
+  const pillIdx = hoveredIdx !== null ? hoveredIdx : activeIdx;
+
+  /**
+   * Measure the target item and update the pill's rect. Re-measures whenever
+   * `pillIdx` changes (hover / active route changes) and on window resize so
+   * the pill stays glued to the right item across layout shifts.
+   */
   useEffect(() => {
-    const updateProgress = () => {
-      const scrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = maxScroll <= 0 ? 0 : Math.min(1, scrollY / maxScroll);
-      if (navRef.current) {
-        navRef.current.style.setProperty("--scroll-progress", String(progress));
-        navRef.current.dataset.progressHigh = progress > 0.5 ? "true" : "false";
-      }
-      rafId.current = null;
-    };
-
-    const handleScroll = () => {
-      if (rafId.current === null) {
-        rafId.current = requestAnimationFrame(updateProgress);
-      }
-    };
-
-    updateProgress();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (rafId.current !== null) cancelAnimationFrame(rafId.current);
-    };
-  }, []);
-
-  /* Mobile viewport: only collapse nav on small screens (match md: 768px) */
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = typeof window !== "undefined" && window.innerWidth < 768;
-      setIsMobile(mobile);
-      if (!mobile) setNavCollapsed(false);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  /* Safari-like: on mobile, collapse to 4px progress bar when scrolling down, expand when scrolling up */
-  useEffect(() => {
-    if (!isMobile) return;
-    const handleScrollCollapse = () => {
-      const scrollY = window.scrollY;
-      const delta = scrollY - lastScrollY.current;
-      lastScrollY.current = scrollY;
-      if (scrollY <= MOBILE_COLLAPSE_SCROLL_THRESHOLD) {
-        setNavCollapsed(false);
-      } else if (delta > 8) {
-        setNavCollapsed(true);
-      } else if (delta < -8) {
-        setNavCollapsed(false);
-      }
-    };
-    lastScrollY.current = typeof window !== "undefined" ? window.scrollY : 0;
-    window.addEventListener("scroll", handleScrollCollapse, { passive: true });
-    return () => window.removeEventListener("scroll", handleScrollCollapse);
-  }, [isMobile]);
-
-  /* Cover state and current section: which section is under the nav (style + active link) */
-  useEffect(() => {
-    const updateCover = () => {
-      let sectionId: string | null = null;
-      const y = COVER_OFFSET_PX;
-      for (const id of COVER_SECTION_IDS) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= y && rect.bottom >= y) {
-          sectionId = id;
-          break;
-        }
-      }
-      setCurrentSectionId(sectionId);
-      setCoverState(getCoverState(sectionId));
-    };
-
-    updateCover();
-    window.addEventListener("scroll", updateCover, { passive: true });
-    window.addEventListener("resize", updateCover);
-    return () => {
-      window.removeEventListener("scroll", updateCover);
-      window.removeEventListener("resize", updateCover);
-    };
-  }, []);
-
-  const handleNavClick = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: shouldReduceMotion ? "auto" : "smooth", block: "start" });
+    if (pillIdx < 0) {
+      setPill((p) => ({ ...p, visible: false }));
+      return;
     }
-  };
+
+    const measure = () => {
+      const el = itemRefs.current[pillIdx];
+      if (!el) return;
+      setPill({
+        left: el.offsetLeft,
+        width: el.offsetWidth,
+        visible: true,
+      });
+    };
+
+    // Defer one tick so the items have laid out (matters on first render).
+    const raf = requestAnimationFrame(measure);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", measure);
+    };
+  }, [pillIdx]);
 
   return (
     <nav
       id="main-nav"
-      ref={navRef}
-      className="nav-scroll-root fixed top-4 left-4 right-4 z-40 rounded-[32px] overflow-hidden shadow-lg border border-[var(--border-light)] backdrop-blur-md transition-colors duration-200"
-      data-cover={coverState}
-      data-nav-collapsed={isMobile && navCollapsed ? "true" : undefined}
       role="navigation"
       aria-label="Main navigation"
+      className="nav-liquid-glass fixed top-0 inset-x-0 z-40"
     >
-      {/* Base layer (unfilled area): overridden by cover-state CSS */}
-      <div
-        className="nav-cover-bg absolute inset-0 bg-white/95 dark:bg-black/95"
-        aria-hidden="true"
-      />
-      {/* Progress fill: overridden by cover-state CSS */}
-      <div
-        className="nav-progress-fill absolute inset-y-0 left-0 bg-[var(--primary)]"
-        aria-hidden="true"
-      />
+      <div className="mx-auto w-full max-w-7xl h-16 sm:h-[68px] flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+        {/* Brand — refined wordmark. Just the name. */}
+        <Link
+          href="/"
+          aria-label="Anthony Silvia — Home"
+          aria-current={isHome ? "page" : undefined}
+          className="nav-wordmark inline-flex items-baseline -ml-1 px-2 py-1 rounded-lg text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)]"
+        >
+          <span className="text-[15px] sm:text-base md:text-[17px] font-semibold tracking-[-0.01em] leading-none">
+            Anthony Silvia
+          </span>
+        </Link>
 
-      {/* Single full-width gradient wrapper so text aligns with blue fill */}
-      <div className="nav-gradient-text w-full relative z-10">
-        <div className="w-full px-4 sm:px-5">
-          <div className="flex justify-between items-center h-16 md:h-20">
-            <motion.a
-              href="/"
-              onClick={(e) => {
-                if (pathname === "/") {
-                  e.preventDefault();
-                  handleNavClick("#hero");
-                }
+        {/* Right cluster — menu, search trigger, and Contact CTA. They're
+            grouped in one flex row so `justify-between` on the outer container
+            keeps the brand pinned left and this whole cluster pinned right. */}
+        <div className="flex items-center gap-2 md:gap-3">
+        {/*
+          Desktop / tablet links. The <ul> is a positioning context for the
+          floating pill; each <li> is measured (offsetLeft + offsetWidth) and
+          the pill animates to whichever one is hovered (or to the active
+          route at rest). `onMouseLeave` on the list clears `hoveredIdx` so
+          the pill springs back to the active route — not to the last hovered
+          item.
+        */}
+        <ul
+          role="list"
+          className="hidden md:flex items-center gap-0.5 relative"
+          onMouseLeave={() => setHoveredIdx(null)}
+        >
+          {/* Liquid pill — single element, animated via {left, width, opacity, scale}.
+              Spring physics + width-morph = liquid feel.
+
+              Centering note: we cannot use a `translateY(-50%)` CSS transform
+              here because animating `scale` makes framer-motion fully own the
+              transform string, which would wipe out the translate. Instead
+              the pill is centered explicitly with `top: calc(50% - 17px)`,
+              where 17px is half the pill height (34px).
+          */}
+          {!shouldReduceMotion && (
+            <motion.div
+              aria-hidden="true"
+              className="nav-liquid-pill absolute top-[calc(50%-17px)] h-[34px] rounded-full bg-[var(--primary)] pointer-events-none"
+              initial={false}
+              animate={{
+                left: pill.left,
+                width: pill.width,
+                opacity: pill.visible ? 1 : 0,
+                // Subtle scale-from-nothing on home-page hover entry; at rest
+                // the pill is always full-scale so the morph between items
+                // doesn't change scale (which would feel like a glitch).
+                scale: pill.visible ? 1 : 0.85,
               }}
-              className="text-xl md:text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-transparent rounded-lg inline-block nav-link nav-brand"
-              data-active={currentSectionId === "hero" ? "true" : undefined}
-              style={{ color: "inherit" }}
-              aria-label="Anthony Silvia - Home"
-              aria-current={currentSectionId === "hero" ? "page" : undefined}
-              whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
-              whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-            >
-              Anthony Silvia
-            </motion.a>
+              transition={{
+                left: liquidSpring,
+                width: liquidSpring,
+                opacity: { duration: 0.18, ease: [0.16, 1, 0.3, 1] },
+                scale: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
+              }}
+            />
+          )}
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              {navItems.map((item, index) => {
-                const isActive =
-                  "internalPage" in item && item.internalPage
-                    ? pathname === "/evidence"
-                    : !item.external && item.href === `#${currentSectionId}`;
-                return (
-                  <motion.a
-                    key={item.name}
-                    href={item.href}
-                    onClick={(e) => {
-                      if (!item.external && !("internalPage" in item && item.internalPage)) {
-                        e.preventDefault();
-                        handleNavClick(item.href);
-                      }
+          {/* Reduced-motion fallback: static pill at the active route only,
+              positioned via plain CSS inside its <li>. No hover preview. */}
+
+          {navItems.map((item, idx) => {
+            const isActive = isLinkActive(pathname, item.href);
+            const isUnderPill = !shouldReduceMotion && idx === pillIdx;
+            const reducedMotionPill = shouldReduceMotion && isActive;
+            // The pill has left this item to follow the user's cursor /
+            // focus elsewhere. Show a quiet outline on the active route so
+            // the user can still see which page they're on while previewing
+            // others.
+            const showActiveOutline =
+              !shouldReduceMotion && isActive && pillIdx !== activeIdx;
+
+            // Text-color rules:
+            //   • Under the (animated or reduced-motion) pill → white
+            //   • Active route with the pill elsewhere → primary color
+            //     (matches the outline; reads as "this is your page")
+            //   • Otherwise → secondary text, deepens to primary text on hover
+            let textColorClass: string;
+            if (isUnderPill || reducedMotionPill) {
+              textColorClass = "text-white";
+            } else if (showActiveOutline) {
+              textColorClass = "text-[var(--primary)]";
+            } else {
+              textColorClass =
+                "text-[var(--text-secondary)] hover:text-[var(--text-primary)]";
+            }
+
+            return (
+              <li
+                key={item.name}
+                ref={(el) => {
+                  itemRefs.current[idx] = el;
+                }}
+                className="relative"
+                onMouseEnter={() => setHoveredIdx(idx)}
+              >
+                {/* Static pill for reduced-motion: simply marks the active
+                    route with a filled primary block. No animation. */}
+                {reducedMotionPill && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[34px] rounded-full bg-[var(--primary)] pointer-events-none"
+                  />
+                )}
+
+                {/* Active-route outline — appears when the liquid pill has
+                    moved off the active item, so the user still has a clear
+                    "you are here" cue. Fades in/out with an Apple ease so the
+                    handoff between pill-and-outline feels coordinated. */}
+                {isActive && !shouldReduceMotion && (
+                  <motion.span
+                    aria-hidden="true"
+                    className="absolute left-0 right-0 top-[calc(50%-17px)] h-[34px] rounded-full border-[1.5px] border-[var(--primary)] pointer-events-none"
+                    initial={false}
+                    animate={{ opacity: showActiveOutline ? 1 : 0 }}
+                    transition={{
+                      duration: 0.22,
+                      ease: [0.16, 1, 0.3, 1],
                     }}
-                    target={item.external ? "_blank" : undefined}
-                    rel={item.external ? "noopener noreferrer" : undefined}
-                    className="font-medium focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded-lg px-2 py-1 inline-block nav-link nav-item-link"
-                    data-active={isActive ? "true" : undefined}
-                    style={{ color: "inherit" }}
-                    initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: shouldReduceMotion ? 0 : index * 0.1 }}
-                    aria-label={item.external
-                      ? `Open ${item.name} in new tab`
-                      : ("internalPage" in item && item.internalPage)
-                        ? `Go to ${item.name} page`
-                        : `Go to ${item.name} section`}
-                    aria-current={isActive ? "page" : undefined}
-                  >
-                    {item.name}
-                  </motion.a>
-                );
-              })}
-              {onOpenAccessibility && (
-                <motion.button
-                  type="button"
-                  onClick={onOpenAccessibility}
-                  className="glass-circle-btn font-medium focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded-full h-10 w-10 flex-shrink-0 inline-flex items-center justify-center bg-white/80 backdrop-blur-md text-[var(--primary)] shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2),inset_0_2px_0_rgba(255,255,255,0.9)] dark:bg-black/50 dark:backdrop-blur-md dark:shadow-[inset_0_-4px_14px_rgba(0,0,0,0.5),inset_0_2px_0_rgba(255,255,255,0.08)]"
-                  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: shouldReduceMotion ? 0 : navItems.length * 0.1 }}
-                  aria-label="Open accessibility settings"
+                  />
+                )}
+
+                <Link
+                  href={item.href}
+                  aria-label={`Go to ${item.name} page`}
+                  aria-current={isActive ? "page" : undefined}
+                  onFocus={() => setHoveredIdx(idx)}
+                  onBlur={() => setHoveredIdx(null)}
+                  // `inline-flex items-center h-[34px] leading-none`:
+                  // pins the link box to exactly the same height as the
+                  // liquid pill (34px), with the label vertically centered
+                  // via flex. This is what guarantees the pill sits behind
+                  // the text rather than floating above or below it.
+                  className={`relative z-10 inline-flex items-center h-[34px] px-3.5 rounded-full text-[13px] font-medium tracking-[0.005em] leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] transition-colors duration-200 ${textColorClass}`}
                 >
-                  <UniversalAccess className="h-5 w-5 fill-current" aria-hidden />
-                </motion.button>
-              )}
-            </div>
-          </div>
+                  {item.name}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Site search — trigger pill + ⌘K palette. Hidden on the tightest
+            phones; from `sm:` up it sits between the menu and the Contact
+            CTA so the nav reads as: brand · menu · search · contact. */}
+        <div className="hidden sm:block">
+          <SiteSearch />
+        </div>
+
+        {/* Contact CTA — promoted out of the menu so it reads as a primary
+            action, not a tab. Solid primary fill, white label, full text on
+            md+ and an icon-plus-short-label fallback on phones. */}
+        <Link
+          href="/contact"
+          aria-label="Open Contact page"
+          aria-current={pathname === "/contact" || pathname.startsWith("/contact/") ? "page" : undefined}
+          className="nav-contact-cta inline-flex items-center gap-1.5 rounded-full bg-[var(--primary)] px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[var(--primary-dark)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] sm:px-4 sm:py-2"
+        >
+          <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
+          Contact
+        </Link>
         </div>
       </div>
     </nav>

@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Mail, Linkedin, Globe, Camera, ArrowUpRight } from "lucide-react";
+import { Mail, Linkedin, Globe, ArrowUpRight } from "lucide-react";
 import ContactMeForm from "./ContactMeForm";
 
 const NODEDA_LOGO_LIGHT = "https://nodeda.com/logos/NodeDa.black.svg";
@@ -14,7 +14,6 @@ const contactInfo = {
   email: "contact@anthonysilvia.com",
   linkedin: "linkedin.com/in/anthonyjsilvia",
   personal: "anthonysilvia.com",
-  shutterda: "https://shutterda.com/Anthony",
 };
 
 const NODEDA_REQUEST_SERVICE_URL = "https://nodeda.com/contact/request-service";
@@ -53,17 +52,6 @@ const links = [
     iconType: "lucide" as const,
     external: true,
     ariaLabel: "Visit personal website (opens in new tab)",
-  },
-  {
-    key: "shutterda",
-    href: contactInfo.shutterda,
-    label: "ShutterDa",
-    value: "View photography portfolio",
-    description: "Photo prints and portfolio",
-    icon: Camera,
-    iconType: "shutterda" as const,
-    external: true,
-    ariaLabel: "Visit ShutterDa portfolio (opens in new tab)",
   },
 ];
 
@@ -246,11 +234,7 @@ export default function Contact() {
                 className="group relative flex items-start gap-4 p-5 md:p-6 rounded-2xl bg-[var(--background)] dark:bg-[var(--background)] border border-[var(--border-light)] shadow-sm hover:shadow-lg hover:border-[var(--primary)] dark:hover:border-[var(--primary)] hover:shadow-[var(--primary)]/10 dark:hover:shadow-[var(--primary)]/20 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] focus:ring-offset-2 dark:focus:ring-offset-[var(--background)]"
               >
                 <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center group-hover:scale-105 transition-transform duration-300 overflow-hidden p-1.5">
-                  {item.iconType === "shutterda" ? (
-                    <img src="/nodeda/ShutterDa.svg" alt="" className="w-full h-full object-contain brightness-0 invert" aria-hidden="true" />
-                  ) : (
-                    <Icon className="w-5 h-5" aria-hidden="true" />
-                  )}
+                  <Icon className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div className="min-w-0 flex-1 relative">
                   <span className="text-xs font-medium uppercase tracking-wider text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)]">

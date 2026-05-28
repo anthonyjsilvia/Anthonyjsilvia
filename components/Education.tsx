@@ -4,7 +4,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { GraduationCap, Calendar, Award, Trophy, ChevronDown, X, Lightbulb } from "lucide-react";
+import { GraduationCap, Calendar, Award, Trophy, ChevronDown, X, Lightbulb, Clock } from "lucide-react";
+import Tilt3D from "@/components/Tilt3D";
 
 // Easter egg: UX/PM tips when clicking "MBA candidate" (diploma in progress)
 const MBA_EASTER_EGG_TIPS = [
@@ -30,9 +31,73 @@ const education = [
   },
 ];
 
-const highSchoolSchools = [
-  { institution: "Wasilla High School", degree: "High School Diploma", period: "2015 - 2017" },
-  { institution: "South Anchorage High School", degree: "", period: "June 2013 - June 2015" },
+/**
+ * High schools rendered as brand-colored varsity badges.
+ *
+ * `logoSrc` is optional. If you drop an official logo PNG/SVG at the listed
+ * path (transparent background works best), the badge will render it inside
+ * the medallion. Otherwise we fall back to a typographic monogram so the
+ * badge still ships looking intentional.
+ */
+type HighSchoolBadge = {
+  institution: string;
+  shortName: string;
+  mascot: string;
+  monogram: string;
+  location: string;
+  period: string;
+  classOf?: string;
+  degree?: string;
+  websiteUrl: string;
+  logoSrc?: string;
+  colors: {
+    bgFrom: string;
+    bgTo: string;
+    accent: string;
+    ink: string;
+    ringShadow: string;
+  };
+};
+
+const highSchools: HighSchoolBadge[] = [
+  {
+    institution: "Wasilla High School",
+    shortName: "Wasilla High",
+    mascot: "Warriors",
+    monogram: "WHS",
+    location: "Wasilla, Alaska",
+    period: "2015 – 2017",
+    classOf: "Class of 2017",
+    degree: "High School Diploma",
+    websiteUrl: "https://whs.matsuk12.us/",
+    logoSrc: "/schools/whs.svg",
+    colors: {
+      // Wasilla Warriors red — saturated, deep, classic athletic red
+      bgFrom: "#C81E1E",
+      bgTo: "#7E1313",
+      accent: "#FFFFFF",
+      ink: "#FFFFFF",
+      ringShadow: "rgba(0, 0, 0, 0.45)",
+    },
+  },
+  {
+    institution: "South Anchorage High School",
+    shortName: "South Anchorage High",
+    mascot: "Wolverines",
+    monogram: "SAHS",
+    location: "Anchorage, Alaska",
+    period: "Jun 2013 – Jun 2015",
+    websiteUrl: "https://www.asdk12.org/south",
+    logoSrc: "/schools/sahs.svg",
+    colors: {
+      // SAHS Wolverines black + Vegas gold
+      bgFrom: "#0E0E0E",
+      bgTo: "#1F1F1F",
+      accent: "#D4AF6E",
+      ink: "#E8D8B5",
+      ringShadow: "rgba(0, 0, 0, 0.6)",
+    },
+  },
 ];
 
 // Certifications from academic transcript — categorized for tabs and featured sections
@@ -96,8 +161,152 @@ const mastersHonors = [
   { name: "Honor Roll", date: "Nov 2025", badge: "/awards/honor-role-SNHU.png" },
 ];
 
-const MERIT_PAGES_URL = "https://meritpages.com/Anthonyjsilvia";
+const MERIT_PAGES_URL = "https://meritpages.com/anthonysilvia";
 const BACHELORS_DIPLOMA_URL = "https://www.parchment.com/u/award/917e24e9b7910565b7671dcdaa09e483";
+
+/**
+ * SNHU official brand palette — mirrors the colors used inside SNHU.svg
+ * (Ink Blue shield + flame gold + brand bright blue). Sourced from the SNHU
+ * brand identity guide and verified against the logo file.
+ */
+const SNHU_BRAND = {
+  ink: "#00254F",
+  inkDeep: "#00193A",
+  gold: "#FEB913",
+  goldDeep: "#E5A50F",
+  brightBlue: "#009DEA",
+  shadow: "rgba(0, 14, 36, 0.55)",
+} as const;
+
+/**
+ * SchoolBadge — square varsity-style badge for a high school.
+ *
+ * The full card is a link to the school's website. Visually it reads as a
+ * sports licensing / class-ring style emblem: brand-colored gradient field,
+ * centered medallion (logo if available, monogram otherwise), mascot name,
+ * and a year stamp at the bottom.
+ */
+function SchoolBadge({ school }: { school: HighSchoolBadge }) {
+  const [logoFailed, setLogoFailed] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+  const showLogo = Boolean(school.logoSrc) && !logoFailed;
+  const { colors } = school;
+  const bottomLine = school.classOf
+    ? `${school.classOf} · ${school.degree ?? ""}`.replace(/ · $/, "")
+    : school.period;
+
+  return (
+    <Tilt3D
+      max={shouldReduceMotion ? 0 : 4}
+      lift={shouldReduceMotion ? 0 : 10}
+      scale={shouldReduceMotion ? 1 : 1.005}
+      className="card-3d rounded-3xl"
+      containerClassName="h-full"
+    >
+      <a
+        href={school.websiteUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${school.institution}, ${school.mascot}. ${school.period}. Opens school website in new tab.`}
+        className="group relative block aspect-[5/1] w-full overflow-hidden rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] focus:ring-offset-2"
+        style={{
+          background: `linear-gradient(135deg, ${colors.bgFrom} 0%, ${colors.bgTo} 100%)`,
+          boxShadow: `0 16px 32px -16px ${colors.ringShadow}, inset 0 0 0 1px ${colors.accent}22`,
+          containerType: "inline-size",
+        }}
+      >
+        {/* Subtle inner frame, like a varsity patch border */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-1.5 rounded-[1rem]"
+          style={{
+            border: `1px solid ${colors.accent}33`,
+          }}
+        />
+
+        {/* Diagonal glint, faintly catching the light */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-overlay"
+          style={{
+            background: `linear-gradient(115deg, transparent 38%, ${colors.accent} 50%, transparent 62%)`,
+          }}
+        />
+
+        <div className="relative flex h-full w-full items-center gap-3 sm:gap-4 px-3 sm:px-4">
+          {/* Medallion: real logo (bare) when available, otherwise typographic
+              monogram inside a varsity bezel. SVG logos use a plain <img>
+              instead of next/image because SVG isn't optimized by Next and
+              would otherwise require `dangerouslyAllowSVG`. */}
+          {showLogo ? (
+            <div className="flex aspect-square h-[88%] flex-shrink-0 items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={school.logoSrc!}
+                alt={`${school.institution} logo`}
+                width={120}
+                height={120}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.04]"
+                style={{
+                  filter: `drop-shadow(0 4px 8px ${colors.ringShadow})`,
+                }}
+                onError={() => setLogoFailed(true)}
+              />
+            </div>
+          ) : (
+            <div
+              className="flex aspect-square h-[72%] flex-shrink-0 items-center justify-center rounded-full"
+              style={{
+                border: `1.5px solid ${colors.accent}`,
+                background: `radial-gradient(circle at 30% 25%, ${colors.accent}22 0%, transparent 70%)`,
+                boxShadow: `inset 0 0 0 2px ${colors.bgFrom}, 0 4px 12px -4px ${colors.ringShadow}`,
+              }}
+            >
+              <span
+                aria-hidden="true"
+                className="font-black tracking-[0.04em] text-[clamp(0.7rem,2.2cqw,1.05rem)] leading-none"
+                style={{ color: colors.accent }}
+              >
+                {school.monogram}
+              </span>
+            </div>
+          )}
+
+          {/* Mascot wordmark + school name */}
+          <div className="flex min-w-0 flex-1 flex-col justify-center text-left">
+            <p
+              className="font-black uppercase tracking-[0.16em] leading-none text-[clamp(0.85rem,2.6cqw,1.35rem)] truncate"
+              style={{ color: colors.accent }}
+            >
+              {school.mascot}
+            </p>
+            <p
+              className="mt-1 font-semibold leading-tight text-[clamp(0.65rem,1.7cqw,0.85rem)] truncate"
+              style={{ color: colors.ink }}
+            >
+              {school.shortName}
+            </p>
+          </div>
+
+          {/* Year stamp — class ring style */}
+          <div
+            className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 uppercase tracking-[0.18em] font-semibold text-[clamp(0.55rem,1.4cqw,0.7rem)] leading-none"
+            style={{
+              color: colors.ink,
+              background: `${colors.accent}1F`,
+              border: `1px solid ${colors.accent}55`,
+            }}
+          >
+            <Calendar className="h-3 w-3 flex-shrink-0" aria-hidden="true" />
+            <span className="whitespace-nowrap">{bottomLine}</span>
+          </div>
+        </div>
+      </a>
+    </Tilt3D>
+  );
+}
 
 export default function Education() {
   const ref = useRef(null);
@@ -196,57 +405,133 @@ export default function Education() {
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
                 transition={{ delay: index * 0.1, duration: shouldReduceMotion ? 0 : 0.6 }}
-                className="bg-white dark:bg-black p-8 rounded-2xl shadow-lg border border-[var(--border-light)] flex flex-col h-full"
+                className="h-full"
               >
-                <div className="flex-1 flex flex-col min-h-0">
-                  <div className="flex items-start gap-4 flex-1 min-w-0">
-                    <div className="w-12 h-12 rounded-lg bg-[var(--primary)] flex items-center justify-center flex-shrink-0">
-                      <GraduationCap className="w-6 h-6 text-white" aria-hidden="true" />
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col">
-                      {edu.degree ? (
-                        <>
-                          <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-2">
-                            {edu.degree}
-                          </h3>
-                          <p className="text-lg text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-3">
-                            {edu.institution}
-                          </p>
-                        </>
-                      ) : (
-                        <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-3">
-                          {edu.institution}
-                        </h3>
-                      )}
-                      <div className="flex items-center gap-2 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
+                <Tilt3D
+                  max={5}
+                  lift={16}
+                  scale={1.01}
+                  containerClassName="h-full"
+                  // `h-full` here is critical: it makes Tilt3D's inner motion
+                  // wrapper stretch to fill the outer container, which in turn
+                  // lets the <article>'s `h-full` propagate all the way down.
+                  // Without it the inner wrapper collapses to content height
+                  // and the Master's card ends up shorter than the Bachelor's
+                  // (which has 3 honors badges + a longer degree title).
+                  className="card-3d rounded-2xl h-full"
+                >
+                  <article
+                    className="relative flex h-full flex-col overflow-hidden rounded-2xl"
+                    style={{
+                      background: `linear-gradient(135deg, ${SNHU_BRAND.ink} 0%, ${SNHU_BRAND.inkDeep} 100%)`,
+                      boxShadow: `0 24px 48px -16px ${SNHU_BRAND.shadow}, inset 0 0 0 1px ${SNHU_BRAND.gold}26`,
+                    }}
+                  >
+                    {/* Subtle inner gold frame — diploma-style mat board */}
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-3 rounded-[1.25rem]"
+                      style={{ border: `1px solid ${SNHU_BRAND.gold}26` }}
+                    />
+
+                    {/* Diagonal glint — faint light catch across the navy field */}
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
+                      style={{
+                        background: `linear-gradient(115deg, transparent 38%, ${SNHU_BRAND.gold} 50%, transparent 62%)`,
+                      }}
+                    />
+
+                    {/* "In Progress" status pill for Master's */}
+                    {isMasters && (
+                      <div
+                        className="absolute top-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.18em] font-semibold"
+                        style={{
+                          color: SNHU_BRAND.gold,
+                          background: `${SNHU_BRAND.gold}1A`,
+                          border: `1px solid ${SNHU_BRAND.gold}66`,
+                          transform: "translateZ(18px)",
+                        }}
+                        aria-label="Diploma in progress"
+                      >
+                        <Clock className="h-3 w-3" aria-hidden="true" />
+                        <span>In Progress</span>
+                      </div>
+                    )}
+
+                    <div className="relative flex h-full flex-col p-7 sm:p-8">
+                      {/* SNHU brand seal — full lockup on a white plate so the
+                          navy fills in the shield and wordmark render correctly */}
+                      <div
+                        className="mb-6 inline-flex h-14 sm:h-16 w-fit items-center justify-center rounded-xl bg-white px-3"
+                        style={{
+                          transform: "translateZ(24px)",
+                          boxShadow: `0 8px 20px -6px ${SNHU_BRAND.shadow}, inset 0 0 0 1px ${SNHU_BRAND.gold}40`,
+                        }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src="/schools/SNHU.svg"
+                          alt="Southern New Hampshire University"
+                          className="h-full w-auto object-contain"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+
+                      <h3 className="text-2xl font-bold text-white leading-tight mb-3 pr-24">
+                        {edu.degree || edu.institution}
+                      </h3>
+
+                      {/* Hairline gold accent — varsity badge motif */}
+                      <div
+                        aria-hidden="true"
+                        className="h-px w-10 mb-3"
+                        style={{ background: SNHU_BRAND.gold, opacity: 0.6 }}
+                      />
+
+                      <div
+                        className="flex items-center gap-2 text-sm font-medium mb-6"
+                        style={{ color: "rgba(255, 255, 255, 0.82)" }}
+                      >
                         <Calendar className="w-4 h-4" aria-hidden="true" />
                         <span>{edu.period}</span>
                       </div>
+
                       {honors && (
-                        <div className="mt-8 pt-6 border-t border-[var(--border-light)]">
-                          <h4 className="flex items-center gap-2 text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
-                            <Trophy className="w-5 h-5 text-[var(--accent)]" aria-hidden="true" />
-                            Honors earned during degree
+                        <div
+                          className="rounded-xl p-5 mb-6"
+                          style={{
+                            background: "rgba(255, 255, 255, 0.06)",
+                            border: `1px solid ${SNHU_BRAND.gold}33`,
+                            backdropFilter: "blur(2px)",
+                          }}
+                        >
+                          <h4 className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.14em] mb-4" style={{ color: SNHU_BRAND.gold }}>
+                            <Trophy className="w-4 h-4" aria-hidden="true" />
+                            Honors earned
                           </h4>
-                          <ul className="flex flex-wrap gap-6" role="list">
+                          <ul className="flex flex-wrap items-end gap-5" role="list">
                             {honors.map((honor) => (
-                              <li key={`${honor.name}-${honor.date}`} className="flex flex-col items-center gap-2">
+                              <li key={`${honor.name}-${honor.date}`} className="flex flex-col items-center gap-1.5">
                                 <a
                                   href={MERIT_PAGES_URL}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] focus:ring-offset-2 rounded-lg transition-opacity hover:opacity-90"
+                                  className="rounded-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A]"
+                                  style={{ "--tw-ring-color": `${SNHU_BRAND.gold}99` } as React.CSSProperties}
                                   aria-label={`${honor.name}, ${honor.date} — View on Merit Pages`}
                                 >
                                   <Image
                                     src={honor.badge}
                                     alt=""
-                                    width={120}
-                                    height={120}
+                                    width={96}
+                                    height={96}
                                     className="object-contain"
                                   />
                                 </a>
-                                <span className="text-xs text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)] text-center">
+                                <span className="text-[11px] font-medium text-center" style={{ color: "rgba(255, 255, 255, 0.75)" }}>
                                   {honor.date}
                                 </span>
                               </li>
@@ -254,83 +539,83 @@ export default function Education() {
                           </ul>
                         </div>
                       )}
-                    </div>
-                  </div>
-                  {(isBachelors || isMasters) && (
-                    <div className="mt-auto pt-6 flex justify-center">
-                      {isBachelors && (
-                        <a
-                          href={BACHELORS_DIPLOMA_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--primary)] text-white font-medium text-sm hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
-                          aria-label="View Bachelor's diploma on Parchment (opens in new tab)"
-                        >
-                          View diploma
-                        </a>
+
+                      {(isBachelors || isMasters) && (
+                        <div className="mt-auto flex justify-center" style={{ transform: "translateZ(20px)" }}>
+                          {isBachelors && (
+                            <a
+                              href={BACHELORS_DIPLOMA_URL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn-3d inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A] transition-shadow"
+                              style={{
+                                background: SNHU_BRAND.gold,
+                                color: SNHU_BRAND.ink,
+                                boxShadow: `0 8px 20px -8px ${SNHU_BRAND.gold}80, inset 0 -2px 0 0 ${SNHU_BRAND.goldDeep}`,
+                                "--tw-ring-color": `${SNHU_BRAND.gold}99`,
+                              } as React.CSSProperties}
+                              aria-label="View Bachelor's diploma on Parchment (opens in new tab)"
+                            >
+                              View diploma
+                            </a>
+                          )}
+                          {isMasters && (
+                            <button
+                              type="button"
+                              onClick={openMbaEasterEgg}
+                              className="btn-3d inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A] transition-colors"
+                              style={{
+                                background: "rgba(254, 185, 19, 0.1)",
+                                color: SNHU_BRAND.gold,
+                                border: `1.5px solid ${SNHU_BRAND.gold}`,
+                                "--tw-ring-color": `${SNHU_BRAND.gold}99`,
+                              } as React.CSSProperties}
+                              aria-label="MBA candidate — diploma in progress (click for a surprise)"
+                            >
+                              MBA candidate
+                            </button>
+                          )}
+                        </div>
                       )}
-                      {isMasters && (
-                        <button
-                          type="button"
-                          onClick={openMbaEasterEgg}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] dark:bg-[var(--bg-tertiary)] text-[var(--text-primary)] dark:text-[var(--text-primary)] font-medium text-sm hover:bg-[var(--bg-secondary)] dark:hover:bg-[var(--bg-secondary)] focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] transition-colors"
-                          aria-label="MBA candidate — diploma in progress (click for a surprise)"
-                        >
-                          MBA candidate
-                        </button>
-                      )}
                     </div>
-                  )}
-                </div>
+                  </article>
+                </Tilt3D>
               </motion.div>
             );
             })}
           </div>
         </div>
 
-        {/* High School — full width below college, same style as Certifications */}
+        {/* High School — two brand-colored varsity badges, side by side */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           className="mb-16"
+          aria-labelledby="high-school-heading"
         >
-          <motion.div
-            variants={itemVariants}
-            className="bg-white dark:bg-black p-8 rounded-2xl shadow-lg border border-[var(--border-light)]"
-          >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-lg bg-[var(--primary)] flex items-center justify-center flex-shrink-0">
-                <GraduationCap className="w-6 h-6 text-white" aria-hidden="true" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6">
-                  High School
-                </h3>
-                <ul className="space-y-4" role="list">
-                  {highSchoolSchools.map((school) => (
-                    <li key={school.institution}>
-                      <p className="font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)]">
-                        {school.institution}
-                      </p>
-                      {school.degree ? (
-                        <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] text-sm mb-1">
-                          {school.degree}
-                        </p>
-                      ) : null}
-                      <div className="flex items-center gap-2 text-sm text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)]">
-                        <Calendar className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-                        <span>{school.period}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          <motion.div variants={itemVariants} className="flex items-center gap-3 mb-6">
+            <GraduationCap className="w-6 h-6 text-[var(--primary)]" aria-hidden="true" />
+            <h3
+              id="high-school-heading"
+              className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)]"
+            >
+              High School
+            </h3>
           </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {highSchools.map((school) => (
+              <motion.div key={school.institution} variants={itemVariants}>
+                <SchoolBadge school={school} />
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
-        {/* Certifications — tabs + single list, 3 visible then Show all */}
+        {/* Certifications — tabs + single list, 3 visible then Show all.
+            Intentionally NOT wrapped in a Tilt3D card so the tabs and Show-all
+            button stay reliably clickable (no rotation / hit-test interference). */}
         <motion.div
           id="certifications"
           variants={containerVariants}
@@ -338,19 +623,20 @@ export default function Education() {
           animate={isInView ? "visible" : "hidden"}
           className="w-full max-w-[1600px] mx-auto"
         >
-          <motion.div
-            variants={itemVariants}
-            className="bg-white dark:bg-black p-8 rounded-2xl shadow-lg border border-[var(--border-light)]"
-          >
+          <motion.div variants={itemVariants}>
             <div className="flex items-center gap-3 mb-6">
-              <Award className="w-6 h-6 text-[var(--secondary)]" aria-hidden="true" />
+              <Award className="w-6 h-6 text-[var(--secondary)] drop-shadow-md" aria-hidden="true" />
               <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)]">
                 Certifications
               </h3>
             </div>
 
             {/* Tabs */}
-            <div className="flex flex-wrap gap-2 mb-8" role="tablist" aria-label="Filter certifications by category">
+            <div
+              className="flex flex-wrap gap-2 mb-8"
+              role="tablist"
+              aria-label="Filter certifications by category"
+            >
               {(["all", "projectManagement", "uxDesign", "ai", "miscellaneous"] as const).map((tab) => (
                 <button
                   key={tab}
@@ -367,7 +653,7 @@ export default function Education() {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] ${
                     certTab === tab
                       ? "bg-[var(--primary)] text-white"
-                      : "bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] text-[var(--text-secondary)] dark:text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] dark:hover:bg-[var(--bg-tertiary)]"
+                      : "bg-white dark:bg-black text-[var(--text-secondary)] dark:text-[var(--text-secondary)] border border-[var(--border-light)] hover:bg-[var(--bg-tertiary)] dark:hover:bg-[var(--bg-tertiary)]"
                   }`}
                 >
                   {CERT_CATEGORY_LABELS[tab]}
@@ -375,12 +661,16 @@ export default function Education() {
               ))}
             </div>
 
-            <div id="cert-content" role="tabpanel" aria-labelledby={`cert-tab-${certTab}`}>
+            <div
+              id="cert-content"
+              role="tabpanel"
+              aria-labelledby={`cert-tab-${certTab}`}
+            >
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4" role="list">
                 {visibleCerts.map((cert) => (
                   <li
                     key={cert.name}
-                    className="flex flex-col gap-1 p-4 rounded-xl bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] border border-[var(--border-light)]"
+                    className="card-3d flex flex-col gap-1 p-4 rounded-xl bg-white dark:bg-black border border-[var(--border-light)] hover:-translate-y-0.5"
                   >
                     <a
                       href={cert.url}

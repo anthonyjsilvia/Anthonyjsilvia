@@ -5,7 +5,6 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import Navigation from "@/components/Navigation";
 
 const PROJECT_A = "Lowe's Return Space";
 const PROJECT_B = "Lowe's Centralized Return to Vendor";
@@ -140,15 +139,10 @@ export default function EvidencePage() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <>
-      <Navigation />
-      <main id="main-content" className="min-h-screen bg-white dark:bg-black">
-        <a href="#main-content" className="skip-link" aria-label="Skip to main content">
-          Skip to main content
-        </a>
-
-        {/* Same horizontal inset as nav (left-4 right-4 → px-4 sm:px-5); max-w-7xl matches Experience/Portfolio */}
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 mt-6 py-16 md:py-24">
+    <div className="min-h-screen bg-white dark:bg-black">
+      {/* Same horizontal inset as nav (left-4 right-4 → px-4 sm:px-5); max-w-7xl matches Experience/Portfolio.
+          Top padding clears the fixed nav pill (top-4 + h-16/h-20 ≈ 80-96px). */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 pt-28 md:pt-32 pb-16 md:pb-24">
           <motion.div
             ref={ref}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
@@ -156,7 +150,7 @@ export default function EvidencePage() {
             transition={{ duration: 0.5 }}
           >
             <Link
-              href="/#portfolio"
+              href="/portfolio"
               className="mt-10 mb-12 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)] transition-opacity"
               aria-label="Back to portfolio"
             >
@@ -246,7 +240,7 @@ export default function EvidencePage() {
 
             <footer className="mt-24 pt-8 border-t border-[var(--border-light)]">
               <Link
-                href="/#portfolio"
+                href="/portfolio"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)] transition-opacity"
                 aria-label="Back to portfolio"
               >
@@ -255,8 +249,7 @@ export default function EvidencePage() {
               </Link>
             </footer>
           </motion.div>
-        </div>
-      </main>
-    </>
+      </div>
+    </div>
   );
 }

@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
+import Tilt3D from "@/components/Tilt3D";
 
 export default function About() {
   const ref = useRef(null);
@@ -62,9 +63,16 @@ export default function About() {
               variants={itemVariants}
               className="flex justify-center md:justify-start"
             >
-              <div className="relative">
+              <Tilt3D
+                max={14}
+                lift={28}
+                scale={1.04}
+                roundedClassName="rounded-full"
+                containerClassName="inline-block"
+                className="rounded-full"
+              >
                 <motion.div
-                  className="rounded-full overflow-hidden shadow-2xl border-4 border-[var(--border-light)]"
+                  className="photo-3d rounded-full overflow-hidden border-4 border-[var(--border-light)]"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
                   transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.3 }}
@@ -78,12 +86,19 @@ export default function About() {
                     priority
                   />
                 </motion.div>
-                {/* Decorative ring */}
-                <div 
-                  className="absolute inset-0 rounded-full border-2 border-[var(--primary)] opacity-20"
+                {/* Decorative ring lifted forward in 3D space */}
+                <div
+                  className="absolute inset-0 rounded-full border-2 border-[var(--primary)] opacity-40 pointer-events-none"
+                  style={{ transform: "translateZ(18px)" }}
                   aria-hidden="true"
                 />
-              </div>
+                {/* Outer floating ring */}
+                <div
+                  className="absolute -inset-2 rounded-full border border-[var(--accent)] opacity-30 pointer-events-none"
+                  style={{ transform: "translateZ(36px)" }}
+                  aria-hidden="true"
+                />
+              </Tilt3D>
             </motion.div>
 
             {/* Text Content */}

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
+import SiteChrome from "@/components/SiteChrome";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://anthonysilvia.com"),
-  title: "Anthony Silvia - Full-Stack Experience Manager | UX, Engineering & Data Integration",
-  description: "Full-Stack Experience Manager focused on UX, engineering, and data integration. Associate Product Designer at Lowe's and Principal Consultant at NodeDa.",
+  title: "Anthony Silvia - Product Experience Manager | UX, Engineering & Data Integration",
+  description: "Product Experience Manager focused on UX, engineering, and data integration. Associate Product Designer at Lowe's and Principal Consultant at NodeDa.",
   keywords: [
-    "Full-Stack Experience Manager",
+    "Product Experience Manager",
     "Product Designer",
     "Enterprise UX",
     "Operational Workflows",
@@ -26,8 +27,8 @@ export const metadata: Metadata = {
   creator: "Anthony Silvia",
   publisher: "Anthony Silvia",
   openGraph: {
-    title: "Anthony Silvia - Full-Stack Experience Manager | UX, Engineering & Data Integration",
-    description: "Full-Stack Experience Manager focused on UX, engineering, and data integration.",
+    title: "Anthony Silvia - Product Experience Manager | UX, Engineering & Data Integration",
+    description: "Product Experience Manager focused on UX, engineering, and data integration.",
     url: "https://anthonysilvia.com",
     siteName: "Anthony Silvia Portfolio",
     type: "website",
@@ -37,14 +38,14 @@ export const metadata: Metadata = {
         url: "/homepage/ashero.PNG",
         width: 1200,
         height: 630,
-        alt: "Anthony Silvia - Full-Stack Experience Manager",
+        alt: "Anthony Silvia - Product Experience Manager",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anthony Silvia - Full-Stack Experience Manager | UX, Engineering & Data Integration",
-    description: "Full-Stack Experience Manager focused on UX, engineering, and data integration.",
+    title: "Anthony Silvia - Product Experience Manager | UX, Engineering & Data Integration",
+    description: "Product Experience Manager focused on UX, engineering, and data integration.",
     creator: "@anthonysilvia",
     images: ["/homepage/ashero.PNG"],
   },
@@ -78,7 +79,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <AnalyticsProvider />
-        {children}
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

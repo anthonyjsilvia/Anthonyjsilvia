@@ -5,6 +5,7 @@ import { useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { ExternalLink, Lock, Shield, X, FileText, Globe } from "lucide-react";
+import Tilt3D from "@/components/Tilt3D";
 
 /** NodeDa projects: try iframe first, fall back to clickable placeholder if it fails to load */
 function EmbedPreview({ project }: { project: { title: string; link: string; color: string } }) {
@@ -117,29 +118,15 @@ const projects = [
     isConfidential: true,
   },
   {
-    title: "Cookbook By NodeDa",
+    title: "Kinlily",
     subtitle: "Cloud-based cookbook ecosystem",
     description:
-      "Recipe and cooking app by NodeDa. Independent product design and development.",
+      "Recipe and cooking app by NodeDa (formerly Cookbook). Independent product design and development.",
     category: "Product Design",
     technologies: ["UX Design", "Mobile Design", "iOS", "Product Design", "Product Management"],
     image: null,
-    link: "https://cookbook.nodeda.com",
-    linkText: "Visit cookbook.nodeda.com",
-    color: "#3993C5",
-    period: "NodeDa",
-    embedWithIframe: true,
-  },
-  {
-    title: "ShutterDa",
-    subtitle: "ShutterDa",
-    description:
-      "Photography and portfolio platform. Design and product work through NodeDa.",
-    category: "Product Design",
-    technologies: ["UX Design", "Web Design", "Product Design", "Product Management"],
-    image: null,
-    link: "https://shutterda.com",
-    linkText: "Visit ShutterDa.com",
+    link: "https://kinlily.com",
+    linkText: "Visit kinlily.com",
     color: "#3993C5",
     period: "NodeDa",
     embedWithIframe: true,
@@ -251,14 +238,16 @@ export default function Portfolio() {
           className="grid md:grid-cols-2 gap-8"
         >
           {projects.map((project, index) => (
-            <motion.div
-              key={project.title}
-              variants={itemVariants}
-              className="group relative bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] rounded-2xl shadow-lg hover:shadow-2xl transition-all overflow-hidden border border-[var(--border-light)] flex flex-col"
-              whileHover={shouldReduceMotion ? {} : { y: -10, scale: 1.02 }}
+            <motion.div key={project.title} variants={itemVariants}>
+            <Tilt3D
+              max={7}
+              lift={22}
+              scale={1.02}
+              containerClassName="h-full"
+              className="card-3d bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-light)] overflow-hidden flex flex-col h-full group"
             >
               <div
-                className="absolute top-0 left-0 right-0 h-2"
+                className="absolute top-0 left-0 right-0 h-2 z-20 depth-1"
                 style={{ backgroundColor: project.color }}
                 aria-hidden="true"
               />
@@ -276,97 +265,88 @@ export default function Portfolio() {
                 </div>
               ) : project.isConfidential ? (
                 <div className="relative w-full h-64 flex items-center justify-center overflow-hidden" style={{ backgroundColor: project.color }}>
-                  {/* Subtle pattern overlay */}
                   <div className="absolute inset-0 opacity-10" aria-hidden="true">
                     <div className="absolute inset-0" style={{
                       backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`
                     }}></div>
                   </div>
-                  
-                  {/* Security icon with lock */}
-                  <div className="relative z-10 text-white text-center p-8">
+
+                  <div className="relative z-10 text-white text-center p-8" style={{ transform: "translateZ(30px)" }}>
                     <div className="flex items-center justify-center mb-4" aria-hidden="true">
-                      <div className="relative">
+                      <div className="relative drop-shadow-lg">
                         <Shield className="w-16 h-16 opacity-80" />
                         <Lock className="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                       </div>
                     </div>
                     <p className="text-sm font-semibold opacity-90">Confidential requires release</p>
                   </div>
-                  
-                  {/* Subtle overlay to suggest hidden content */}
+
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" aria-hidden="true"></div>
                 </div>
               ) : project.pdfs ? (
                 <div className="relative w-full h-64 flex items-center justify-center overflow-hidden" style={{ backgroundColor: project.color }}>
-                  {/* Subtle pattern overlay */}
                   <div className="absolute inset-0 opacity-10" aria-hidden="true">
                     <div className="absolute inset-0" style={{
                       backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`
                     }}></div>
                   </div>
-                  
-                  {/* Design documents icon */}
-                  <div className="relative z-10 text-white text-center p-8">
+
+                  <div className="relative z-10 text-white text-center p-8" style={{ transform: "translateZ(30px)" }}>
                     <div className="flex items-center justify-center mb-4" aria-hidden="true">
-                      <FileText className="w-16 h-16 opacity-80" />
+                      <FileText className="w-16 h-16 opacity-80 drop-shadow-lg" />
                     </div>
                     <p className="text-sm font-semibold opacity-90 mb-1">Design Documents</p>
                     <p className="text-xs opacity-70">{project.pdfs.length} design files available</p>
                   </div>
-                  
-                  {/* Subtle overlay */}
+
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" aria-hidden="true"></div>
                 </div>
               ) : (project as { embedWithIframe?: boolean }).embedWithIframe && project.link ? (
                 <EmbedPreview project={{ title: project.title, link: project.link, color: project.color }} />
               ) : project.link ? (
                 <div className="relative w-full h-64 flex items-center justify-center overflow-hidden" style={{ backgroundColor: project.color }}>
-                  {/* Subtle pattern overlay */}
                   <div className="absolute inset-0 opacity-10" aria-hidden="true">
                     <div className="absolute inset-0" style={{
                       backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`
                     }}></div>
                   </div>
-                  
-                  {/* Website icon */}
-                  <div className="relative z-10 text-white text-center p-8">
+
+                  <div className="relative z-10 text-white text-center p-8" style={{ transform: "translateZ(30px)" }}>
                     <div className="flex items-center justify-center mb-4" aria-hidden="true">
-                      <Globe className="w-16 h-16 opacity-80" />
+                      <Globe className="w-16 h-16 opacity-80 drop-shadow-lg" />
                     </div>
                     <p className="text-sm font-semibold opacity-90 mb-1">Website</p>
                     <p className="text-xs opacity-70">View live site</p>
                   </div>
-                  
-                  {/* Subtle overlay */}
+
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" aria-hidden="true"></div>
                 </div>
               ) : (
                 <div className="relative w-full h-64 flex items-center justify-center overflow-hidden" style={{ backgroundColor: project.color }}>
-                  {/* Subtle pattern overlay */}
                   <div className="absolute inset-0 opacity-10" aria-hidden="true">
                     <div className="absolute inset-0" style={{
                       backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`
                     }}></div>
                   </div>
-                  
-                  {/* Security icon with lock */}
-                  <div className="relative z-10 text-white text-center p-8">
+
+                  <div className="relative z-10 text-white text-center p-8" style={{ transform: "translateZ(30px)" }}>
                     <div className="flex items-center justify-center mb-4" aria-hidden="true">
-                      <div className="relative">
+                      <div className="relative drop-shadow-lg">
                         <Shield className="w-16 h-16 opacity-80" />
                         <Lock className="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                       </div>
                     </div>
                     <p className="text-sm font-semibold opacity-90">Confidential requires release</p>
                   </div>
-                  
-                  {/* Subtle overlay to suggest hidden content */}
+
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" aria-hidden="true"></div>
                 </div>
               )}
 
-              <div className="p-8 flex-1 flex flex-col">
+              <div
+                className="p-8 flex-1 flex flex-col relative"
+                style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }}
+              >
                 <div className="mb-2">
                   <span className="text-sm font-semibold text-[var(--primary)] dark:text-[var(--primary)] uppercase tracking-wide">
                     {project.category}
@@ -391,13 +371,13 @@ export default function Portfolio() {
                 <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-6 leading-relaxed flex-1">
                   {project.description}
                 </p>
-                
+
                 {/* Technologies */}
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.technologies.map((tech) => (
                     <span
                       key={tech}
-                      className="px-3 py-1 rounded-full text-xs font-medium text-white"
+                      className="px-3 py-1 rounded-full text-xs font-medium text-white shadow-sm"
                       style={{ backgroundColor: project.color }}
                     >
                       {tech}
@@ -405,38 +385,44 @@ export default function Portfolio() {
                   ))}
                 </div>
 
-                {/* Link or PDF Viewer Button */}
+                {/* Link or PDF Viewer Button.
+                    The button is wrapped in a translateZ div so it sits forward of
+                    the card surface; the button itself relies on the btn-3d CSS class
+                    for hover/active feedback to avoid conflicting with framer-motion's
+                    transform engine (which would otherwise wipe the translateZ on hover). */}
                 {project.link ? (
-                  <motion.a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold hover:shadow-lg transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] mt-auto"
-                    style={{ backgroundColor: project.color }}
-                    whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
-                    whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-                    aria-label={`${project.linkText} (opens in new tab)`}
-                  >
-                    {project.linkText}
-                    <ExternalLink className="w-4 h-4" aria-hidden="true" />
-                  </motion.a>
+                  <div className="mt-auto" style={{ transform: "translateZ(24px)" }}>
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-3d inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
+                      style={{ backgroundColor: project.color }}
+                      aria-label={`${project.linkText} (opens in new tab)`}
+                    >
+                      {project.linkText}
+                      <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                    </a>
+                  </div>
                 ) : project.pdfs ? (
-                  <motion.button
-                    onClick={() => {
-                      setSelectedProject(project);
-                      setSelectedPdf(project.pdfs[0].path);
-                    }}
-                    className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold hover:shadow-lg transition-all focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] mt-auto"
-                    style={{ backgroundColor: project.color }}
-                    whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
-                    whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
-                    aria-label="View design documents"
-                  >
-                    <FileText className="w-4 h-4" aria-hidden="true" />
-                    View Design Documents
-                  </motion.button>
+                  <div className="mt-auto" style={{ transform: "translateZ(24px)" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedProject(project);
+                        setSelectedPdf(project.pdfs[0].path);
+                      }}
+                      className="btn-3d inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
+                      style={{ backgroundColor: project.color }}
+                      aria-label="View design documents"
+                    >
+                      <FileText className="w-4 h-4" aria-hidden="true" />
+                      View Design Documents
+                    </button>
+                  </div>
                 ) : null}
               </div>
+            </Tilt3D>
             </motion.div>
           ))}
         </motion.div>

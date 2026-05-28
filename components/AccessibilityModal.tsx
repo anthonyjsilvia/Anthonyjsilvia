@@ -1,9 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type ElementType, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { X } from "lucide-react";
+import {
+  Contrast,
+  Monitor,
+  Moon,
+  Sparkles,
+  Sun,
+  Type,
+  X,
+} from "lucide-react";
 import type { AccessibilitySettings, ColorScheme } from "@/lib/accessibility-settings";
 import {
   setAccessibilitySettings,
@@ -19,12 +27,19 @@ type Props = {
 
 const springConfig = { type: "spring" as const, stiffness: 200, damping: 22 };
 
-function Toggle({
+/**
+ * A single toggleable setting rendered as a self-contained card. Cards in the
+ * same grid row stretch to equal height automatically; the toggle is pushed to
+ * the bottom of the card with `mt-auto` so the control row always lines up
+ * across cards even when descriptions are different lengths.
+ */
+function ToggleCard({
   id,
   label,
   description,
   checked,
   onChange,
+  Icon,
   alwaysOpenDyslexic,
 }: {
   id: string;
@@ -32,48 +47,57 @@ function Toggle({
   description: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
+  Icon: ElementType;
   alwaysOpenDyslexic?: boolean;
 }) {
-  const textContent = (
-    <>
-      <label
-        htmlFor={id}
-        className="text-lg font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)] cursor-pointer leading-snug"
-      >
-        {label}
-      </label>
-      <p className="text-base text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mt-2 leading-relaxed">
-        {description}
-      </p>
-    </>
-  );
   return (
-    <div className="flex items-start justify-between gap-6 py-6 first:pt-0 border-b border-[var(--border-light)] last:border-b-0">
-      <div className={`flex-1 min-w-0 pr-4 ${alwaysOpenDyslexic ? "font-open-dyslexic" : ""}`}>
-        {textContent}
+    <div className="flex h-full flex-col gap-6 rounded-2xl border border-[var(--border-light)] bg-[var(--bg-secondary)] p-6 lg:p-7">
+      <div className="flex items-start gap-4">
+        <div
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-[var(--primary)]"
+          style={{ backgroundColor: "rgba(var(--primary-rgb), 0.12)" }}
+        >
+          <Icon className="h-5 w-5" aria-hidden />
+        </div>
+        <div className={`min-w-0 flex-1 ${alwaysOpenDyslexic ? "font-open-dyslexic" : ""}`}>
+          <label
+            htmlFor={id}
+            className="block cursor-pointer text-lg font-semibold leading-snug text-[var(--text-primary)]"
+          >
+            {label}
+          </label>
+          <p className="mt-2 text-[15px] leading-relaxed text-[var(--text-secondary)]">
+            {description}
+          </p>
+        </div>
       </div>
-      <button
-        id={id}
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        aria-label={`${label}: ${checked ? "on" : "off"}`}
-        onClick={() => onChange(!checked)}
-        className="relative flex h-7 w-12 flex-shrink-0 items-center rounded-full bg-[var(--bg-tertiary)] dark:bg-[var(--bg-tertiary)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-      >
-        <span
-          className={`absolute inset-0 rounded-full transition-colors ${
-            checked ? "bg-[var(--primary)]" : "bg-transparent"
-          }`}
-          aria-hidden
-        />
-        <span
-          className={`absolute left-1 top-1 z-10 h-5 w-5 rounded-full bg-white dark:bg-[var(--bg-secondary)] shadow transition-transform ${
-            checked ? "translate-x-5" : "translate-x-0"
-          }`}
-          aria-hidden
-        />
-      </button>
+      <div className="mt-auto flex items-center justify-between">
+        <span className="text-sm font-medium text-[var(--text-secondary)]">
+          {checked ? "On" : "Off"}
+        </span>
+        <button
+          id={id}
+          type="button"
+          role="switch"
+          aria-checked={checked}
+          aria-label={`${label}: ${checked ? "on" : "off"}`}
+          onClick={() => onChange(!checked)}
+          className="relative flex h-7 w-12 flex-shrink-0 items-center rounded-full bg-[var(--bg-tertiary)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
+        >
+          <span
+            className={`absolute inset-0 rounded-full transition-colors ${
+              checked ? "bg-[var(--primary)]" : "bg-transparent"
+            }`}
+            aria-hidden
+          />
+          <span
+            className={`absolute left-1 top-1 z-10 h-5 w-5 rounded-full bg-white transition-transform dark:bg-[var(--bg-secondary)] ${
+              checked ? "translate-x-5" : "translate-x-0"
+            }`}
+            aria-hidden
+          />
+        </button>
+      </div>
     </div>
   );
 }
@@ -112,10 +136,17 @@ export default function AccessibilityModal({
     applyAccessibilitySettings(next);
   };
 
-  const colorSchemeOptions: { value: ColorScheme; label: string }[] = [
-    { value: "system", label: "System" },
-    { value: "light", label: "Light" },
-    { value: "dark", label: "Dark" },
+  // Each scheme option ships its own icon — System gets the laptop, Light the
+  // sun, Dark the moon — so the segmented control reads at a glance even on a
+  // narrow column.
+  const colorSchemeOptions: {
+    value: ColorScheme;
+    label: string;
+    Icon: ElementType;
+  }[] = [
+    { value: "system", label: "System", Icon: Monitor },
+    { value: "light", label: "Light", Icon: Sun },
+    { value: "dark", label: "Dark", Icon: Moon },
   ];
 
   return (
@@ -125,15 +156,17 @@ export default function AccessibilityModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] flex flex-col bg-[var(--background)] dark:bg-[var(--background)]"
+          className="fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-[var(--background)]"
           aria-modal="true"
           aria-labelledby="accessibility-settings-title"
           role="dialog"
         >
+          {/* Close button — fixed in the corner so it stays reachable while the
+              content scrolls underneath on smaller viewports. */}
           <motion.button
             type="button"
             onClick={onClose}
-            className="fixed top-6 right-6 z-[61] flex items-center gap-2 px-4 py-2.5 rounded-full bg-black text-white font-medium text-sm hover:bg-black/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+            className="fixed right-6 top-6 z-[61] flex items-center gap-2 rounded-full bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-black/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
             aria-label="Close accessibility settings"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
@@ -142,93 +175,124 @@ export default function AccessibilityModal({
             <X className="h-4 w-4" aria-hidden />
             Close
           </motion.button>
+
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
-            className="flex flex-1 flex-col min-h-0 w-full pl-8 pr-24 py-10 sm:pl-12 sm:pr-28 sm:py-12 lg:pl-20 lg:pr-32 lg:py-16"
+            className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col px-6 pb-16 pt-12 sm:px-10 sm:pt-14 lg:px-16 lg:pt-20"
           >
-            <nav aria-label="Breadcrumb" className="mb-4">
-              <Link
-                href="/"
-                className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] hover:text-[var(--primary)] dark:hover:text-[var(--primary)] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] rounded"
-                onClick={onClose}
-              >
-                {origin ? origin.replace(/^https?:\/\//i, "") : "…"}
-              </Link>
-              <span aria-hidden="true" className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mx-1.5">
-                /
-              </span>
-              <span className="text-sm text-[var(--text-primary)] dark:text-[var(--text-primary)] font-medium">
-                Accessibility settings
-              </span>
-            </nav>
-            <div className="mb-4">
+            {/* Header band ----------------------------------------------- */}
+            <header className="pr-28 sm:pr-32">
+              <nav aria-label="Breadcrumb" className="mb-4">
+                <Link
+                  href="/"
+                  className="rounded text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                  onClick={onClose}
+                >
+                  {origin ? origin.replace(/^https?:\/\//i, "") : "…"}
+                </Link>
+                <span aria-hidden="true" className="mx-1.5 text-sm text-[var(--text-secondary)]">
+                  /
+                </span>
+                <span className="text-sm font-medium text-[var(--text-primary)]">
+                  Accessibility settings
+                </span>
+              </nav>
               <h2
                 id="accessibility-settings-title"
-                className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] leading-tight pr-32"
+                className="text-3xl font-bold leading-tight text-[var(--text-primary)] sm:text-4xl lg:text-5xl"
               >
                 Accessibility settings
               </h2>
-            </div>
-            <p className="text-base text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-12 leading-relaxed max-w-2xl">
-              Your choices are saved in a cookie and will persist across visits.
-            </p>
-            <div className="flex-1 min-h-0">
-              {/* Color scheme */}
-              <div className="flex items-start justify-between gap-6 py-6 border-b border-[var(--border-light)]">
-                <div className="flex-1 min-w-0 pr-4">
-                  <p className="text-lg font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)] leading-snug">
-                    Appearance
-                  </p>
-                  <p className="text-base text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mt-2 leading-relaxed">
-                    Choose how the page is displayed. System follows your device setting.
-                  </p>
+              <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
+                Tune how this site looks and behaves. Your choices are saved in a cookie and
+                will persist across visits.
+              </p>
+            </header>
+
+            {/* Settings grid --------------------------------------------- */}
+            {/*
+              The grid is `grid-cols-1 md:grid-cols-3`. The Appearance card
+              spans the full row (`md:col-span-3`) because its segmented
+              control needs the horizontal real estate; the three on/off
+              toggles below sit side-by-side on tablet+ so a wide viewport
+              actually has something to do with its width.
+            */}
+            <div className="mt-10 grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3 lg:mt-12">
+              {/* Appearance — full-width hero card */}
+              <section className="md:col-span-3 flex flex-col gap-6 rounded-2xl border border-[var(--border-light)] bg-[var(--bg-secondary)] p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-8">
+                <div className="flex items-start gap-4">
+                  <div
+                    className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-[var(--primary)]"
+                    style={{ backgroundColor: "rgba(var(--primary-rgb), 0.12)" }}
+                  >
+                    <Contrast className="h-5 w-5" aria-hidden />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-lg font-semibold leading-snug text-[var(--text-primary)]">
+                      Appearance
+                    </p>
+                    <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--text-secondary)]">
+                      Choose how the page is displayed. System follows your device setting and
+                      switches with your OS.
+                    </p>
+                  </div>
                 </div>
                 <div
                   role="group"
                   aria-label="Color scheme"
-                  className="flex-shrink-0 inline-flex rounded-xl border border-[var(--border-light)] p-1 bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)]"
+                  className="inline-flex flex-shrink-0 rounded-xl border border-[var(--border-light)] bg-[var(--background)] p-1"
                 >
-                  {colorSchemeOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => handleColorScheme(opt.value)}
-                      aria-pressed={settings.colorScheme === opt.value}
-                      aria-label={`${opt.label} theme`}
-                      className={`min-w-[5rem] px-4 py-2.5 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] ${
-                        settings.colorScheme === opt.value
-                          ? "bg-[var(--primary)] text-white"
-                          : "text-[var(--text-secondary)] dark:text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] dark:hover:bg-[var(--bg-tertiary)]"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                  {colorSchemeOptions.map((opt) => {
+                    const isActive = settings.colorScheme === opt.value;
+                    const Icon = opt.Icon;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => handleColorScheme(opt.value)}
+                        aria-pressed={isActive}
+                        aria-label={`${opt.label} theme`}
+                        className={`inline-flex min-w-[6rem] items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)] ${
+                          isActive
+                            ? "bg-[var(--primary)] text-white"
+                            : "text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" aria-hidden />
+                        {opt.label}
+                      </button>
+                    );
+                  })}
                 </div>
-              </div>
-              <Toggle
+              </section>
+
+              {/* Three on/off toggle cards — auto-equalize height in the row */}
+              <ToggleCard
                 id="accessibility-reduce-transparency"
-                label="No transparency (100% opacity)"
-                description="Remove all transparency: every element uses 100% opacity and semi-transparent backgrounds (e.g. 90% opacity, glass effects) become fully solid."
+                label="No transparency"
+                description="Remove all transparency: every element uses 100% opacity and semi-transparent backgrounds (e.g. glass effects) become fully solid."
                 checked={settings.reduceTransparency}
                 onChange={(v) => handleToggle("reduceTransparency", v)}
+                Icon={Contrast}
               />
-              <Toggle
+              <ToggleCard
                 id="accessibility-reduce-motion"
                 label="Reduce motion"
-                description="Minimize animations and transitions across the site."
+                description="Minimize animations and transitions across the site. Useful for vestibular sensitivity or saving battery."
                 checked={settings.reduceMotion}
                 onChange={(v) => handleToggle("reduceMotion", v)}
+                Icon={Sparkles}
               />
-              <Toggle
+              <ToggleCard
                 id="accessibility-open-dyslexic"
                 label="OpenDyslexic font"
                 description="Replace all site fonts with OpenDyslexic, a typeface designed to improve readability for people with dyslexia."
                 checked={settings.openDyslexic}
                 onChange={(v) => handleToggle("openDyslexic", v)}
+                Icon={Type}
                 alwaysOpenDyslexic
               />
             </div>

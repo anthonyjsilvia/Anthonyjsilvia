@@ -26,6 +26,8 @@
   --primary: #0052cc; /* 7.4:1 on white - AAA for normal text */
   --primary-dark: #003d99; /* 10.2:1 on white - AAA */
   --primary-light: #0066ff; /* 6.2:1 on white - AA for large text */
+  /* RGB channels of --primary for rgba() composition (broadest browser support, no color-mix dep) */
+  --primary-rgb: 0, 82, 204;
   
   /* Secondary colors */
   --secondary: #5c2d91; /* 8.1:1 on white - AAA */
@@ -43,6 +45,36 @@
   /* Background variants */
   --bg-secondary: #f5f5f5;
   --bg-tertiary: #e8e8e8;
+
+  /* ---------------------------------------------------------------------
+     Apple-style motion system
+     ---------------------------------------------------------------------
+     A small library of canonical easing curves taken from the iOS / macOS
+     animation system. Use these everywhere instead of bespoke cubic-beziers
+     so every transition across the site feels like it was authored by the
+     same hand.
+
+       --ease-apple-out         : The default. Snappy decel for hover lifts,
+                                  card reveals, and most opacity/transform
+                                  transitions. (Apple's "ease-out-expo".)
+       --ease-apple-smooth      : Softer, more "considered" decel for color
+                                  changes, modal fades, nav backdrop shifts.
+                                  (Apple's "ease-out-emphasized".)
+       --ease-apple-in-out      : Symmetric ease for layouts that move and
+                                  settle (drawers, sheet transitions).
+       --ease-apple-spring      : Springy emphasized ease with a touch of
+                                  overshoot for tap feedback and pill press.
+
+     `--dur-apple-{xs,sm,md,lg}` give a matching tempo. Stick to these so
+     timing reads as a coherent system rather than ten different timings. */
+  --ease-apple-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-apple-smooth: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-apple-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-apple-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-apple-xs: 160ms;
+  --dur-apple-sm: 240ms;
+  --dur-apple-md: 360ms;
+  --dur-apple-lg: 520ms;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -59,6 +91,7 @@
     --primary: #4d9fff; /* 7.2:1 on black - AAA */
     --primary-dark: #0066ff; /* 8.1:1 on black - AAA */
     --primary-light: #80bfff; /* 5.8:1 on black - AA for large text */
+    --primary-rgb: 77, 159, 255;
     
     /* Secondary colors */
     --secondary: #9d6fd9; /* 7.5:1 on black - AAA */
@@ -90,6 +123,7 @@ html.color-scheme-light {
   --primary: #0052cc;
   --primary-dark: #003d99;
   --primary-light: #0066ff;
+  --primary-rgb: 0, 82, 204;
   --secondary: #5c2d91;
   --secondary-dark: #4a2473;
   --accent: #b8860b;
@@ -112,6 +146,7 @@ html.dark {
   --primary: #4d9fff;
   --primary-dark: #0066ff;
   --primary-light: #80bfff;
+  --primary-rgb: 77, 159, 255;
   --secondary: #9d6fd9;
   --secondary-dark: #7c3aed;
   --accent: #ffb84d;
@@ -225,19 +260,36 @@ html.reduce-transparency [class*="border-black\\/"] {
   border-color: #000 !important;
 }
 
-/* Nav bar glass/cover → solid */
-html.reduce-transparency .nav-scroll-root[data-cover="hero"] .nav-cover-bg {
-  background: #000 !important;
+/* Reduce transparency: collapse the liquid-glass header to a fully opaque
+   surface (no backdrop blur, no top sheen, no glass pills) and strengthen
+   the bottom border so the bar's edge is unambiguous against any page. */
+html.reduce-transparency .nav-liquid-glass {
+  background-color: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 1px solid #000 !important;
+  box-shadow: none !important;
 }
-html.reduce-transparency .nav-scroll-root[data-cover="hero"] {
-  border-color: #fff !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+html.reduce-transparency .nav-liquid-glass::before,
+html.reduce-transparency .nav-liquid-glass::after {
+  display: none !important;
 }
-html.reduce-transparency .nav-scroll-root[data-cover="hero"] .nav-progress-fill {
-  background: #fff !important;
+@media (prefers-color-scheme: dark) {
+  html.reduce-transparency .nav-liquid-glass {
+    background-color: #000000 !important;
+    border-bottom-color: #fff !important;
+  }
 }
-html.reduce-transparency .nav-scroll-root[data-cover="secondary"] .nav-cover-bg {
-  background: var(--bg-secondary) !important;
+html.color-scheme-light.reduce-transparency .nav-liquid-glass {
+  background-color: #ffffff !important;
+  border-bottom-color: #000 !important;
+}
+html.color-scheme-dark.reduce-transparency .nav-liquid-glass {
+  background-color: #000000 !important;
+  border-bottom-color: #fff !important;
+}
+html.reduce-transparency .nav-glass-link:hover {
+  background-color: var(--bg-secondary) !important;
 }
 
 /* FAB nav glass panel → solid */
@@ -305,21 +357,30 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
-/* Skip to main content link */
+/* Skip to main content link.
+   Hidden by translating fully above the viewport (transform is reliable
+   regardless of the link's intrinsic height, unlike a fixed `top: -40px`
+   which can leak a few pixels of the element when line-height + padding
+   push it taller than 40px). Slides back into view on focus. */
 .skip-link {
-  position: absolute;
-  top: -40px;
+  position: fixed;
+  top: 0;
   left: 0;
+  transform: translateY(-100%);
   background: var(--primary);
   color: white;
   padding: 8px 16px;
   text-decoration: none;
   z-index: 100;
   border-radius: 0 0 4px 0;
+  transition: transform var(--dur-apple-xs) var(--ease-apple-out);
 }
 
-.skip-link:focus {
-  top: 0;
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 /* Reduced motion preferences - WCAG 2.2 compliant */
@@ -363,121 +424,435 @@ html.force-reduce-motion [class*="motion"] {
   }
 }
 
-/* Nav scroll progress: smooth, no React re-renders */
-.nav-scroll-root {
-  --scroll-progress: 0;
+/* ---------------------------------------------------------------------------
+   Navigation: Liquid Glass header bar
+   ---------------------------------------------------------------------------
+   Full-width sheet of "liquid glass" pinned to the top edge of every page —
+   inspired by Apple's WWDC '25 system. Three optical layers composited on
+   top of `backdrop-filter`:
+
+     1. Base tint           — translucent surface that lets content bloom
+                              through while preserving legibility.
+     2. Top specular sheen  — `::before` linear gradient that catches the
+                              "light" at the top edge of the glass.
+     3. Bottom hairline     — a single inset highlight + a 1px outer border
+                              that defines the lower edge of the slab.
+
+   Saturation is pushed > 1.0 so colors behind the glass feel richer than
+   the page itself, which is what gives Liquid Glass its signature "wet"
+   look. A very faint chromatic shadow (warm/cool fringe) mirrors the same
+   dispersion trick used on `.fab-nav-glass`.
+   --------------------------------------------------------------------------- */
+.nav-liquid-glass {
+  /* NOTE: deliberately do *not* set `position` here.
+     The Navigation component applies `position: fixed` via the Tailwind
+     `fixed top-0 inset-x-0 z-40` utility. Because this stylesheet is loaded
+     after `@tailwind utilities`, any `position` declaration here would have
+     the same specificity AND win source order, clobbering `position: fixed`
+     and causing the bar to scroll with the page. Previously a `position:
+     relative` rule lived here to anchor the ::before/::after pseudo-elements,
+     but `position: fixed` is itself a positioning context — the pseudos
+     anchor to it just fine. */
+  isolation: isolate;
+  /* A genuine sheet of liquid glass — heavier blur, pushed saturation, and
+     a small brightness lift give the surface the "lensing" character of
+     Apple's WWDC '25 system. Over the hero photo it refracts strongly;
+     over flat pages the base tint + brightness still read as a discrete
+     pane of frosted glass. */
+  background-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.04);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.04);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  /* === The 3D slab stack ===
+     This is what turns the bar from a 2D translucent strip into a piece
+     of physical glass floating above the page. The shadows are layered
+     in three groups:
+       1. Inset edge bevels (top / left / right / bottom inside surfaces)
+          — describe the four faces of the slab so it reads as a solid
+          block with thickness.
+       2. Underside interior shadow — a soft inset at the bottom that
+          implies the bottom face of the glass catching less light.
+       3. Floating elevation drop shadow stack — three layered shadows
+          (contact, near, ambient) that lift the slab off the page the
+          way Material/iOS use stacked penumbras to imply elevation.
+     Chromatic dispersion stays at the end of the chain. */
+  box-shadow:
+    /* — Top face — */
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),               /* crisp top specular */
+    inset 0 2px 1px -1px rgba(255, 255, 255, 0.4),        /* under-top highlight (thickness) */
+    /* — Side faces — */
+    inset 1px 0 0 rgba(255, 255, 255, 0.32),              /* left edge bevel */
+    inset -1px 0 0 rgba(255, 255, 255, 0.32),             /* right edge bevel */
+    /* — Bottom face — */
+    inset 0 -3px 5px -3px rgba(0, 0, 0, 0.10),            /* soft underside interior shadow */
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),                   /* crisp lower hairline */
+    /* — Floating elevation under the slab — */
+    0 2px 4px -2px rgba(0, 0, 0, 0.05),                   /* contact shadow */
+    0 8px 18px -6px rgba(0, 0, 0, 0.10),                  /* near elevation */
+    0 22px 44px -18px rgba(0, 0, 0, 0.14),                /* far ambient bloom */
+    /* — Chromatic dispersion (warm / cool fringes preserved) — */
+    -1px 0 14px rgba(255, 100, 120, 0.02),
+    1px 0 14px rgba(100, 150, 255, 0.02);
+  transition:
+    background-color var(--dur-apple-md) var(--ease-apple-smooth),
+    border-color var(--dur-apple-md) var(--ease-apple-smooth),
+    box-shadow var(--dur-apple-md) var(--ease-apple-smooth);
 }
 
-.nav-progress-fill {
-  width: calc(var(--scroll-progress, 0) * 100%);
-  transition: width 0.15s ease-out;
-}
-
-.nav-gradient-text {
-  background-image: linear-gradient(
-    90deg,
-    #ffffff 0%,
-    #ffffff calc(var(--scroll-progress, 0) * 100%),
-    var(--text-primary) calc(var(--scroll-progress, 0) * 100%)
+/* Top specular sheen — the brightest band at the very top of the glass
+   slab, fading down. This is the optical cue that turns the bar from a
+   flat translucent surface into something that reads as polished glass. */
+.nav-liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 70%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.18) 38%,
+    rgba(255, 255, 255, 0) 100%
   );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.nav-menu-icon {
-  color: var(--text-primary);
-  transition: color 0.15s ease-out;
+/* Lens-edge — a soft horizontal caustic just above the bottom border that
+   reads as the underside of the glass. Together with `::before` it gives
+   the slab a top *and* a bottom optical surface (two-sided glass). */
+.nav-liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 22%;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.05) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
-.nav-scroll-root[data-progress-high="true"] .nav-menu-icon {
-  color: #ffffff;
+/* Lift the bar's actual content above both optical layers */
+.nav-liquid-glass > * {
+  position: relative;
+  z-index: 1;
 }
 
-/* Active state: current section link */
-.nav-link[data-active="true"] {
-  font-weight: 700;
-  text-underline-offset: 0.25em;
-  text-decoration: underline;
+@media (prefers-color-scheme: dark) {
+  .nav-liquid-glass {
+    background-color: rgba(10, 10, 12, 0.45);
+    backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+    -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    box-shadow:
+      /* Top face */
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      inset 0 2px 1px -1px rgba(255, 255, 255, 0.06),
+      /* Side bevels (subtler in dark — light just kisses the edges) */
+      inset 1px 0 0 rgba(255, 255, 255, 0.06),
+      inset -1px 0 0 rgba(255, 255, 255, 0.06),
+      /* Bottom face */
+      inset 0 -3px 5px -3px rgba(0, 0, 0, 0.5),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+      /* Floating elevation */
+      0 2px 4px -2px rgba(0, 0, 0, 0.35),
+      0 8px 18px -6px rgba(0, 0, 0, 0.45),
+      0 22px 44px -18px rgba(0, 0, 0, 0.55),
+      /* Chromatic dispersion */
+      -1px 0 14px rgba(255, 120, 140, 0.015),
+      1px 0 14px rgba(120, 160, 255, 0.015);
+  }
+  .nav-liquid-glass::before {
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.04) 38%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  .nav-liquid-glass::after {
+    background: linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.015) 60%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+}
+html.dark .nav-liquid-glass,
+html.color-scheme-dark .nav-liquid-glass {
+  background-color: rgba(10, 10, 12, 0.45);
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 2px 1px -1px rgba(255, 255, 255, 0.06),
+    inset 1px 0 0 rgba(255, 255, 255, 0.06),
+    inset -1px 0 0 rgba(255, 255, 255, 0.06),
+    inset 0 -3px 5px -3px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+    0 2px 4px -2px rgba(0, 0, 0, 0.35),
+    0 8px 18px -6px rgba(0, 0, 0, 0.45),
+    0 22px 44px -18px rgba(0, 0, 0, 0.55),
+    -1px 0 14px rgba(255, 120, 140, 0.015),
+    1px 0 14px rgba(120, 160, 255, 0.015);
+}
+html.dark .nav-liquid-glass::before,
+html.color-scheme-dark .nav-liquid-glass::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 38%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+html.dark .nav-liquid-glass::after,
+html.color-scheme-dark .nav-liquid-glass::after {
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.015) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
 }
 
-/* Brand link never has an underline (active or hover) */
-.nav-brand,
-.nav-brand:hover,
-.nav-brand[data-active="true"] {
+/* ---------------------------------------------------------------------------
+   iOS 26 "liquid pill" indicator
+   ---------------------------------------------------------------------------
+   One pill element floats absolutely inside the desktop nav <ul> and is
+   driven from JS — `left`, `width`, `opacity`, `scale` animate via framer-
+   motion springs (see `liquidSpring` in `Navigation.tsx`). The width-morph
+   between items of different label lengths is what gives the motion its
+   actual liquid quality; the CSS here just makes the pill look the part.
+
+   Visual character (without leaning on shadows, which are disabled
+   site-wide):
+     • Solid `--primary` fill so the link text inside reads as AAA white-on
+       -blue (contrast ratio 7.4:1+).
+     • A soft top-down white sheen via a ::before pseudo-element. Implies a
+       wet / lensed surface and counters the flatness of a pure color block.
+     • A subtle inner bottom darkening via a ::after pseudo-element. Lifts
+       the leading edge and gives the pill a hint of depth.
+     • Tiny 1px inset border for crisp edge contrast against the glass nav.
+   --------------------------------------------------------------------------- */
+.nav-liquid-pill {
+  position: absolute;
+  /* Soft 1px inner border so the pill has a defined edge against the
+     liquid-glass nav surface (where contrast against the bar's tint is
+     subtle). Border is half-alpha primary so the edge inherits the brand. */
+  border: 1px solid rgba(var(--primary-rgb), 0.55);
+  overflow: hidden;
+  /* Slightly boost saturation/brightness of the underlying primary so the
+     pill reads as a vivid lens. Filter cascades only into the pill itself. */
+  filter: saturate(110%) brightness(1.02);
+}
+
+/* Top sheen — light catching the top half of the pill. Gradient is brighter
+   at the very top and fades to nothing by ~55% down. */
+.nav-liquid-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.08) 38%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+}
+
+/* Bottom darkening — implies the underside of the lens. Subtle. */
+.nav-liquid-pill::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 40%;
+  border-radius: inherit;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.10) 0%,
+    rgba(0, 0, 0, 0.03) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  pointer-events: none;
+}
+
+/* In dark mode the underlying primary is lighter (--primary is #4d9fff on
+   black, 7.2:1). The pill stays the same gradient recipe — the colors all
+   reference `--primary-rgb` and the pseudo-elements use plain white/black. */
+@media (prefers-color-scheme: dark) {
+  .nav-liquid-pill {
+    border-color: rgba(var(--primary-rgb), 0.45);
+    filter: saturate(105%) brightness(1.04);
+  }
+}
+html.dark .nav-liquid-pill,
+html.color-scheme-dark .nav-liquid-pill {
+  border-color: rgba(var(--primary-rgb), 0.45);
+  filter: saturate(105%) brightness(1.04);
+}
+
+/* ---------------------------------------------------------------------------
+   Wordmark (just-the-name brand mark)
+   ---------------------------------------------------------------------------
+   The brand area is intentionally minimal — the name itself is the brand.
+   Just suppresses the default link underline; everything else inherits
+   from the standard nav typography. */
+.nav-wordmark,
+.nav-wordmark:hover {
   text-decoration: none !important;
 }
 
-/* Hover state: nav item links only (not the Anthony Silvia brand) */
-.nav-item-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-  opacity: 0.9;
+/* ---------------------------------------------------------------------------
+   Accessibility FAB (desktop / tablet, bottom-left)
+   ---------------------------------------------------------------------------
+   Premium glass circle that lives at the bottom-left of every page on md+
+   screens. Includes a refined right-side tooltip that springs out on hover /
+   focus — the kind of micro-interaction you'd expect on a senior designer's
+   portfolio. */
+.a11y-fab {
+  position: fixed;
+  transition:
+    box-shadow var(--dur-apple-sm) var(--ease-apple-out),
+    transform var(--dur-apple-sm) var(--ease-apple-spring);
+}
+.a11y-fab:hover,
+.a11y-fab:focus-visible {
+  box-shadow:
+    inset 0 -4px 12px rgba(0, 0, 0, 0.18),
+    inset 0 2px 0 rgba(255, 255, 255, 0.95),
+    0 10px 28px -10px rgba(var(--primary-rgb), 0.45),
+    0 4px 14px -4px rgba(0, 0, 0, 0.18);
+}
+@media (prefers-color-scheme: dark) {
+  .a11y-fab:hover,
+  .a11y-fab:focus-visible {
+    box-shadow:
+      inset 0 -4px 14px rgba(0, 0, 0, 0.5),
+      inset 0 2px 0 rgba(255, 255, 255, 0.1),
+      0 12px 32px -10px rgba(var(--primary-rgb), 0.55),
+      0 6px 18px -4px rgba(0, 0, 0, 0.6);
+  }
+}
+html.dark .a11y-fab:hover,
+html.dark .a11y-fab:focus-visible,
+html.color-scheme-dark .a11y-fab:hover,
+html.color-scheme-dark .a11y-fab:focus-visible {
+  box-shadow:
+    inset 0 -4px 14px rgba(0, 0, 0, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    0 12px 32px -10px rgba(var(--primary-rgb), 0.55),
+    0 6px 18px -4px rgba(0, 0, 0, 0.6);
 }
 
-/* Cover states: match the section under the nav (parent component style) */
-
-/* Hero: dark background → light nav (transparent dark, white text) */
-.nav-scroll-root[data-cover="hero"] .nav-cover-bg {
-  background: rgba(0, 0, 0, 0.45);
+/* Tooltip that slides out from the right of the FAB on hover / focus. */
+.a11y-fab-tooltip {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  white-space: nowrap;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--border-light);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 10px 24px -10px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-apple-xs) var(--ease-apple-smooth),
+    transform var(--dur-apple-sm) var(--ease-apple-spring);
+}
+.a11y-fab-tooltip::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translateY(-50%) rotate(45deg);
+  background: inherit;
+  border-left: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  border-top: 0;
+  border-right: 0;
+  border-radius: 2px;
+}
+@media (prefers-color-scheme: dark) {
+  .a11y-fab-tooltip {
+    color: var(--text-primary);
+    background: rgba(20, 20, 20, 0.92);
+  }
+}
+html.dark .a11y-fab-tooltip,
+html.color-scheme-dark .a11y-fab-tooltip {
+  color: var(--text-primary);
+  background: rgba(20, 20, 20, 0.92);
+}
+.a11y-fab:hover .a11y-fab-tooltip,
+.a11y-fab:focus-visible .a11y-fab-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-fab-tooltip {
+    transition: opacity 180ms ease !important;
+    transform: translateY(-50%) translateX(0) !important;
+  }
+}
+html.force-reduce-motion .a11y-fab-tooltip {
+  transition: opacity 180ms ease !important;
+  transform: translateY(-50%) translateX(0) !important;
 }
 
-.nav-scroll-root[data-cover="hero"] {
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-}
-
-.nav-scroll-root[data-cover="hero"] .nav-progress-fill {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.nav-scroll-root[data-cover="hero"] .nav-gradient-text {
-  background-image: linear-gradient(
-    90deg,
-    #ffffff 0%,
-    #ffffff calc(var(--scroll-progress, 0) * 100%),
-    #ffffff calc(var(--scroll-progress, 0) * 100%)
-  );
-  color: transparent;
-}
-
-.nav-scroll-root[data-cover="hero"] .nav-menu-icon {
-  color: #ffffff;
-}
-
-/* Secondary (Experience, Education, Footer): match bg-secondary */
-.nav-scroll-root[data-cover="secondary"] .nav-cover-bg {
-  background: color-mix(in srgb, var(--bg-secondary) 97%, transparent);
-}
-
-.nav-scroll-root[data-cover="secondary"] {
-  border-color: var(--border-light);
-}
-
-/* Mobile only: Safari-like collapse — shrink to 4px progress bar when scrolling down, expand when scrolling up */
+/* Hide the desktop/tablet a11y FAB on touch-first devices where the
+   coarse-pointer-only viewport collapses to the mobile menu pattern. The
+   `md:` Tailwind breakpoint already takes care of width-based hiding; this
+   simply belts-and-suspenders the rule for hybrid devices the user might
+   resize on. */
 @media (max-width: 767px) {
-  .nav-scroll-root {
-    height: 4rem; /* h-16: explicit so we can transition to 4px */
-    transition: height 0.25s ease-out, border-radius 0.25s ease-out, box-shadow 0.25s ease-out;
+  .a11y-fab {
+    display: none !important;
   }
+}
 
-  .nav-scroll-root[data-nav-collapsed="true"] {
-    height: 4px !important;
-    min-height: 4px;
-    border-radius: 2px;
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12);
+/* Reduce-transparency: drop the blur / glass treatment on the a11y FAB
+   tooltip so the surface stays fully opaque. The base `.glass-circle-btn`
+   override above already handles the button itself. */
+html.reduce-transparency .a11y-fab-tooltip {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #000 !important;
+}
+@media (prefers-color-scheme: dark) {
+  html.reduce-transparency .a11y-fab-tooltip {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #fff !important;
   }
-
-  .nav-scroll-root[data-nav-collapsed="true"] .nav-gradient-text {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
-  }
-
-  .nav-scroll-root .nav-gradient-text {
-    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
-  }
+}
+html.dark.reduce-transparency .a11y-fab-tooltip,
+html.color-scheme-dark.reduce-transparency .a11y-fab-tooltip {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
 }
 
 /* FAB nav glass panel: Refraction 80, Depth 20, Dispersion 50, Frost 4, Splay 0 */
@@ -522,4 +897,570 @@ html.force-reduce-motion [class*="motion"] {
       1px 0 12px rgba(120, 160, 255, 0.015),
       0 -1px 0 rgba(255, 255, 255, 0.05) inset;
   }
+}
+
+/* =========================================================
+ * 3D depth system
+ * Adds tasteful depth to cards, buttons, and the profile photo.
+ * All effects respect prefers-reduced-motion and the user's
+ * .force-reduce-motion class (handled at top of file).
+ * ========================================================= */
+
+/* A perspective container — apply to a parent to give children real depth. */
+.scene-3d {
+  perspective: 1200px;
+  perspective-origin: 50% 30%;
+}
+
+/* Children with this become 3D-aware. */
+.layer-3d {
+  transform-style: preserve-3d;
+}
+
+/* Push an element forward along Z. Used to layer content above the card surface. */
+.depth-1 { transform: translateZ(8px); }
+.depth-2 { transform: translateZ(16px); }
+.depth-3 { transform: translateZ(28px); }
+.depth-4 { transform: translateZ(44px); }
+
+/* Card 3D — a foundational card surface that lifts on hover with layered shadow.
+ * Pairs with Tilt3D for the rotation; this class supplies the resting depth + shadow. */
+.card-3d {
+  position: relative;
+  transform-style: preserve-3d;
+  transition:
+    box-shadow var(--dur-apple-md) var(--ease-apple-out),
+    transform var(--dur-apple-md) var(--ease-apple-out),
+    border-color var(--dur-apple-md) var(--ease-apple-smooth);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 6px 14px -6px rgba(0, 0, 0, 0.10),
+    0 14px 32px -16px rgba(0, 0, 0, 0.12);
+}
+
+.card-3d:hover {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 20px 30px -12px rgba(0, 0, 0, 0.18),
+    0 40px 70px -24px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-3d {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.5),
+      0 6px 14px -6px rgba(0, 0, 0, 0.55),
+      0 14px 32px -16px rgba(0, 0, 0, 0.6);
+  }
+  .card-3d:hover {
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.6),
+      0 22px 36px -12px rgba(0, 0, 0, 0.7),
+      0 50px 80px -24px rgba(0, 0, 0, 0.8),
+      0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+}
+
+html.dark .card-3d {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 6px 14px -6px rgba(0, 0, 0, 0.55),
+    0 14px 32px -16px rgba(0, 0, 0, 0.6);
+}
+html.dark .card-3d:hover {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.6),
+    0 22px 36px -12px rgba(0, 0, 0, 0.7),
+    0 50px 80px -24px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* 3D button — chunky pressable surface for hero CTAs. Uses a stacked
+ * "shadow-edge" beneath the button to imply thickness, and translates
+ * the button downward on press to make the edge disappear. */
+.btn-3d {
+  position: relative;
+  isolation: isolate;
+  transform: translateY(0);
+  transition:
+    transform var(--dur-apple-xs) var(--ease-apple-spring),
+    box-shadow var(--dur-apple-xs) var(--ease-apple-out),
+    filter var(--dur-apple-xs) var(--ease-apple-smooth);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 -3px 0 rgba(0, 0, 0, 0.18) inset,
+    0 6px 0 rgba(0, 0, 0, 0.28),
+    0 10px 22px -6px rgba(0, 0, 0, 0.30);
+}
+
+.btn-3d:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 -3px 0 rgba(0, 0, 0, 0.18) inset,
+    0 8px 0 rgba(0, 0, 0, 0.30),
+    0 16px 28px -6px rgba(0, 0, 0, 0.34);
+}
+
+.btn-3d:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.20) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.20) inset,
+    0 2px 0 rgba(0, 0, 0, 0.28),
+    0 4px 10px -2px rgba(0, 0, 0, 0.30);
+}
+
+/* Secondary 3D button — lighter edge for outlined / pale surfaces */
+.btn-3d-light {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -2px 0 rgba(0, 0, 0, 0.08) inset,
+    0 5px 0 rgba(0, 0, 0, 0.14),
+    0 10px 22px -6px rgba(0, 0, 0, 0.18);
+}
+.btn-3d-light:hover {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 -2px 0 rgba(0, 0, 0, 0.08) inset,
+    0 7px 0 rgba(0, 0, 0, 0.16),
+    0 14px 28px -6px rgba(0, 0, 0, 0.22);
+}
+.btn-3d-light:active {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.10) inset,
+    0 2px 0 rgba(0, 0, 0, 0.14),
+    0 4px 10px -2px rgba(0, 0, 0, 0.18);
+}
+
+/* =========================================================================
+ * Hero CTA hover-ball glow
+ * =========================================================================
+ * A soft cursor-tracking orb that lights up across the entire button on
+ * hover. The radial-gradient's centre is bound to two CSS custom properties
+ * (`--glow-x`, `--glow-y`) that the React component updates directly on
+ * pointermove — no React re-renders, just a style-write per frame.
+ *
+ * The glow span sits underneath the icon/label (which uses `relative z-10`)
+ * and has `pointer-events: none`, so the button itself remains the single,
+ * uninterrupted hit target across its full rectangle.
+ *
+ *   .hero-cta-primary   — solid-blue button: emits a soft white orb.
+ *   .hero-cta-secondary — pale outlined button: emits a primary-blue orb.
+ * ========================================================================= */
+.hero-cta {
+  --glow-x: 50%;
+  --glow-y: 50%;
+}
+
+.hero-cta-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-apple-sm) var(--ease-apple-out);
+}
+
+.hero-cta:hover .hero-cta-glow,
+.hero-cta:focus-visible .hero-cta-glow {
+  opacity: 1;
+}
+
+.hero-cta-primary .hero-cta-glow {
+  background: radial-gradient(
+    220px circle at var(--glow-x) var(--glow-y),
+    rgba(255, 255, 255, 0.45),
+    rgba(255, 255, 255, 0) 65%
+  );
+}
+
+.hero-cta-secondary .hero-cta-glow {
+  background: radial-gradient(
+    220px circle at var(--glow-x) var(--glow-y),
+    rgba(var(--primary-rgb), 0.32),
+    rgba(var(--primary-rgb), 0) 65%
+  );
+}
+
+/* Reduced motion: ball stays centred, no chase — but the hover/focus reveal
+   still works so the user gets a clear "I'm hovering this" cue. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta-glow {
+    transition: none;
+  }
+}
+html.force-reduce-motion .hero-cta-glow {
+  transition: none;
+}
+
+/* Apple-TV-style focus card (Recommendations) — layered shadow that
+ * deepens on hover, drawn underneath the 3D-tilted card. */
+.apple-tv-card {
+  transition:
+    box-shadow var(--dur-apple-md) var(--ease-apple-out),
+    border-color var(--dur-apple-md) var(--ease-apple-smooth);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 10px 20px -10px rgba(0, 0, 0, 0.16),
+    0 28px 48px -24px rgba(0, 0, 0, 0.22);
+}
+.apple-tv-card:hover,
+.apple-tv-card:focus-visible {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    0 22px 36px -10px rgba(0, 0, 0, 0.28),
+    0 56px 90px -30px rgba(0, 0, 0, 0.42);
+}
+@media (prefers-color-scheme: dark) {
+  .apple-tv-card {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.55),
+      0 10px 20px -10px rgba(0, 0, 0, 0.6),
+      0 28px 48px -24px rgba(0, 0, 0, 0.7);
+  }
+  .apple-tv-card:hover,
+  .apple-tv-card:focus-visible {
+    box-shadow:
+      0 4px 10px rgba(0, 0, 0, 0.7),
+      0 26px 40px -10px rgba(0, 0, 0, 0.78),
+      0 64px 100px -30px rgba(0, 0, 0, 0.9);
+  }
+}
+html.dark .apple-tv-card {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 10px 20px -10px rgba(0, 0, 0, 0.6),
+    0 28px 48px -24px rgba(0, 0, 0, 0.7);
+}
+html.dark .apple-tv-card:hover,
+html.dark .apple-tv-card:focus-visible {
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.7),
+    0 26px 40px -10px rgba(0, 0, 0, 0.78),
+    0 64px 100px -30px rgba(0, 0, 0, 0.9);
+}
+
+/* Photo 3D — used on the About profile image for an interactive depth effect. */
+.photo-3d {
+  position: relative;
+  transform-style: preserve-3d;
+  transition:
+    transform var(--dur-apple-lg) var(--ease-apple-out),
+    box-shadow var(--dur-apple-lg) var(--ease-apple-out);
+  box-shadow:
+    0 10px 30px -10px rgba(0, 0, 0, 0.30),
+    0 30px 60px -30px rgba(0, 0, 0, 0.35);
+}
+
+.photo-3d:hover {
+  transform: rotateX(8deg) rotateY(-8deg) translateZ(20px);
+  box-shadow:
+    0 20px 50px -10px rgba(0, 0, 0, 0.35),
+    0 40px 90px -30px rgba(0, 0, 0, 0.40);
+}
+
+/* Honors all reduce-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .card-3d,
+  .btn-3d,
+  .btn-3d-light,
+  .photo-3d,
+  .layer-3d,
+  [class*="depth-"] {
+    transform: none !important;
+    transition: box-shadow 200ms ease !important;
+  }
+  .photo-3d:hover,
+  .card-3d:hover,
+  .btn-3d:hover,
+  .btn-3d-light:hover {
+    transform: none !important;
+  }
+}
+
+html.force-reduce-motion .card-3d,
+html.force-reduce-motion .btn-3d,
+html.force-reduce-motion .btn-3d-light,
+html.force-reduce-motion .photo-3d,
+html.force-reduce-motion .layer-3d,
+html.force-reduce-motion [class*="depth-"] {
+  transform: none !important;
+  transition: box-shadow 200ms ease !important;
+}
+html.force-reduce-motion .photo-3d:hover,
+html.force-reduce-motion .card-3d:hover,
+html.force-reduce-motion .btn-3d:hover,
+html.force-reduce-motion .btn-3d-light:hover {
+  transform: none !important;
+}
+
+/* =========================================================================
+ * Apple-style motion utilities
+ * =========================================================================
+ * Pure-CSS animation primitives that any element can opt into for an
+ * iOS / macOS-feel entrance and hover treatment. Each class is intentionally
+ * standalone so you can use them on a div, a heading, a section, etc.
+ *
+ *   .apple-reveal              — fades in + glides up ~14px on mount, using
+ *                                the canonical Apple ease-out curve. Apply
+ *                                to a hero block, a card cluster, or wrap a
+ *                                page in it for a free route-change feel.
+ *   .apple-reveal-stagger > *  — same but cascades child delays so a list of
+ *                                cards "ladder" into view like the App Store.
+ *   .apple-hover-lift          — smooth scale + Y-translate on hover with
+ *                                the Apple spring; great for clickable cards
+ *                                that don't already use `Tilt3D`.
+ *   .apple-press               — tap-feedback springy press-down for buttons.
+ *
+ * All of these are no-ops under reduced-motion (both system preference and
+ * the user's `html.force-reduce-motion` class).
+ * ========================================================================= */
+
+@keyframes apple-reveal-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.985);
+    filter: blur(2px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.apple-reveal {
+  animation: apple-reveal-in var(--dur-apple-lg) var(--ease-apple-out) both;
+}
+
+/* Stagger ladder — up to 12 children animate in sequence (most page sections
+   never need more than ~8, but 12 covers a long card grid). The delay step
+   (60ms) is the same cadence Apple uses for App Store row reveals. */
+.apple-reveal-stagger > * {
+  animation: apple-reveal-in var(--dur-apple-lg) var(--ease-apple-out) both;
+}
+.apple-reveal-stagger > *:nth-child(1)  { animation-delay:  40ms; }
+.apple-reveal-stagger > *:nth-child(2)  { animation-delay: 100ms; }
+.apple-reveal-stagger > *:nth-child(3)  { animation-delay: 160ms; }
+.apple-reveal-stagger > *:nth-child(4)  { animation-delay: 220ms; }
+.apple-reveal-stagger > *:nth-child(5)  { animation-delay: 280ms; }
+.apple-reveal-stagger > *:nth-child(6)  { animation-delay: 340ms; }
+.apple-reveal-stagger > *:nth-child(7)  { animation-delay: 400ms; }
+.apple-reveal-stagger > *:nth-child(8)  { animation-delay: 460ms; }
+.apple-reveal-stagger > *:nth-child(9)  { animation-delay: 520ms; }
+.apple-reveal-stagger > *:nth-child(10) { animation-delay: 580ms; }
+.apple-reveal-stagger > *:nth-child(11) { animation-delay: 640ms; }
+.apple-reveal-stagger > *:nth-child(12) { animation-delay: 700ms; }
+
+/* Smooth lift on hover — for cards / tiles that don't tilt. The transform
+   uses Apple's emphasized ease so the motion feels deliberate but never
+   bouncy enough to distract. */
+.apple-hover-lift {
+  transition:
+    transform var(--dur-apple-md) var(--ease-apple-out),
+    box-shadow var(--dur-apple-md) var(--ease-apple-out);
+  will-change: transform;
+}
+.apple-hover-lift:hover {
+  transform: translate3d(0, -3px, 0) scale(1.012);
+}
+.apple-hover-lift:active {
+  transform: translate3d(0, 1px, 0) scale(0.992);
+  transition-duration: var(--dur-apple-xs);
+}
+
+/* Spring press for buttons — quick scale-down feedback on tap. */
+.apple-press {
+  transition: transform var(--dur-apple-xs) var(--ease-apple-spring);
+}
+.apple-press:active {
+  transform: scale(0.96);
+}
+
+/* Reduced-motion: turn every Apple utility into a no-op (the element shows
+   immediately at its final state, no hover transform, no animation). */
+@media (prefers-reduced-motion: reduce) {
+  .apple-reveal,
+  .apple-reveal-stagger > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .apple-hover-lift,
+  .apple-hover-lift:hover,
+  .apple-hover-lift:active,
+  .apple-press,
+  .apple-press:active {
+    transform: none !important;
+  }
+}
+html.force-reduce-motion .apple-reveal,
+html.force-reduce-motion .apple-reveal-stagger > * {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+html.force-reduce-motion .apple-hover-lift,
+html.force-reduce-motion .apple-hover-lift:hover,
+html.force-reduce-motion .apple-hover-lift:active,
+html.force-reduce-motion .apple-press,
+html.force-reduce-motion .apple-press:active {
+  transform: none !important;
+}
+
+/* =========================================================================
+ * USER PREFERENCE: NO SHADOWS
+ * =========================================================================
+ * The user dislikes shadows, so every shadow primitive is disabled
+ * site-wide via this single override block. This covers:
+ *
+ *   • `box-shadow`  — every layered card shadow, every elevation hint,
+ *                     every inset highlight on .nav-liquid-glass /
+ *                     .card-3d / .btn-3d / .apple-tv-card / .photo-3d,
+ *                     plus every Tailwind `shadow-*` utility.
+ *   • `text-shadow` — used in a couple of hero overlays.
+ *   • `drop-shadow` filters — covers Tailwind `drop-shadow-*` utility
+ *                     classes *and* inline `style={{ filter: 'drop-shadow(...)' }}`
+ *                     values produced by some components (e.g. Education's
+ *                     school medallions, Recommendations' card lift).
+ *
+ * `backdrop-filter` is intentionally NOT touched — it's a separate property
+ * that powers the liquid-glass nav, the FAB sheet, and the a11y tooltip.
+ * `outline` is also untouched, so AAA focus rings still render correctly.
+ *
+ * The existing shadow declarations throughout this stylesheet and across
+ * components are deliberately left in place rather than deleted. To restore
+ * shadows in the future, simply delete this block — every shadow effect in
+ * the codebase will reappear with no other code changes needed. */
+
+*,
+*::before,
+*::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Tailwind `drop-shadow-*` utility classes — match anything with
+   "drop-shadow" in its class list and disable the filter entirely. */
+[class*="drop-shadow"] {
+  filter: none !important;
+}
+
+/* Inline `filter: drop-shadow(...)` styles set via React style props. */
+[style*="drop-shadow"] {
+  filter: none !important;
+}
+
+/* =========================================================================
+ * TERMINAL MODE — ⌘K easter egg
+ * =========================================================================
+ * Styles specific to the full-screen terminal overlay (components/TerminalMode).
+ * The goal is to mimic a real tty: monospace font, phosphor-green text,
+ * a blinking block cursor that replaces the browser's I-beam caret, and
+ * a hidden input that captures keystrokes invisibly. */
+
+.terminal-mode {
+  /* Stack monospace fallbacks the way a real terminal would. */
+  font-family: "JetBrains Mono", "Menlo", "Monaco", "SFMono-Regular",
+    ui-monospace, "Cascadia Mono", "Consolas", "Liberation Mono", monospace;
+  /* Faint phosphor glow on the body text — subtle enough to read but
+     still gives the CRT feel. text-shadow is globally disabled above,
+     so we restore it for this scope only. */
+}
+
+/* The real <input> is layered on top of the visible row but must be
+   completely invisible — no border, no padding, no native chrome, no
+   autofill highlight, no caret, no text. The visible block cursor and
+   mirror text are drawn by sibling spans above it. Selection stays
+   subtly green so cmd+A still shows something. */
+.terminal-input {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  caret-color: transparent !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  /* Inherit the terminal font so the underlying selection/text width
+     matches the mirror row exactly. */
+  font: inherit !important;
+  letter-spacing: inherit !important;
+  line-height: inherit !important;
+}
+.terminal-input:focus,
+.terminal-input:focus-visible,
+.terminal-input:hover,
+.terminal-input:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+/* Kill Chrome / Safari autofill backgrounds. */
+.terminal-input:-webkit-autofill,
+.terminal-input:-webkit-autofill:hover,
+.terminal-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-text-fill-color: transparent !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+.terminal-input::selection {
+  background: rgba(51, 255, 102, 0.35);
+  color: transparent;
+}
+.terminal-input::-webkit-search-decoration,
+.terminal-input::-webkit-search-cancel-button,
+.terminal-input::-webkit-search-results-button,
+.terminal-input::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Blinking phosphor-green block cursor. Rendered as a span at the end of
+   the typed text via TerminalMode.tsx. Uses a `steps()` timing function so
+   the on/off transition is sharp — no fade — which is what real terminals
+   do (it's a hardware-style blink, not an opacity ramp). */
+.terminal-block-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+  background-color: #33ff66;
+  animation: terminal-blink 1.06s steps(2, jump-none) infinite;
+}
+
+@keyframes terminal-blink {
+  0%, 49% {
+    background-color: #33ff66;
+  }
+  50%, 100% {
+    background-color: transparent;
+  }
+}
+
+/* Honour reduced-motion preferences by stopping the blink — the cursor
+   stays solid green, still locatable, just not animating. */
+@media (prefers-reduced-motion: reduce) {
+  .terminal-block-cursor {
+    animation: none;
+  }
+}
+html.force-reduce-motion .terminal-block-cursor {
+  animation: none;
 }
