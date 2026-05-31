@@ -44,7 +44,42 @@ interface Tilt3DProps {
  *    useReducedMotion). Falls back to a static, non-tilted shadow lift on hover.
  *  - Keeps content readable at all rotation angles.
  *  - Pointer-only interaction — the wrapper still bubbles focus to inner interactives.
+ *
+ * Click-reliability — small interactive children "freeze" the tilt:
+ *  When the pointer hovers a *small* interactive descendant (button, link,
+ *  input, etc., where the descendant covers less than ~75% of the card area),
+ *  rotational parallax pauses at the current angle. This stops the card from
+ *  rotating the button out from under the cursor mid-aim, so clicks land on
+ *  the button rather than on the surrounding card. The hover lift and scale
+ *  stay on so the card still reads as "actively hovered"; only the rotation
+ *  is paused. Wrapper-style interactives (an `<a>` that *is* the whole card,
+ *  e.g. the high-school varsity badges) continue to tilt normally, since
+ *  every click on them is valid no matter the angle. Authors can opt any
+ *  element into the freeze behaviour explicitly by setting
+ *  `data-tilt-stable`.
  */
+
+/** CSS selector for interactive descendants that should pause the tilt. */
+const INTERACTIVE_CHILD_SELECTOR = [
+  "button",
+  "a[href]",
+  "input",
+  "textarea",
+  "select",
+  "[role='button']",
+  "[role='link']",
+  "[role='tab']",
+  "[role='menuitem']",
+  "[data-tilt-stable]",
+].join(",");
+
+/**
+ * If a matched interactive covers ≥ this fraction of the card area, we treat
+ * it as a "wrapper interactive" (the whole card is one big link) and keep
+ * tilting normally — clicks land anywhere on it anyway, and freezing the
+ * tilt would defeat the whole effect on link-cards like the school badges.
+ */
+const WRAPPER_INTERACTIVE_AREA_RATIO = 0.75;
 export default function Tilt3D({
   children,
   max = 8,
@@ -94,6 +129,29 @@ export default function Tilt3D({
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
+
+    // If the pointer is over a *small* interactive child (i.e. the kind of
+    // button or link that lives inside the card rather than wrapping the
+    // whole thing), pause rotational tracking so the child stays anchored
+    // under the cursor for a reliable click. See the component-level docs
+    // above for the rationale and the wrapper-interactive carve-out.
+    //
+    // We don't reset rotation to 0 here — that would yank the child *away*
+    // from the cursor as the rotation unwinds, recreating the same
+    // moving-target problem in reverse. Instead we just stop updating
+    // `px` / `py`, leaving the spring to settle at whatever rotation it
+    // had on entry.
+    const target = e.target as HTMLElement | null;
+    const interactive = target?.closest(INTERACTIVE_CHILD_SELECTOR) as HTMLElement | null;
+    if (interactive && interactive !== el && el.contains(interactive)) {
+      const ir = interactive.getBoundingClientRect();
+      const cardArea = rect.width * rect.height;
+      const intArea = ir.width * ir.height;
+      if (cardArea > 0 && intArea / cardArea < WRAPPER_INTERACTIVE_AREA_RATIO) {
+        return;
+      }
+    }
+
     const nx = (e.clientX - rect.left) / rect.width - 0.5;
     const ny = (e.clientY - rect.top) / rect.height - 0.5;
     px.set(nx);

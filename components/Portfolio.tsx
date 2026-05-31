@@ -64,57 +64,33 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
 }
 
 const projects = [
+  // ----------------------------------------------------------------------
+  //  Lowe's — all enterprise initiatives consolidated into one card with
+  //  the confidential banner treatment. Each project ships under NDA, so
+  //  the card surfaces the *breadth* of the work without forcing a wall
+  //  of near-identical "approval required" placeholders.
+  // ----------------------------------------------------------------------
   {
-    title: "Lowe's Sales Floor Kiosk",
-    subtitle: "Lowe's Sales Floor Kiosk",
+    title: "Lowe's Companies, Inc.",
+    subtitle: "Enterprise design across in-store systems",
     description:
-      "Currently contributing to an innovative in-store project at Lowe's. Approval from Lowe's required before sharing.",
-    category: "Enterprise Innovation",
-    technologies: ["Enterprise Systems", "UX Design", "Innovation"],
-    image: "/portfoilo/paintdesk.jpeg.webp",
-    link: "https://www.lowes.com",
-    linkText: "Visit Lowe's Website",
-    color: "#012169",
-    period: "January 2025 - Present",
-  },
-  {
-    title: "Lowe's Centralized Return to Vendor",
-    subtitle: "Lowe's Centralized Return to Vendor",
-    description:
-      "Contributed to the design and prototyping of a centralized return to vendor system, streamlining the vendor return process.",
-    category: "Enterprise System Design",
-    technologies: ["Enterprise Systems", "UX Design", "Prototyping", "Process Optimization"],
-    image: "/portfoilo/recieving.jpeg",
-    link: "https://www.lowes.com",
-    linkText: "Visit Lowe's Website",
-    color: "#012169",
-    period: "March 2023 - January 2025",
-  },
-  {
-    title: "Lowe's Return Space",
-    subtitle: "Lowe's Return Space",
-    description:
-      "Contributed to the enhancement of Lowe's return processing system, improving customer experience and operational efficiency in the return space.",
-    category: "Enterprise POS System Enhancement",
-    technologies: ["Enterprise Systems", "UX Design", "Prototyping", "User Research"],
-    image: "/portfoilo/returns.jpeg",
-    link: "https://www.lowes.com",
-    linkText: "Visit Lowe's Website",
-    color: "#012169",
-    period: "December 2022 - March 2023",
-  },
-  {
-    title: "Lowe's AI Chat Product",
-    subtitle: "Lowe's AI Chat Product",
-    description:
-      "Contributed to the design and development of a confidential AI chat product at Lowe's. Approval from Lowe's required before sharing.",
-    category: "Enterprise AI Innovation",
-    technologies: ["Enterprise Systems", "UX Design", "AI/ML", "Conversational Design"],
+      "Enterprise design work across multiple in-store initiatives at Lowe's — from point-of-sale and store operations to AI conversational surfaces. Each project ships under NDA; approval from Lowe's is required before sharing specifics.",
+    category: "Enterprise Product Design",
+    technologies: [
+      "Enterprise Systems",
+      "UX Design",
+      "Prototyping",
+      "User Research",
+      "AI/ML",
+      "Conversational Design",
+      "Process Optimization",
+      "Innovation",
+    ],
     image: null,
     link: "https://www.lowes.com",
     linkText: "Visit Lowe's Website",
     color: "#012169",
-    period: "August 2025 - January 2026",
+    period: "October 2022 - Present",
     isConfidential: true,
   },
   {
@@ -237,22 +213,32 @@ export default function Portfolio() {
           animate={isInView ? "visible" : "hidden"}
           className="grid md:grid-cols-2 gap-8"
         >
-          {projects.map((project, index) => (
-            <motion.div key={project.title} variants={itemVariants}>
-            <Tilt3D
-              max={7}
-              lift={22}
-              scale={1.02}
-              containerClassName="h-full"
-              className="card-3d bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-light)] overflow-hidden flex flex-col h-full group"
-            >
-              <div
-                className="absolute top-0 left-0 right-0 h-2 z-20 depth-1"
-                style={{ backgroundColor: project.color }}
-                aria-hidden="true"
-              />
-              
-              {/* Image or Placeholder */}
+          {projects.map((project) => {
+            // Whole-card-clickable pattern. Each card's primary action — visit
+            // a website, or open the design-docs PDF modal — wraps the entire
+            // card body so the full surface is the hit target. The old bottom
+            // CTA button is gone; a small inline "[icon] [label]" affordance
+            // stays at the bottom of the body as a visual signal of what
+            // clicking does.
+            const hasLink = Boolean(project.link);
+            const hasPdfs = Boolean(project.pdfs);
+            const cardAriaLabel = hasLink
+              ? `${project.title} — ${project.linkText ?? "Visit website"} (opens in new tab)`
+              : hasPdfs
+              ? `View ${project.title} design documents`
+              : project.title;
+            const innerClassName =
+              "group relative flex h-full w-full flex-col text-left focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-inset rounded-2xl";
+
+            const cardBody = (
+              <>
+                <div
+                  className="absolute top-0 left-0 right-0 h-2 z-20 depth-1"
+                  style={{ backgroundColor: project.color }}
+                  aria-hidden="true"
+                />
+
+                {/* Image or Placeholder */}
               {project.image ? (
                 <div className="relative w-full h-64 overflow-hidden">
                   <Image
@@ -385,46 +371,73 @@ export default function Portfolio() {
                   ))}
                 </div>
 
-                {/* Link or PDF Viewer Button.
-                    The button is wrapped in a translateZ div so it sits forward of
-                    the card surface; the button itself relies on the btn-3d CSS class
-                    for hover/active feedback to avoid conflicting with framer-motion's
-                    transform engine (which would otherwise wipe the translateZ on hover). */}
-                {project.link ? (
-                  <div className="mt-auto" style={{ transform: "translateZ(24px)" }}>
+                {/* Static CTA affordance.
+                    The whole card is now the clickable element (wrapping
+                    <a> or <button> around `cardBody`), so this block is
+                    purely visual — a small icon + label in the project's
+                    accent color that signals what clicking the card does.
+                    It nudges right on hover via the group's hover state so
+                    the affordance still feels interactive without being a
+                    real button. */}
+                {(hasLink || hasPdfs) && (
+                  <div
+                    className="mt-auto inline-flex items-center gap-2 text-sm font-semibold transition-[gap] duration-200 group-hover:gap-3"
+                    style={{ color: project.color, transform: "translateZ(24px)" }}
+                  >
+                    {hasPdfs ? (
+                      <FileText className="w-4 h-4" aria-hidden="true" />
+                    ) : (
+                      <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                    )}
+                    <span>
+                      {hasLink ? project.linkText : "View Design Documents"}
+                    </span>
+                  </div>
+                )}
+              </div>
+              </>
+            );
+
+            return (
+              <motion.div key={project.title} variants={itemVariants}>
+                <Tilt3D
+                  max={7}
+                  lift={22}
+                  scale={1.02}
+                  containerClassName="h-full"
+                  className="card-3d bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-light)] overflow-hidden h-full"
+                >
+                  {hasLink ? (
                     <a
-                      href={project.link}
+                      href={project.link!}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-3d inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
-                      style={{ backgroundColor: project.color }}
-                      aria-label={`${project.linkText} (opens in new tab)`}
+                      aria-label={cardAriaLabel}
+                      className={innerClassName}
                     >
-                      {project.linkText}
-                      <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                      {cardBody}
                     </a>
-                  </div>
-                ) : project.pdfs ? (
-                  <div className="mt-auto" style={{ transform: "translateZ(24px)" }}>
+                  ) : hasPdfs ? (
                     <button
                       type="button"
                       onClick={() => {
                         setSelectedProject(project);
-                        setSelectedPdf(project.pdfs[0].path);
+                        setSelectedPdf(project.pdfs![0].path);
                       }}
-                      className="btn-3d inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
-                      style={{ backgroundColor: project.color }}
-                      aria-label="View design documents"
+                      aria-label={cardAriaLabel}
+                      className={innerClassName}
                     >
-                      <FileText className="w-4 h-4" aria-hidden="true" />
-                      View Design Documents
+                      {cardBody}
                     </button>
-                  </div>
-                ) : null}
-              </div>
-            </Tilt3D>
-            </motion.div>
-          ))}
+                  ) : (
+                    <div className="flex h-full w-full flex-col">
+                      {cardBody}
+                    </div>
+                  )}
+                </Tilt3D>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
 

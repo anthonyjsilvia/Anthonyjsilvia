@@ -1220,6 +1220,26 @@ html.force-reduce-motion .btn-3d-light:hover {
  * the user's `html.force-reduce-motion` class).
  * ========================================================================= */
 
+/* IMPORTANT: the 100% keyframe MUST end with BOTH `transform: none` AND
+   `filter: none` (and not their identity-but-still-non-none counterparts
+   `translate3d(0,0,0) scale(1)` / `blur(0)`), because this animation runs
+   with `animation-fill-mode: both` on `<main>` in SiteChrome.
+
+   Per the CSS spec, *any* non-`none` value on either property establishes
+   a containing block for `position: fixed` descendants — yes, even
+   `blur(0)` and the identity transform, because the spec tests for the
+   literal `none` keyword, not for "is this visually a no-op". If `<main>`
+   keeps an identity transform / blur(0) filter after the entrance
+   animation, every in-page modal using `fixed inset-0` becomes pinned to
+   `<main>` (i.e., to the top of the document) instead of to the viewport
+   — so the modal scrolls with the page and looks "missing" when the user
+   has scrolled down before opening it.
+
+   The CSS spec interpolates between a transform/filter list and `none` by
+   substituting an equivalent identity for `none` during interpolation, so
+   the visual entrance is identical to the previous keyframe; only the
+   final computed value changes (from an identity transform / blur(0)
+   filter → genuinely no transform and no filter at all). */
 @keyframes apple-reveal-in {
   0% {
     opacity: 0;
@@ -1227,12 +1247,12 @@ html.force-reduce-motion .btn-3d-light:hover {
     filter: blur(2px);
   }
   60% {
-    filter: blur(0);
+    filter: none;
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(0);
+    transform: none;
+    filter: none;
   }
 }
 

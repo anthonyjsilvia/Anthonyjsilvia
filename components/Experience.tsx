@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Briefcase, Calendar, MapPin, ExternalLink } from "lucide-react";
 import Tilt3D from "@/components/Tilt3D";
 
@@ -14,27 +14,138 @@ const NODEDA_FORMER_CLIENTS = [
   { name: "Rohde Architects", href: "https://rohdearchitects.com", ariaLabel: "Visit Rohde Architects (opens in new tab)" },
 ];
 
-// EXACT LinkedIn Experience entries - word-for-word
-const experiences = [
+/* ---------------------------------------------------------------------------
+   Smart, real-time tenure math
+   ---------------------------------------------------------------------------
+   Roles are stored as `start`/`end` month-year pairs instead of hand-written
+   "(3 years 8 months)" strings, and the rendered period + company-total
+   strings are computed from those pairs against a live "now" clock that
+   re-ticks every minute. That means the page never goes stale: the day a
+   month rolls over, the duration string updates on its own — no manual edit
+   needed when, say, "1 month" should become "2 months".
+   --------------------------------------------------------------------------- */
+
+/** Lightweight month/year pair. Day-precision isn't needed for tenure math. */
+type MonthYear = { year: number; month: number /* 1 = Jan, 12 = Dec */ };
+
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+function formatMonthYear(my: MonthYear): string {
+  return `${MONTH_NAMES[my.month - 1]} ${my.year}`;
+}
+
+function monthYearFromDate(d: Date): MonthYear {
+  return { year: d.getFullYear(), month: d.getMonth() + 1 };
+}
+
+function compareMonthYear(a: MonthYear, b: MonthYear): number {
+  return (a.year - b.year) * 12 + (a.month - b.month);
+}
+
+/**
+ * Months between two MonthYears, counted *inclusively* — i.e. the start
+ * month and the end month each count as one. This is the same convention
+ * LinkedIn uses (e.g. Feb 2019 – Sep 2022 reads as "3 yrs 8 mos", not "3
+ * yrs 7 mos"). Clamped to a minimum of 1 so a brand-new role reads as
+ * "1 month" rather than "0 months".
+ */
+function diffMonthsInclusive(start: MonthYear, end: MonthYear): number {
+  const raw = (end.year - start.year) * 12 + (end.month - start.month) + 1;
+  return Math.max(raw, 1);
+}
+
+/**
+ * Convert a month count to the human-readable tenure string LinkedIn uses:
+ *   12 → "1 year"
+ *   13 → "1 year 1 month"
+ *   24 → "2 years"
+ *   44 → "3 years 8 months"
+ *    1 → "1 month"
+ */
+function formatDuration(months: number): string {
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  const parts: string[] = [];
+  if (years > 0) parts.push(`${years} year${years === 1 ? "" : "s"}`);
+  if (rem > 0) parts.push(`${rem} month${rem === 1 ? "" : "s"}`);
+  if (parts.length === 0) parts.push("1 month");
+  return parts.join(" ");
+}
+
+/**
+ * Live "now" clock — returns the current Date and re-renders the consumer
+ * every `intervalMs`. SSR-safe: the initial value uses the server's clock
+ * (so the first paint already has a sensible string), and the effect
+ * immediately re-syncs to the client's clock on mount.
+ *
+ * One minute is generous resolution for month-boundary updates, but it
+ * also means that if you leave the tab open at 11:59 PM on the last day
+ * of the month, "(X months)" will tick forward within ~60s of midnight.
+ */
+function useNow(intervalMs = 60_000): Date {
+  const [now, setNow] = useState<Date>(() => new Date());
+  useEffect(() => {
+    setNow(new Date());
+    const id = setInterval(() => setNow(new Date()), intervalMs);
+    return () => clearInterval(id);
+  }, [intervalMs]);
+  return now;
+}
+
+type Role = {
+  title: string;
+  /** First month of the role (inclusive). */
+  start: MonthYear;
+  /** Last month of the role (inclusive). Omit for "Present". */
+  end?: MonthYear;
+  location: string;
+  bullets?: string[];
+  description?: string;
+};
+
+type ExperienceEntry = {
+  company: string;
+  roles: Role[];
+};
+
+// EXACT LinkedIn Experience entries — bullet copy is word-for-word; only the
+// date math is now derived (so "(3 years 8 months)" etc. are computed live
+// against the current date instead of hardcoded).
+const experiences: ExperienceEntry[] = [
   {
     company: "Lowe's Companies, Inc.",
-    totalYears: "7 years",
     roles: [
       {
-        title: "Associate Product Designer",
-        period: "October 2022 - Present (3 years 4 months)",
-        location: "Charlotte Metro",
+        title: "Product Designer",
+        start: { year: 2026, month: 5 },
+        location: "Charlotte, North Carolina · Hybrid",
         bullets: [
-          "Lead the design and iteration of key internal systems, improving usability and workflow efficiency across complex, high-volume operational environments.",
-          "Planned and facilitated usability testing, synthesizing research insights into actionable design decisions adopted by product and engineering partners.",
-          "Produced detailed wireframes and interactive prototypes in Figma to communicate design intent, validate solutions, and align cross-functional stakeholders.",
-          "Contributed to and extended internal design systems with an accessibility-first approach, ensuring consistency and scalability across products.",
-          "Designed within WCAG 2.2 AA/AAA standards, balancing accessibility compliance with legacy system constraints and real-world operational needs.",
+          "Own end-to-end design for critical internal systems, leading discovery, interaction design, prototyping, usability validation, and iterative improvements across high-volume operational workflows.",
+          "Partner with product, engineering, business stakeholders, and end users to translate complex operational needs into scalable, accessible, and business-aligned product experiences.",
+          "Plan and facilitate usability testing and design validation, synthesizing research insights into actionable recommendations that inform roadmap priorities and product strategy.",
+          "Drive product experience quality by identifying usability gaps, evaluating design tradeoffs, and supporting accessible solutions from concept through implementation.",
+        ],
+      },
+      {
+        title: "Associate Product Designer",
+        start: { year: 2022, month: 10 },
+        end: { year: 2026, month: 5 },
+        location: "Charlotte Metro · Hybrid",
+        bullets: [
+          "Led the end-to-end design and iteration of critical internal systems, partnering with product and engineering to improve usability, operational efficiency, and business outcomes in high-volume environments.",
+          "Planned and facilitated usability testing, translating research insights into prioritized product improvements adopted across the roadmap.",
+          "Created wireframes and interactive prototypes in Figma to define product direction, validate concepts, and align cross-functional stakeholders on solutions.",
+          "Contributed to and evolved internal design systems with an accessibility-first approach, supporting scalable product development and consistent user experiences.",
+          "Designed within WCAG 2.2 AA/AAA standards while balancing accessibility, technical constraints, and operational priorities.",
         ],
       },
       {
         title: "Earlier Roles",
-        period: "February 2019 - September 2022 (3 years 8 months)",
+        start: { year: 2019, month: 2 },
+        end: { year: 2022, month: 9 },
         location: "United States",
         description: "Proactively took ownership of customer facing work and operational responsibilities, developing a deep understanding for store workflow, system limitations, and real world constraints. This foundation, directly informs my approach, designing practical, enterprise-scale tools.",
       },
@@ -42,11 +153,10 @@ const experiences = [
   },
   {
     company: "NodeDa",
-    totalYears: "8 years 9 months",
     roles: [
       {
         title: "Principal Consultant",
-        period: "May 2017 - Present (8 years 9 months)",
+        start: { year: 2017, month: 5 },
         location: "United States",
         bullets: [
           "Founded NodeDa, an independent product design consultancy providing selective design and product strategy support to small businesses and early-stage products.",
@@ -58,10 +168,45 @@ const experiences = [
   },
 ];
 
+/**
+ * Pretty period label for a single role, e.g.
+ *   "May 2026 - Present (1 month)"
+ *   "October 2022 - May 2026 (3 years 8 months)"
+ */
+function getRolePeriodLabel(role: Role, nowMy: MonthYear): string {
+  const startLabel = formatMonthYear(role.start);
+  const endLabel = role.end ? formatMonthYear(role.end) : "Present";
+  const effectiveEnd = role.end ?? nowMy;
+  const duration = formatDuration(diffMonthsInclusive(role.start, effectiveEnd));
+  return `${startLabel} - ${endLabel} (${duration})`;
+}
+
+/**
+ * Cumulative tenure at a company, derived from its earliest role start to
+ * either "now" (if any role is ongoing) or the latest closed-out role end.
+ * Returns just the duration ("7 years 4 months") since the header already
+ * shows the company name above it.
+ */
+function getCompanyTotalLabel(exp: ExperienceEntry, nowMy: MonthYear): string {
+  const earliestStart = exp.roles
+    .map((r) => r.start)
+    .reduce((a, b) => (compareMonthYear(a, b) <= 0 ? a : b));
+  const anyOngoing = exp.roles.some((r) => !r.end);
+  const latestEnd = anyOngoing
+    ? nowMy
+    : exp.roles
+        .map((r) => r.end!)
+        .reduce((a, b) => (compareMonthYear(a, b) >= 0 ? a : b));
+  return formatDuration(diffMonthsInclusive(earliestStart, latestEnd));
+}
+
 export default function Experience() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
+  // Live "now" — drives every duration string on the page so they tick over
+  // on their own at month boundaries.
+  const nowMy = monthYearFromDate(useNow());
 
   return (
     <section
@@ -106,8 +251,11 @@ export default function Experience() {
                       <Briefcase className="w-6 h-6 text-[var(--primary)] drop-shadow-md" aria-hidden="true" />
                       {exp.company}
                     </h3>
-                    <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] text-lg">
-                      {exp.totalYears}
+                    <p
+                      className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] text-lg"
+                      aria-live="polite"
+                    >
+                      {getCompanyTotalLabel(exp, nowMy)}
                     </p>
                   </div>
                 </div>
@@ -124,7 +272,7 @@ export default function Experience() {
                       <div className="space-y-2 mb-4">
                         <div className="flex items-center gap-2 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
                           <Calendar className="w-4 h-4" aria-hidden="true" />
-                          <span>{role.period}</span>
+                          <span aria-live="polite">{getRolePeriodLabel(role, nowMy)}</span>
                         </div>
                         <div className="flex items-center gap-2 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
                           <MapPin className="w-4 h-4" aria-hidden="true" />
