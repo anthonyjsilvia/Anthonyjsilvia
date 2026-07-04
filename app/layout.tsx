@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import SiteChrome from "@/components/SiteChrome";
@@ -79,6 +80,14 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <AnalyticsProvider />
+        <Script
+          id="nrova-behavior-tracker"
+          src="https://us-central1-nrovallc.cloudfunctions.net/behaviorApi/behavior-tracker.js"
+          strategy="afterInteractive"
+          data-org="DmByfTTUdCs0ecp2MMoQ"
+          data-key="nrov_live_c277a0b049cdfe4daf41ec0a2000961f55dd0039f80d468fa7a0baf13ad97c91"
+          data-api-base="https://us-central1-nrovallc.cloudfunctions.net/behaviorApi"
+        />
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
