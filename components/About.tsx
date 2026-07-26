@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 /**
- * About — NodeDa-style cinematic rhythm:
+ * About - NodeDa-style cinematic rhythm:
  * manifesto billboard → one sparse product-style stage (portrait + copy).
  */
 export default function About() {
@@ -50,7 +50,7 @@ export default function About() {
 
   return (
     <>
-      {/* Manifesto — one billboard line */}
+      {/* Manifesto - one billboard line */}
       <section
         id="about"
         ref={manifestoRef}
@@ -67,7 +67,7 @@ export default function About() {
         </motion.p>
       </section>
 
-      {/* Stage — portrait + copy */}
+      {/* Stage - portrait + copy */}
       <section
         ref={stageRef}
         className="hp-cine-stage border-t border-[var(--border-light)] bg-[var(--bg-secondary)]"
@@ -106,8 +106,8 @@ export default function About() {
               Product experience, end to end.
             </h2>
             <p className="mt-5 max-w-[34rem] text-[clamp(1.05rem,1.5vw,1.2rem)] font-medium leading-[1.55] text-[var(--text-secondary)]">
-              Associate Product Designer at Lowe&apos;s, working on complex retail
-              operations—usability, friction, and alignment with product and engineering.
+              Product Designer at Lowe&apos;s, working on complex retail
+              operations - usability, friction, and alignment with product and engineering.
               Through NodeDa, I lead discovery through delivery with accessibility and
               operational reality in view.
             </p>

@@ -7,7 +7,7 @@ import { Briefcase, Calendar, MapPin, ExternalLink } from "lucide-react";
 import GlowLink from "@/components/GlowLink";
 import type { MappedExperienceEntry, MappedProject } from "@/lib/resume-public";
 
-// NodeDa — projects and former clients, shown as buttons in Experience
+// NodeDa - projects and former clients, shown as buttons in Experience
 // (used when the live API does not supply project links for NodeDa).
 const NODEDA_PROJECTS = [
   { name: "Kinlily", href: "https://kinlily.com", ariaLabel: "Visit Kinlily (opens in new tab)" },
@@ -23,7 +23,7 @@ const NODEDA_FORMER_CLIENTS = [
    "(3 years 8 months)" strings, and the rendered period + company-total
    strings are computed from those pairs against a live "now" clock that
    re-ticks every minute. That means the page never goes stale: the day a
-   month rolls over, the duration string updates on its own — no manual edit
+   month rolls over, the duration string updates on its own - no manual edit
    needed when, say, "1 month" should become "2 months".
    --------------------------------------------------------------------------- */
 
@@ -48,7 +48,7 @@ function compareMonthYear(a: MonthYear, b: MonthYear): number {
 }
 
 /**
- * Months between two MonthYears, counted *inclusively* — i.e. the start
+ * Months between two MonthYears, counted *inclusively* - i.e. the start
  * month and the end month each count as one. This is the same convention
  * LinkedIn uses (e.g. Feb 2019 – Sep 2022 reads as "3 yrs 8 mos", not "3
  * yrs 7 mos"). Clamped to a minimum of 1 so a brand-new role reads as
@@ -78,7 +78,7 @@ function formatDuration(months: number): string {
 }
 
 /**
- * Live "now" clock — returns the current Date and re-renders the consumer
+ * Live "now" clock - returns the current Date and re-renders the consumer
  * every `intervalMs`. SSR-safe: the initial value uses the server's clock
  * (so the first paint already has a sensible string), and the effect
  * immediately re-syncs to the client's clock on mount.
@@ -114,7 +114,7 @@ type ExperienceEntry = {
   projects?: { name: string; href: string; ariaLabel: string }[];
 };
 
-// EXACT LinkedIn Experience entries — bullet copy is word-for-word; only the
+// EXACT LinkedIn Experience entries - bullet copy is word-for-word; only the
 // date math is now derived (so "(3 years 8 months)" etc. are computed live
 // against the current date instead of hardcoded).
 const experiences: ExperienceEntry[] = [
@@ -133,7 +133,7 @@ const experiences: ExperienceEntry[] = [
         ],
       },
       {
-        title: "Associate Product Designer",
+        title: "Product Designer",
         start: { year: 2022, month: 10 },
         end: { year: 2026, month: 5 },
         location: "Charlotte Metro · Hybrid",
@@ -218,7 +218,7 @@ export default function Experience({
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
-  // Live "now" — drives every duration string on the page so they tick over
+  // Live "now" - drives every duration string on the page so they tick over
   // on their own at month boundaries.
   const nowMy = monthYearFromDate(useNow());
   const list = useMemo(

@@ -5,7 +5,7 @@ import { ChevronDown, FileText, Linkedin, Mail } from "lucide-react";
 import { type ElementType, type ReactNode, useEffect, useRef } from "react";
 
 /**
- * Hero CTA — pill control with cursor-tracking glow (NodeDa-style shape,
+ * Hero CTA - pill control with cursor-tracking glow (NodeDa-style shape,
  * site-native hover orb).
  */
 type HeroCTAProps = {
@@ -175,7 +175,7 @@ export default function Hero() {
       <a
         href="#about"
         className="hero-read-more absolute bottom-[var(--hp-cine-pad,1.25rem)] left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/80 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:left-auto md:right-[var(--hp-cine-pad,1.25rem)] md:translate-x-0"
-        aria-label="Read more — scroll to about"
+        aria-label="Read more - scroll to about"
       >
         <span className="font-display text-[11px] font-bold uppercase tracking-[0.22em]">
           Read more

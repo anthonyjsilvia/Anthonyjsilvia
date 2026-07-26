@@ -18,7 +18,7 @@ type FluentRevealProps = {
 } & Omit<HTMLAttributes<HTMLElement>, "className" | "children">;
 
 /**
- * @deprecated name kept for call sites — now the homepage Hero CTA glow.
+ * @deprecated name kept for call sites - now the homepage Hero CTA glow.
  */
 export function useFluentRevealProps(intensity: Intensity = "control") {
   const variant: HoverGlowVariant =

@@ -1,10 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useReducedMotion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { ArrowLeft } from "lucide-react";
-import GlowLink from "@/components/GlowLink";
+import SiteBackBar from "@/components/SiteBackBar";
 
 const PROJECT_A = "Lowe's Return Space";
 const PROJECT_B = "Lowe's Centralized Return to Vendor";
@@ -16,6 +14,15 @@ const PROJECT_B_COMPLEXITY = "Lowe's Pro Supply";
 const PROJECT_B_AMBIGUITY = "Lowe's Pro Supply";
 /** Systems Thinking section only: Pro Supply */
 const PROJECT_B_SYSTEMS = "Lowe's Pro Supply";
+
+const TWO_COLUMN_NAMES = new Set([
+  PROJECT_A,
+  PROJECT_B,
+  PROJECT_B_TRADE_OFFS,
+  PROJECT_B_COMPLEXITY,
+  PROJECT_B_AMBIGUITY,
+  PROJECT_B_SYSTEMS,
+]);
 
 const sections = [
   {
@@ -133,125 +140,143 @@ const sections = [
   },
 ];
 
+/**
+ * Evidence — cinematic editorial layout aligned with recommendation detail:
+ * fixed back control, viewport-width stage, display typography, wide columns.
+ */
 export default function EvidencePage() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
-      {/* Same horizontal inset as nav (left-4 right-4 → px-4 sm:px-5); max-w-7xl matches Experience/Portfolio.
-          Top padding clears the fixed nav pill (top-4 + h-16/h-20 ≈ 80-96px). */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 pt-28 md:pt-32 pb-16 md:pb-24">
-          <motion.div
-            ref={ref}
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-            transition={{ duration: 0.5 }}
-          >
-            <GlowLink
-              href="/portfolio"
-              variant="primary"
-              className="mt-10 mb-12 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
-              aria-label="Back to portfolio"
-            >
-              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-              Back to portfolio
-            </GlowLink>
+    <article className="min-h-screen bg-white pb-24 dark:bg-black md:pb-32">
+      <SiteBackBar href="/portfolio" label="Back to portfolio" />
+      <div className="h-[4.75rem]" aria-hidden="true" />
 
-            <header className="mb-16">
-              <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
-                Evidence
-              </h1>
-              <p className="text-lg text-[var(--text-secondary)] dark:text-[var(--text-secondary)] max-w-3xl">
-                How I work, drawn from two projects: <strong>{PROJECT_A}</strong> and{" "}
-                <strong>Lowe&apos;s Pro Supply</strong>. Short, evidence-based bullets on trade-offs,
-                clarity, ambiguity, systems, and what changed between them.
-              </p>
-            </header>
+      <div
+        ref={ref}
+        className="mx-auto mt-6 w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)] md:mt-10"
+      >
+        <motion.header
+          initial={{
+            opacity: 0,
+            y: shouldReduceMotion ? 0 : 24,
+            filter: shouldReduceMotion ? "blur(0px)" : "blur(6px)",
+          }}
+          animate={
+            isInView
+              ? { opacity: 1, y: 0, filter: "blur(0px)" }
+              : { opacity: 0 }
+          }
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.9,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="mb-12 max-w-3xl md:mb-16"
+        >
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
+            Portfolio
+          </p>
+          <h1 className="font-display mt-3 text-[clamp(2.25rem,4.5vw,3.75rem)] font-extrabold tracking-[-0.045em] leading-[1.05] text-[var(--text-primary)]">
+            Evidence
+          </h1>
+          <div
+            aria-hidden="true"
+            className="mt-7 h-[2px] w-20 rounded-full bg-gradient-to-r from-[var(--primary)] to-transparent"
+          />
+          <p className="mt-6 text-[1.05rem] leading-[1.7] text-[var(--text-secondary)] md:text-[1.15rem] md:leading-[1.75]">
+            How I work, drawn from two projects: <strong>{PROJECT_A}</strong> and{" "}
+            <strong>Lowe&apos;s Pro Supply</strong>. Short, evidence-based bullets on
+            trade-offs, clarity, ambiguity, systems, and what changed between them.
+          </p>
+        </motion.header>
 
-            <nav aria-label="Page sections" className="mb-16">
-              <ul className="flex flex-wrap gap-x-4 gap-y-2">
-                {sections.map((s) => (
-                  <li key={s.id}>
-                    <a
-                      href={`#${s.id}`}
-                      className="text-sm font-medium text-[var(--primary)] dark:text-[var(--primary)] hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded px-2 py-1"
-                    >
-                      {s.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+        <nav aria-label="Page sections" className="mb-14 md:mb-20">
+          <ul className="flex flex-wrap gap-x-1 gap-y-2">
+            {sections.map((s) => (
+              <li key={s.id}>
+                <a
+                  href={`#${s.id}`}
+                  className="inline-flex items-center rounded-full px-3 py-2 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)] transition-colors hover:text-[var(--primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
+                >
+                  {s.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-            <div className="space-y-20">
-              {sections.map((section, sectionIndex) => {
-                const isTwoColumn = section.projects.length >= 2 && section.projects.every((p) => p.name === PROJECT_A || p.name === PROJECT_B || p.name === PROJECT_B_TRADE_OFFS || p.name === PROJECT_B_COMPLEXITY || p.name === PROJECT_B_AMBIGUITY || p.name === PROJECT_B_SYSTEMS);
-                return (
-                  <motion.section
-                    key={section.id}
-                    id={section.id}
-                    initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-                    transition={{ duration: 0.4, delay: sectionIndex * 0.08 }}
-                    className="scroll-mt-24"
-                  >
-                    <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-2">
-                      {section.title}
-                    </h2>
-                    <div className="w-16 h-1 bg-[var(--primary)] rounded-full mb-6" />
-                    <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-10 max-w-3xl">
-                      {section.intro}
-                    </p>
+        <div className="space-y-20 md:space-y-28">
+          {sections.map((section, sectionIndex) => {
+            const isTwoColumn =
+              section.projects.length >= 2 &&
+              section.projects.every((p) => TWO_COLUMN_NAMES.has(p.name));
 
-                    <div
-                      className={
-                        isTwoColumn
-                          ? "grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12"
-                          : "space-y-10"
-                      }
-                    >
-                      {section.projects.map((project) => (
-                        <div key={project.name} className="min-w-0">
-                          <h3 className="text-lg font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
-                            {project.name}
-                          </h3>
-                          <ul className="space-y-3 list-none pl-0">
-                            {project.bullets.map((bullet, i) => (
-                              <li
-                                key={i}
-                                className="flex gap-3 text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed"
-                              >
-                                <span
-                                  className="flex-shrink-0 w-1.5 h-1.5 rounded-full mt-2 bg-[var(--primary)]"
-                                  aria-hidden="true"
-                                />
-                                <span>{bullet}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.section>
-                );
-              })}
-            </div>
-
-            <footer className="mt-24 pt-8 border-t border-[var(--border-light)]">
-              <GlowLink
-                href="/portfolio"
-                variant="primary"
-                className="px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
-                aria-label="Back to portfolio"
+            return (
+              <motion.section
+                key={section.id}
+                id={section.id}
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
+                animate={
+                  isInView
+                    ? { opacity: 1, y: 0 }
+                    : { opacity: 0, y: shouldReduceMotion ? 0 : 28 }
+                }
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.75,
+                  delay: shouldReduceMotion ? 0 : 0.05 + sectionIndex * 0.06,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="scroll-mt-[5.5rem]"
               >
-                <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-                Back to portfolio
-              </GlowLink>
-            </footer>
-          </motion.div>
+                <header className="mb-8 max-w-3xl md:mb-10">
+                  <h2 className="font-display text-[clamp(1.75rem,3.2vw,2.5rem)] font-extrabold tracking-[-0.04em] leading-[1.1] text-[var(--text-primary)]">
+                    {section.title}
+                  </h2>
+                  <div
+                    aria-hidden="true"
+                    className="mt-5 h-[2px] w-16 rounded-full bg-gradient-to-r from-[var(--primary)] to-transparent"
+                  />
+                  <p className="mt-5 text-[1.02rem] leading-[1.7] text-[var(--text-secondary)] md:text-[1.08rem]">
+                    {section.intro}
+                  </p>
+                </header>
+
+                <div
+                  className={
+                    isTwoColumn
+                      ? "grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-20"
+                      : "max-w-3xl space-y-10"
+                  }
+                >
+                  {section.projects.map((project) => (
+                    <div key={project.name} className="min-w-0">
+                      <h3 className="font-display text-sm font-bold uppercase tracking-[0.14em] text-[var(--text-primary)]">
+                        {project.name}
+                      </h3>
+                      <ul className="mt-5 list-none space-y-4 pl-0">
+                        {project.bullets.map((bullet, i) => (
+                          <li
+                            key={i}
+                            className="flex gap-3 text-[1.02rem] leading-[1.72] text-[var(--text-secondary)] md:text-[1.05rem] md:leading-[1.75]"
+                          >
+                            <span
+                              className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[var(--primary)]"
+                              aria-hidden="true"
+                            />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </motion.section>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </article>
   );
 }

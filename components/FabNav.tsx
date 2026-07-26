@@ -6,7 +6,7 @@ import { ArrowUp } from "lucide-react";
 
 /**
  * Mobile/desktop scroll affordance: a “back to top” FAB that appears while
- * scrolling (and hides after idle). The old bottom-sheet menu was removed —
+ * scrolling (and hides after idle). The old bottom-sheet menu was removed  - 
  * site navigation now lives in the top Menu / Search cluster.
  */
 const liquidSpring = { type: "spring" as const, stiffness: 200, damping: 22 };

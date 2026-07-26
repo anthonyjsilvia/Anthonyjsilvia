@@ -6,17 +6,17 @@ import { ArrowUpRight, Award, Command, Linkedin, Mail } from "lucide-react";
 import GlowLink from "@/components/GlowLink";
 
 /**
- * Footer — the site's wayfinding-and-handshake bar at the bottom of every
+ * Footer - the site's wayfinding-and-handshake bar at the bottom of every
  * page.
  *
  * Three horizontal bands:
- *   1. Closing CTA   — a single oversized question that invites the visitor
+ *   1. Closing CTA   - a single oversized question that invites the visitor
  *                      to keep the conversation going, plus the primary
  *                      "Get in touch" button and a quick-copy email.
- *   2. Sitemap grid  — brand block on the left, internal page links + social
+ *   2. Sitemap grid  - brand block on the left, internal page links + social
  *                      / credential links on the right, in the muted utility
  *                      style portfolios usually use down here.
- *   3. Bottom bar    — copyright, NodeDa credits, and a ⌘K terminal hint.
+ *   3. Bottom bar    - copyright, NodeDa credits, and a ⌘K terminal hint.
  */
 
 const CONTACT = {
@@ -92,7 +92,7 @@ export default function Footer() {
       aria-labelledby="footer-cta-heading"
       className="relative border-t border-[var(--border-light)] bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)]"
     >
-      {/* Top accent — a 1px gradient hairline at the very top of the footer
+      {/* Top accent - a 1px gradient hairline at the very top of the footer
           that hints at the brand color without competing with content. */}
       <div
         aria-hidden="true"
@@ -112,7 +112,7 @@ export default function Footer() {
               <span className="text-[var(--primary)]">worth solving?</span>
             </h2>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)] md:text-lg">
-              Open to thoughtful product work — accessibility, enterprise UX,
+              Open to thoughtful product work - accessibility, enterprise UX,
               research-led redesigns, or just a conversation about the people
               behind the screen.
             </p>
@@ -151,7 +151,7 @@ export default function Footer() {
           <div className="md:col-span-6 lg:col-span-5">
             <Link
               href="/"
-              aria-label="Anthony Silvia — Home"
+              aria-label="Anthony Silvia - Home"
               className="inline-flex items-baseline rounded-md text-xl font-semibold tracking-tight text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
               Anthony Silvia
@@ -165,7 +165,7 @@ export default function Footer() {
               use every day. Based in Charlotte, North Carolina.
             </p>
 
-            {/* "Currently" status — a small live indicator dot + label.
+            {/* "Currently" status - a small live indicator dot + label.
                 Reads as "I'm not stale; this is what I'm actually doing
                 right now." */}
             <p
@@ -222,8 +222,8 @@ export default function Footer() {
                     rel={external ? "noopener noreferrer" : undefined}
                     aria-label={
                       external
-                        ? `${label} — ${handle} (opens in new tab)`
-                        : `${label} — ${handle}`
+                        ? `${label} - ${handle} (opens in new tab)`
+                        : `${label} - ${handle}`
                     }
                     className="group inline-flex items-center gap-2.5 rounded text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
                   >
@@ -294,7 +294,7 @@ export default function Footer() {
               © {year} Anthony Silvia. All rights reserved.
             </p>
             <p className="inline-flex items-center gap-2 text-xs text-[var(--text-tertiary)]">
-              <span>Try the terminal —</span>
+              <span>Try the terminal  - </span>
               <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
                 <Command className="h-2.5 w-2.5" aria-hidden="true" />
                 <span>K</span>

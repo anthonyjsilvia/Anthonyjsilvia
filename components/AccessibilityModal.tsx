@@ -136,8 +136,8 @@ export default function AccessibilityModal({
     applyAccessibilitySettings(next);
   };
 
-  // Each scheme option ships its own icon — System gets the laptop, Light the
-  // sun, Dark the moon — so the segmented control reads at a glance even on a
+  // Each scheme option ships its own icon - System gets the laptop, Light the
+  // sun, Dark the moon - so the segmented control reads at a glance even on a
   // narrow column.
   const colorSchemeOptions: {
     value: ColorScheme;
@@ -161,7 +161,7 @@ export default function AccessibilityModal({
           aria-labelledby="accessibility-settings-title"
           role="dialog"
         >
-          {/* Close button — fixed in the corner so it stays reachable while the
+          {/* Close button - fixed in the corner so it stays reachable while the
               content scrolls underneath on smaller viewports. */}
           <motion.button
             type="button"
@@ -221,7 +221,7 @@ export default function AccessibilityModal({
               actually has something to do with its width.
             */}
             <div className="mt-10 grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3 lg:mt-12">
-              {/* Appearance — full-width hero card */}
+              {/* Appearance - full-width hero card */}
               <section className="md:col-span-3 flex flex-col gap-6 rounded-2xl border border-[var(--border-light)] bg-[var(--bg-secondary)] p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-8">
                 <div className="flex items-start gap-4">
                   <div
@@ -269,7 +269,7 @@ export default function AccessibilityModal({
                 </div>
               </section>
 
-              {/* Three on/off toggle cards — auto-equalize height in the row */}
+              {/* Three on/off toggle cards - auto-equalize height in the row */}
               <ToggleCard
                 id="accessibility-reduce-transparency"
                 label="No transparency"

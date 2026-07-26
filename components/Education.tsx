@@ -81,7 +81,7 @@ const highSchools: HighSchoolBadge[] = [
     websiteUrl: "https://whs.matsuk12.us/",
     logoSrc: "/schools/whs.svg",
     colors: {
-      // Wasilla Warriors red — saturated, deep, classic athletic red
+      // Wasilla Warriors red - saturated, deep, classic athletic red
       bgFrom: "#C81E1E",
       bgTo: "#7E1313",
       accent: "#FFFFFF",
@@ -109,7 +109,7 @@ const highSchools: HighSchoolBadge[] = [
   },
 ];
 
-// Honors earned during Bachelor's at SNHU (badge images) — Honor Roll count is pre-2025 only
+// Honors earned during Bachelor's at SNHU (badge images) - Honor Roll count is pre-2025 only
 const bachelorsHonors = [
   { name: "Dean's List", date: "May 2024", badge: "/awards/deans-list-SNHU.png" },
   { name: "President's List", date: "Sep 2023", badge: "/awards/Presidents-list-SNHU.png" },
@@ -135,7 +135,7 @@ function hasMbaGraduated(nowMs = Date.now()): boolean {
 }
 
 /**
- * SNHU official brand palette — mirrors the colors used inside SNHU.svg
+ * SNHU official brand palette - mirrors the colors used inside SNHU.svg
  * (Ink Blue shield + flame gold + brand bright blue). Sourced from the SNHU
  * brand identity guide and verified against the logo file.
  */
@@ -149,7 +149,7 @@ const SNHU_BRAND = {
 } as const;
 
 /**
- * SchoolBadge — square varsity-style badge for a high school.
+ * SchoolBadge - square varsity-style badge for a high school.
  *
  * The full card is a link to the school's website. Visually it reads as a
  * sports licensing / class-ring style emblem: brand-colored gradient field,
@@ -260,7 +260,7 @@ function SchoolBadge({ school }: { school: HighSchoolBadge }) {
             </p>
           </div>
 
-          {/* Year stamp — class ring style */}
+          {/* Year stamp - class ring style */}
           <div
             className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 uppercase tracking-[0.18em] font-semibold text-[clamp(0.55rem,1.4cqw,0.7rem)] leading-none"
             style={{
@@ -354,7 +354,7 @@ export default function Education({
           </h2>
         </motion.div>
 
-        {/* Education Entries — college only in grid */}
+        {/* Education Entries - college only in grid */}
         <div className="mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {collegeList.map((edu, index) => {
@@ -397,14 +397,14 @@ export default function Education({
                       boxShadow: `0 24px 48px -16px ${SNHU_BRAND.shadow}, inset 0 0 0 1px ${SNHU_BRAND.gold}26`,
                     }}
                   >
-                    {/* Subtle inner gold frame — diploma-style mat board */}
+                    {/* Subtle inner gold frame - diploma-style mat board */}
                     <div
                       aria-hidden="true"
                       className="pointer-events-none absolute inset-3 rounded-[1.25rem]"
                       style={{ border: `1px solid ${SNHU_BRAND.gold}26` }}
                     />
 
-                    {/* Diagonal glint — faint light catch across the navy field */}
+                    {/* Diagonal glint - faint light catch across the navy field */}
                     <div
                       aria-hidden="true"
                       className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
@@ -413,7 +413,7 @@ export default function Education({
                       }}
                     />
 
-                    {/* Status pill for Master's — In Progress until Oct 1 2026, then Graduated */}
+                    {/* Status pill for Master's - In Progress until Oct 1 2026, then Graduated */}
                     {isMasters && (
                       <div
                         className="absolute top-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.18em] font-semibold"
@@ -434,7 +434,7 @@ export default function Education({
                     )}
 
                     <div className="relative flex h-full flex-col p-7 sm:p-8">
-                      {/* SNHU brand seal — sits directly on the navy card.
+                      {/* SNHU brand seal - sits directly on the navy card.
                           The official SNHU.svg lockup is already navy-shield
                           + gold flame + white wordmark, so on a navy card it
                           reads as an emblem inlaid into the card itself
@@ -458,7 +458,7 @@ export default function Education({
                         {edu.degree || edu.institution}
                       </h3>
 
-                      {/* Hairline gold accent — varsity badge motif */}
+                      {/* Hairline gold accent - varsity badge motif */}
                       <div
                         aria-hidden="true"
                         className="h-px w-10 mb-3"
@@ -504,7 +504,7 @@ export default function Education({
                                   rel="noopener noreferrer"
                                   className="rounded-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A]"
                                   style={{ "--tw-ring-color": `${SNHU_BRAND.gold}99` } as React.CSSProperties}
-                                  aria-label={`${honor.name}, ${honor.date} — View on Merit Pages`}
+                                  aria-label={`${honor.name}, ${honor.date} - View on Merit Pages`}
                                 >
                                   <Image
                                     src={honor.badge}
@@ -557,8 +557,8 @@ export default function Education({
                               } as React.CSSProperties}
                               aria-label={
                                 mbaGraduated
-                                  ? "MBA — click for a surprise"
-                                  : "MBA candidate — diploma in progress (click for a surprise)"
+                                  ? "MBA - click for a surprise"
+                                  : "MBA candidate - diploma in progress (click for a surprise)"
                               }
                             >
                               {mbaGraduated ? "MBA" : "MBA candidate"}
@@ -575,7 +575,7 @@ export default function Education({
           </div>
         </div>
 
-        {/* High School — two brand-colored varsity badges, side by side */}
+        {/* High School - two brand-colored varsity badges, side by side */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -646,7 +646,7 @@ export default function Education({
                   &ldquo;{mbaEasterEggTip.quote}&rdquo;
                 </blockquote>
                 <p className="text-xs text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)] mt-2">
-                  — {mbaEasterEggTip.by} · {mbaEasterEggTip.tag}
+                  - {mbaEasterEggTip.by} · {mbaEasterEggTip.tag}
                 </p>
                 <GlowButton
                   type="button"

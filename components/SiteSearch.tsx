@@ -7,7 +7,7 @@ import { Search, X } from "lucide-react";
 import { searchSite, type SearchEntry } from "@/lib/search-index";
 
 /**
- * Site search — combo trigger pill + ⌘K command palette.
+ * Site search - combo trigger pill + ⌘K command palette.
  *
  *  • The trigger looks like a real search input (search icon + "Search…" label
  *    + a `⌘K` hint chip) so the affordance is obvious at a glance, but
@@ -16,12 +16,12 @@ import { searchSite, type SearchEntry } from "@/lib/search-index";
  *  • The modal renders the input and a result list filtered by `searchSite`.
  *    Arrow keys move the highlight, Enter navigates, Esc closes.
  *  • The component also listens globally for ⌘K / Ctrl+K, so the palette can
- *    be opened from anywhere on the site — including pages that don't render
+ *    be opened from anywhere on the site - including pages that don't render
  *    this component themselves (it lives in the persistent nav).
  *
  * Server-side rendering note: the search _index_ is statically resolved at
  * build time (see `lib/search-index.ts`). This component is `"use client"`
- * only because it owns interactive state — the underlying data and the
+ * only because it owns interactive state - the underlying data and the
  * server-rendered shell are static.
  */
 type SiteSearchProps = {
@@ -42,12 +42,12 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
   const results = useMemo(() => searchSite(query, 12), [query]);
 
   // Keyboard shortcuts:
-  //   "/"   — open the search palette (GitHub convention). Skipped when the
+  //   "/"   - open the search palette (GitHub convention). Skipped when the
   //           user is already typing into another input so we don't hijack
   //           the keystroke from real text fields.
-  //   Esc   — close the palette when it's open.
+  //   Esc   - close the palette when it's open.
   //
-  // Note: ⌘K / Ctrl+K is intentionally NOT bound here anymore — that
+  // Note: ⌘K / Ctrl+K is intentionally NOT bound here anymore - that
   // shortcut is now owned by the global terminal-mode toggle in SiteChrome.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -127,7 +127,7 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
 
   return (
     <>
-      {/* Trigger — compact icon-only button. `title` surfaces the keyboard
+      {/* Trigger - compact icon-only button. `title` surfaces the keyboard
           shortcut for desktop users; pressing "/" anywhere on the page also
           opens the palette (GitHub-style). */}
       <button

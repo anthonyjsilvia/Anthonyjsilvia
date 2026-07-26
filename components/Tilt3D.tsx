@@ -5,7 +5,7 @@ interface Tilt3DProps {
   children: ReactNode;
   className?: string;
   containerClassName?: string;
-  /** @deprecated No longer applied — kept so existing call sites type-check. */
+  /** @deprecated No longer applied - kept so existing call sites type-check. */
   max?: number;
   /** @deprecated No longer applied */
   lift?: number;

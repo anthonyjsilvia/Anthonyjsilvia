@@ -38,7 +38,7 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
         scrolling="no"
         referrerPolicy="no-referrer"
       />
-      {/* Placeholder only — the portfolio card already wraps this preview in
+      {/* Placeholder only - the portfolio card already wraps this preview in
           an outer <a>, so nesting another link here would be invalid HTML and
           trigger a React hydration error. */}
       {!showIframe && (
@@ -66,7 +66,7 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
 
 const projects = [
   // ----------------------------------------------------------------------
-  //  Lowe's — all enterprise initiatives consolidated into one card with
+  //  Lowe's - all enterprise initiatives consolidated into one card with
   //  the confidential banner treatment. Each project ships under NDA, so
   //  the card surfaces the *breadth* of the work without forcing a wall
   //  of near-identical "approval required" placeholders.
@@ -75,7 +75,7 @@ const projects = [
     title: "Lowe's Companies, Inc.",
     subtitle: "Enterprise design across in-store systems",
     description:
-      "Enterprise design work across multiple in-store initiatives at Lowe's — from point-of-sale and store operations to AI conversational surfaces. Each project ships under NDA; approval from Lowe's is required before sharing specifics.",
+      "Enterprise design work across multiple in-store initiatives at Lowe's - from point-of-sale and store operations to AI conversational surfaces. Each project ships under NDA; approval from Lowe's is required before sharing specifics.",
     category: "Enterprise Product Design",
     technologies: [
       "Enterprise Systems",
@@ -216,8 +216,8 @@ export default function Portfolio() {
           className="grid md:grid-cols-2 gap-8"
         >
           {projects.map((project) => {
-            // Whole-card-clickable pattern. Each card's primary action — visit
-            // a website, or open the design-docs PDF modal — wraps the entire
+            // Whole-card-clickable pattern. Each card's primary action - visit
+            // a website, or open the design-docs PDF modal - wraps the entire
             // card body so the full surface is the hit target. The old bottom
             // CTA button is gone; a small inline "[icon] [label]" affordance
             // stays at the bottom of the body as a visual signal of what
@@ -225,7 +225,7 @@ export default function Portfolio() {
             const hasLink = Boolean(project.link);
             const hasPdfs = Boolean(project.pdfs);
             const cardAriaLabel = hasLink
-              ? `${project.title} — ${project.linkText ?? "Visit website"} (opens in new tab)`
+              ? `${project.title} - ${project.linkText ?? "Visit website"} (opens in new tab)`
               : hasPdfs
               ? `View ${project.title} design documents`
               : project.title;
@@ -376,7 +376,7 @@ export default function Portfolio() {
                 {/* Static CTA affordance.
                     The whole card is now the clickable element (wrapping
                     <a> or <button> around `cardBody`), so this block is
-                    purely visual — a small icon + label in the project's
+                    purely visual - a small icon + label in the project's
                     accent color that signals what clicking the card does.
                     It nudges right on hover via the group's hover state so
                     the affordance still feels interactive without being a

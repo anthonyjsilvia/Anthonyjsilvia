@@ -15,7 +15,7 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://anthonysilvia.com"),
   title: "Anthony Silvia - Product Experience Manager | UX, Engineering & Data Integration",
-  description: "Product Experience Manager focused on UX, engineering, and data integration. Associate Product Designer at Lowe's and Principal Consultant at NodeDa.",
+  description: "Product Experience Manager focused on UX, engineering, and data integration. Product Designer at Lowe's and Principal Consultant at NodeDa.",
   keywords: [
     "Product Experience Manager",
     "Product Designer",

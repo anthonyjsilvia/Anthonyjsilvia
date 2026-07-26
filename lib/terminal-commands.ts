@@ -1,5 +1,5 @@
 /**
- * Terminal-mode command registry — the brains of the ⌘K easter egg.
+ * Terminal-mode command registry - the brains of the ⌘K easter egg.
  *
  * Each command is a pure function from `(args, ctx) → CommandResult`. The
  * result is a list of output lines (rendered into the terminal scrollback)
@@ -27,7 +27,7 @@ export type TerminalContext = {
 export type CommandResult = {
   /** Lines to append to the scrollback. Rendered in the standard text color. */
   output?: string[];
-  /** Lines to append in the error color (red) — for "command not found",
+  /** Lines to append in the error color (red) - for "command not found",
    *  "permission denied", invalid args, etc. */
   error?: string[];
   /** When true, replace the scrollback with an empty array. */
@@ -39,7 +39,7 @@ export type CommandResult = {
 type CommandHandler = (args: string[], ctx: TerminalContext) => CommandResult;
 
 /* -------------------------------------------------------------------------- */
-/* Page routing map — shared by `cd`, `open`, `ls`.                            */
+/* Page routing map - shared by `cd`, `open`, `ls`.                            */
 /* -------------------------------------------------------------------------- */
 
 const PAGES: { name: string; path: string; href: string; description: string }[] = [
@@ -66,12 +66,12 @@ function findPage(token: string) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Device-spec collection — used by `neofetch`, `lscpu`, `free`, `ifconfig`.   */
+/* Device-spec collection - used by `neofetch`, `lscpu`, `free`, `ifconfig`.   */
 /*                                                                             */
 /* All values are pulled synchronously from the browser environment so the     */
 /* command handlers stay pure functions returning a CommandResult. The         */
 /* async, high-entropy User-Agent Client Hints (architecture, model, etc.)     */
-/* are intentionally skipped — they'd require a Promise-based command API      */
+/* are intentionally skipped - they'd require a Promise-based command API      */
 /* and the data here is plenty for an easter egg.                              */
 /* -------------------------------------------------------------------------- */
 
@@ -111,7 +111,7 @@ function detectOS(ua: string): string {
   if (/Windows NT ([\d.]+)/.test(ua)) {
     const m = /Windows NT ([\d.]+)/.exec(ua);
     const ver = m?.[1] || "";
-    // Windows 10 and 11 both report NT 10.0 — Microsoft made that decision,
+    // Windows 10 and 11 both report NT 10.0 - Microsoft made that decision,
     // not us.
     const map: Record<string, string> = {
       "10.0": "10/11",
@@ -177,7 +177,7 @@ function detectGPU(): string {
     const raw = (gl.getParameter(
       (ext as { UNMASKED_RENDERER_WEBGL: number }).UNMASKED_RENDERER_WEBGL,
     ) as string) || "Unknown";
-    // ANGLE wraps the real renderer like "ANGLE (Apple, Apple M1 Pro, ...)" —
+    // ANGLE wraps the real renderer like "ANGLE (Apple, Apple M1 Pro, ...)"  - 
     // pull out the inner string when it's there.
     const angle = /^ANGLE \((.+)\)$/.exec(raw);
     return angle ? angle[1].split(",").slice(0, 2).join(",").trim() : raw;
@@ -256,13 +256,13 @@ export function getDeviceSpecs(): DeviceSpecs {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Manual pages — one per documented command. Kept terse and unix-flavoured.   */
+/* Manual pages - one per documented command. Kept terse and unix-flavoured.   */
 /* -------------------------------------------------------------------------- */
 
 const MAN_PAGES: Record<string, string[]> = {
   help: [
     "NAME",
-    "       help — list available terminal commands",
+    "       help - list available terminal commands",
     "",
     "SYNOPSIS",
     "       help",
@@ -276,30 +276,30 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   ls: [
     "NAME",
-    "       ls — list pages and files",
+    "       ls - list pages and files",
     "",
     "SYNOPSIS",
     "       ls",
     "",
     "DESCRIPTION",
     "       Lists the pages and faux-files visible to this terminal.",
-    "       The filesystem is a static snapshot — there is no real",
+    "       The filesystem is a static snapshot - there is no real",
     "       directory tree behind it.",
   ],
   cd: [
     "NAME",
-    "       cd — change the current page",
+    "       cd - change the current page",
     "",
     "SYNOPSIS",
     "       cd <page>",
     "",
     "DESCRIPTION",
-    "       Updates the prompt to point at <page>. Purely cosmetic —",
+    "       Updates the prompt to point at <page>. Purely cosmetic  - ",
     "       use `open` to actually navigate the host site.",
   ],
   open: [
     "NAME",
-    "       open — open a page in the regular site",
+    "       open - open a page in the regular site",
     "",
     "SYNOPSIS",
     "       open <page>",
@@ -311,7 +311,7 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   cat: [
     "NAME",
-    "       cat — print the contents of a file",
+    "       cat - print the contents of a file",
     "",
     "SYNOPSIS",
     "       cat <file>",
@@ -322,7 +322,7 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   reset: [
     "NAME",
-    "       reset — reset the terminal",
+    "       reset - reset the terminal",
     "",
     "SYNOPSIS",
     "       reset",
@@ -333,7 +333,7 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   clear: [
     "NAME",
-    "       clear — clear the terminal screen",
+    "       clear - clear the terminal screen",
     "",
     "SYNOPSIS",
     "       clear",
@@ -343,7 +343,7 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   exit: [
     "NAME",
-    "       exit — leave terminal mode",
+    "       exit - leave terminal mode",
     "",
     "SYNOPSIS",
     "       exit",
@@ -354,7 +354,7 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   echo: [
     "NAME",
-    "       echo — write arguments to standard output",
+    "       echo - write arguments to standard output",
     "",
     "SYNOPSIS",
     "       echo [string ...]",
@@ -365,7 +365,7 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   sudo: [
     "NAME",
-    "       sudo — execute a command as another user (or pretend to)",
+    "       sudo - execute a command as another user (or pretend to)",
     "",
     "SYNOPSIS",
     "       sudo <command>",
@@ -376,7 +376,7 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   neofetch: [
     "NAME",
-    "       neofetch — pretty-print the device's specs",
+    "       neofetch - pretty-print the device's specs",
     "",
     "SYNOPSIS",
     "       neofetch",
@@ -395,7 +395,7 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   lscpu: [
     "NAME",
-    "       lscpu — display CPU information",
+    "       lscpu - display CPU information",
     "",
     "SYNOPSIS",
     "       lscpu",
@@ -407,19 +407,19 @@ const MAN_PAGES: Record<string, string[]> = {
   ],
   free: [
     "NAME",
-    "       free — display memory usage",
+    "       free - display memory usage",
     "",
     "SYNOPSIS",
     "       free",
     "",
     "DESCRIPTION",
     "       Prints the navigator.deviceMemory value (quantised to a few",
-    "       discrete buckets — 0.25, 0.5, 1, 2, 4, 8 GB and above).",
+    "       discrete buckets - 0.25, 0.5, 1, 2, 4, 8 GB and above).",
     "       Used / free are not measurable from JavaScript.",
   ],
   ifconfig: [
     "NAME",
-    "       ifconfig — display network interface info",
+    "       ifconfig - display network interface info",
     "",
     "SYNOPSIS",
     "       ifconfig",
@@ -427,7 +427,7 @@ const MAN_PAGES: Record<string, string[]> = {
     "",
     "DESCRIPTION",
     "       Prints a fake `ifconfig` output populated with the values",
-    "       the browser exposes — connection type, downlink, and",
+    "       the browser exposes - connection type, downlink, and",
     "       whether the device is currently online.",
   ],
 };
@@ -476,16 +476,16 @@ const COMMANDS: Record<string, CommandHandler> = {
       "                  Ctrl+U clear line · Ctrl+W delete word",
       "",
       "There are also a handful of hidden commands. Try sudo, vim, matrix,",
-      "coffee, ssh, or just look around — you might find them by mistake.",
+      "coffee, ssh, or just look around - you might find them by mistake.",
     ],
   }),
 
   about: () => ({
     output: [
       "Anthony Silvia",
-      "Product Experience Manager — Charlotte Metro",
+      "Product Experience Manager - Charlotte Metro",
       "",
-      "Associate Product Designer at Lowe's Companies, Inc.",
+      "Product Designer at Lowe's Companies, Inc.",
       "Principal Consultant at NodeDa.",
       "",
       "Practice: UX, engineering, and data integration. Builder of",
@@ -533,11 +533,11 @@ const COMMANDS: Record<string, CommandHandler> = {
 
   experience: () => ({
     output: [
-      "Lowe's Companies, Inc. — 7 years",
-      "  · Associate Product Designer    Oct 2022 – Present",
+      "Lowe's Companies, Inc. - 7 years",
+      "  · Product Designer    Oct 2022 – Present",
       "  · Earlier Roles                 Feb 2019 – Sep 2022",
       "",
-      "NodeDa — 8 years 9 months",
+      "NodeDa - 8 years 9 months",
       "  · Principal Consultant          May 2017 – Present",
       "",
       "Run `open experience` for the full timeline.",
@@ -563,8 +563,8 @@ const COMMANDS: Record<string, CommandHandler> = {
         "Education + credentials:",
         "",
         mbaGraduated
-          ? "  · Southern New Hampshire University — MBA (graduated)"
-          : "  · Southern New Hampshire University — MBA (in progress)",
+          ? "  · Southern New Hampshire University - MBA (graduated)"
+          : "  · Southern New Hampshire University - MBA (in progress)",
         "  · Multiple SNHU Honor Roll and Dean's List terms",
         "  · South Allegheny HS  ·  Worcester HS",
         "",
@@ -581,7 +581,7 @@ const COMMANDS: Record<string, CommandHandler> = {
       output: [
         "Recommendations:",
         "",
-        ...recommendations.map((r) => `  · ${r.name} — ${r.role}`),
+        ...recommendations.map((r) => `  · ${r.name} - ${r.role}`),
         "",
         "Run `open recommendations` to read the full quotes.",
       ],
@@ -608,12 +608,12 @@ const COMMANDS: Record<string, CommandHandler> = {
 
   date: () => ({ output: [new Date().toString()] }),
 
-  // `history` is wired by TerminalMode at call time — see below.
-  history: () => ({ output: ["(history is rendered by the terminal — see scrollback)"] }),
+  // `history` is wired by TerminalMode at call time - see below.
+  history: () => ({ output: ["(history is rendered by the terminal - see scrollback)"] }),
 
   clear: () => ({ clear: true }),
 
-  // `reset` is `clear` with the welcome banner reprinted afterwards — the
+  // `reset` is `clear` with the welcome banner reprinted afterwards - the
   // behaviour of reset(1) in a real terminal, minus the literal tty reset.
   reset: () => ({ clear: true, banner: true }),
 
@@ -653,9 +653,9 @@ const COMMANDS: Record<string, CommandHandler> = {
     const files: Record<string, string[]> = {
       "about.txt": [
         "Anthony Silvia",
-        "Product Experience Manager — Charlotte Metro",
+        "Product Experience Manager - Charlotte Metro",
         "",
-        "Associate Product Designer at Lowe's Companies, Inc.",
+        "Product Designer at Lowe's Companies, Inc.",
         "Principal Consultant at NodeDa.",
       ],
       "contact.txt": [
@@ -664,7 +664,7 @@ const COMMANDS: Record<string, CommandHandler> = {
       ],
       "resume.pdf": [
         "%PDF-1.7",
-        "[binary data — run `open resume` to download]",
+        "[binary data - run `open resume` to download]",
       ],
       "secrets.txt": [
         "Permission denied. Try `sudo cat secrets.txt`.",
@@ -754,7 +754,7 @@ const COMMANDS: Record<string, CommandHandler> = {
 
   lscpu: () => {
     const s = getDeviceSpecs();
-    // Architecture / vendor are best-effort — they require async high-entropy
+    // Architecture / vendor are best-effort - they require async high-entropy
     // UA hints that aren't available in a sync handler, so we either show the
     // inferred Apple-Silicon hint (via the GPU string) or fall back to
     // "Hidden". This mirrors how Safari throttles the same info on Linux.
@@ -785,7 +785,7 @@ const COMMANDS: Record<string, CommandHandler> = {
         "              total        used        free      shared",
         `Mem:    ${total.padStart(11)}         n/a         n/a         n/a`,
         "",
-        "Note: browsers only expose a privacy-quantised total — `used` and",
+        "Note: browsers only expose a privacy-quantised total - `used` and",
         "`free` are not measurable from JavaScript.",
       ],
     };
@@ -812,7 +812,7 @@ const COMMANDS: Record<string, CommandHandler> = {
   vim: () => ({
     output: [
       "vim: opened a buffer. To save and quit, press :wq",
-      "(Just kidding — there's no actual buffer. Type `exit` to leave.)",
+      "(Just kidding - there's no actual buffer. Type `exit` to leave.)",
     ],
   }),
 
@@ -912,7 +912,7 @@ const COMMANDS: Record<string, CommandHandler> = {
   },
 };
 
-// Aliases — defined after the registry so they reference real handlers.
+// Aliases - defined after the registry so they reference real handlers.
 COMMANDS.cls = COMMANDS.clear;
 COMMANDS.quit = COMMANDS.exit;
 COMMANDS.recommendations = COMMANDS.reco;
@@ -925,7 +925,7 @@ COMMANDS.ip = COMMANDS.ifconfig;
 /**
  * Parse a raw line of input and dispatch to the matching handler. Returns a
  * `CommandResult` with output lines (and optionally a `clear` flag). Unknown
- * commands resolve to a `command not found` line — never throw.
+ * commands resolve to a `command not found` line - never throw.
  */
 export function runCommand(input: string, ctx: TerminalContext): CommandResult {
   const tokens = input.trim().split(/\s+/);
@@ -948,7 +948,7 @@ export const COMMAND_NAMES = Object.keys(COMMANDS).sort();
 
 /**
  * Welcome banner shown on terminal open and on `reset`. Built dynamically so
- * the "Last login" timestamp is fresh every session — the small touch that
+ * the "Last login" timestamp is fresh every session - the small touch that
  * makes the easter egg feel like a real tty.
  */
 export function buildBanner(): string[] {
@@ -961,7 +961,7 @@ export function buildBanner(): string[] {
   return [
     `Last login: ${last} on ttys001`,
     "",
-    "anthonysilvia.com — terminal v1.0",
+    "anthonysilvia.com - terminal v1.0",
     "Type `help` for a list of commands. Press ⌘K / Ctrl+K (or `exit`) to leave.",
     "",
   ];

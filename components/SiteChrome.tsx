@@ -17,7 +17,7 @@ import {
  * SiteChrome is the persistent shell that wraps every page: navigation, footer,
  * back-to-top FAB, accessibility modal, and the skip-links. Moving this out
  * of individual pages means each `app/<route>/page.tsx` only owns its own
- * content — keeping the codebase simple now that the site is multi-page rather
+ * content - keeping the codebase simple now that the site is multi-page rather
  * than a single long-scroll layout.
  */
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
@@ -44,14 +44,14 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   }, [mounted]);
 
   /**
-   * Global terminal-mode toggle — ⌘K on macOS, Ctrl+K elsewhere. Flips the
+   * Global terminal-mode toggle - ⌘K on macOS, Ctrl+K elsewhere. Flips the
    * site between the normal page view and the keyboard-only terminal
    * easter egg. We intentionally bind at the chrome level (not inside
    * TerminalMode) so the shortcut works from any page, even when the
    * terminal isn't yet mounted.
    *
    * The listener is also smart enough to skip the toggle when the user is
-   * typing into another text input — so ⌘K inside a textbox does the
+   * typing into another text input - so ⌘K inside a textbox does the
    * platform-native thing (e.g. focusing browser search) rather than
    * hijacking the keystroke.
    */
@@ -110,7 +110,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
         settings={accessibilitySettings}
         onSettingsChange={setAccessibilitySettings}
       />
-      {/* ⌘K easter egg — keyboard-only terminal that takes over the entire
+      {/* ⌘K easter egg - keyboard-only terminal that takes over the entire
           viewport. Mounted globally so the toggle works from any page. */}
       <TerminalMode open={terminalOpen} onClose={() => setTerminalOpen(false)} />
     </>

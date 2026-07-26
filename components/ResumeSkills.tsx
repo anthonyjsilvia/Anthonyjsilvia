@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { Sparkles } from "lucide-react";
 
 /**
- * Skills tab for /experience — driven by NodeDa Resume `profile.skills`.
+ * Skills tab for /experience - driven by NodeDa Resume `profile.skills`.
  */
 export default function ResumeSkills({ skills }: { skills?: string[] | null }) {
   const ref = useRef(null);

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { recommendations } from "@/lib/recommendations";
 
 /**
- * Flat portrait tile — soft hover scale, cinematic radius.
+ * Flat portrait tile - soft hover scale, cinematic radius.
  */
 function RecommendationTile({
   rec,
@@ -46,7 +46,7 @@ function RecommendationTile({
 }
 
 /**
- * Recommendations — sparse cinematic stage after About.
+ * Recommendations - sparse cinematic stage after About.
  */
 export default function Recommendations() {
   const ref = useRef(null);

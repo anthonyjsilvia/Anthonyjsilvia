@@ -1,7 +1,7 @@
 /**
- * NodeDa Resume — public embed API client (`nrova.resume.public.v1`).
+ * NodeDa Resume - public embed API client (`nrova.resume.public.v1`).
  * Host: resume.nodeda.com (local: http://resume.localhost:{port}).
- * Auth: opaque share token in the path only — no API key.
+ * Auth: opaque share token in the path only - no API key.
  */
 
 export const RESUME_PUBLIC_SCHEMA = "nrova.resume.public.v1" as const;
@@ -175,7 +175,7 @@ export async function fetchPublicResume(
 }
 
 /* ---------------------------------------------------------------------------
-   Mapping helpers — turn flat API experience into company-grouped UI entries
+   Mapping helpers - turn flat API experience into company-grouped UI entries
    --------------------------------------------------------------------------- */
 
 export type MonthYear = { year: number; month: number };
@@ -349,7 +349,7 @@ export function mapCollegeFromProfile(
     });
 }
 
-/** @deprecated Prefer mapCollegeFromProfile — kept for callers that want every row. */
+/** @deprecated Prefer mapCollegeFromProfile - kept for callers that want every row. */
 export function mapEducationFromProfile(
   profile: ResumeProfile,
 ): MappedEducationEntry[] {

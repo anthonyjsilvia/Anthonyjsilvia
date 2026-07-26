@@ -1,11 +1,11 @@
 /**
- * Site-wide search index — statically generated at build time.
+ * Site-wide search index - statically generated at build time.
  *
  * The index is intentionally a plain TypeScript module rather than a runtime
  * API call: Next.js statically resolves these imports during `next build`, so
  * the entire searchable surface of the site ships pre-computed in the SSR
  * bundle. There's no `/api/search` round trip, no client-side index fetch,
- * and no network latency — every keystroke filters an in-memory array.
+ * and no network latency - every keystroke filters an in-memory array.
  *
  * Dynamic routes pull from the same data sources their pages use (e.g.
  * `recommendations` from `lib/recommendations.ts`), which means adding a new
@@ -38,7 +38,7 @@ const PAGE_ENTRIES: SearchEntry[] = [
     title: "Home",
     section: "Pages",
     href: "/",
-    description: "Anthony Silvia — Product Experience Manager",
+    description: "Anthony Silvia - Product Experience Manager",
     keywords: ["home", "hero", "anthony silvia", "intro", "landing"],
   },
   {
@@ -54,7 +54,7 @@ const PAGE_ENTRIES: SearchEntry[] = [
       "nodeda",
       "kinlily",
       "principal consultant",
-      "associate product designer",
+      "product designer",
     ],
   },
   {
@@ -97,7 +97,7 @@ const PAGE_ENTRIES: SearchEntry[] = [
 ];
 
 /**
- * Recommendation detail pages — generated from the shared recommendations
+ * Recommendation detail pages - generated from the shared recommendations
  * data source so each new testimonial becomes searchable automatically.
  */
 const RECOMMENDATION_ENTRIES: SearchEntry[] = recommendations.map((r) => ({
@@ -115,7 +115,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
 ];
 
 /**
- * Substring + weighted-keyword search. Tiny on purpose — for ~20 entries this
+ * Substring + weighted-keyword search. Tiny on purpose - for ~20 entries this
  * runs in well under a millisecond, so we re-run it on every keystroke
  * synchronously rather than debouncing. Title matches outrank keyword matches
  * outrank description matches.

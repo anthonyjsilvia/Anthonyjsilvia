@@ -11,7 +11,7 @@ import {
 } from "@/lib/terminal-commands";
 
 /**
- * TerminalMode — the ⌘K easter egg. A keyboard-only, text-only command
+ * TerminalMode - the ⌘K easter egg. A keyboard-only, text-only command
  * prompt that takes over the entire viewport when activated. Built to feel
  * like a DOS / unix shell:
  *
@@ -24,7 +24,7 @@ import {
  *   • Enter executes; output streams into a scrollback above the prompt.
  *   • Errors render in red, regular output in green.
  *   • Exit via `exit` / `quit`, the `Esc` key, or ⌘K / Ctrl+K (the same
- *     shortcut that opens it — see SiteChrome).
+ *     shortcut that opens it - see SiteChrome).
  *
  * The component is purely presentational glue; all command logic lives in
  * `lib/terminal-commands.ts` so the language surface can grow independently
@@ -94,7 +94,7 @@ export default function TerminalMode({ open, onClose }: Props) {
     el.scrollTop = el.scrollHeight;
   }, [lines]);
 
-  // Reset to the banner each time the terminal opens fresh — feels cleaner
+  // Reset to the banner each time the terminal opens fresh - feels cleaner
   // than resuming a stale session.
   useEffect(() => {
     if (open) {
@@ -146,7 +146,7 @@ export default function TerminalMode({ open, onClose }: Props) {
     const result: CommandResult = raw.trim() ? runCommand(raw, ctx) : {};
 
     setLines((prev) => {
-      // `reset` clears the scrollback and reprints the welcome banner —
+      // `reset` clears the scrollback and reprints the welcome banner  - 
       // matches the behaviour of reset(1) in a real terminal.
       if (result.clear && result.banner) {
         return bannerLines();
@@ -165,7 +165,7 @@ export default function TerminalMode({ open, onClose }: Props) {
     setInput("");
   };
 
-  // Tab autocomplete — completes the first token if it matches exactly one
+  // Tab autocomplete - completes the first token if it matches exactly one
   // command name. Conservative on purpose; doesn't autocomplete arguments.
   const tryComplete = () => {
     const partial = input.trim();
@@ -218,7 +218,7 @@ export default function TerminalMode({ open, onClose }: Props) {
       return;
     }
 
-    // Ctrl+L (or ⌘L) clears, same as `clear` — a classic terminal shortcut.
+    // Ctrl+L (or ⌘L) clears, same as `clear` - a classic terminal shortcut.
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "l") {
       e.preventDefault();
       setLines([]);
@@ -293,7 +293,7 @@ export default function TerminalMode({ open, onClose }: Props) {
           aria-modal="true"
           aria-label="Terminal mode"
         >
-          {/* Subtle CRT-ish scan-line texture — keeps the easter-egg vibe
+          {/* Subtle CRT-ish scan-line texture - keeps the easter-egg vibe
               without the eye strain of a literal flicker. Pointer-events
               disabled so clicks fall through to the focus-the-input handler. */}
           <div
@@ -340,7 +340,7 @@ export default function TerminalMode({ open, onClose }: Props) {
             {/* Active prompt line. The visible row shows the prompt, the
                 typed text, and a blinking block cursor; the real <input>
                 is layered on top to capture keystrokes but has its caret
-                and text colour hidden — that way the block we draw is the
+                and text colour hidden - that way the block we draw is the
                 only cursor the user ever sees. */}
             <div className="relative flex items-baseline gap-2">
               <span className="flex-shrink-0 select-none text-[#99ffaa]">

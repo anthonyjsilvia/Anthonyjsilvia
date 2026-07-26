@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { recommendations } from '@/lib/recommendations'
 
 /**
- * Sitemap — multi-page version. Each top-level route is its own entry,
+ * Sitemap - multi-page version. Each top-level route is its own entry,
  * plus a dedicated detail page for every recommendation under
  * `/recommendations/<slug>` so they're individually crawlable, shareable,
  * and indexable. New recommendations added to `lib/recommendations.ts`

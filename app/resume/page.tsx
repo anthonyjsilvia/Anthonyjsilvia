@@ -14,7 +14,7 @@ const FALLBACK_PDF_PATH = "/resume.pdf";
 const DOWNLOAD_PDF_PATH = "/api/resume/pdf?download=1";
 
 /**
- * Resume page — Hero-matching cursor glow on actions and acrylic surfaces.
+ * Resume page - Hero-matching cursor glow on actions and acrylic surfaces.
  */
 export default function ResumePage() {
   return (
@@ -92,7 +92,7 @@ function ResumePageInner() {
   const downloadPdfUrl =
     status === "ready" ? DOWNLOAD_PDF_PATH : FALLBACK_PDF_PATH;
   const pageUrl = data?.urls.page || null;
-  const title = data?.title || "Anthony Silvia — Resume";
+  const title = data?.title || "Anthony Silvia - Resume";
   const headline = data?.profile?.basics.headline?.trim() || null;
   const websiteUrl = normalizeExternalUrl(data?.profile?.basics.website);
   const linkedinUrl = normalizeExternalUrl(data?.profile?.basics.linkedinUrl);
@@ -122,7 +122,7 @@ function ResumePageInner() {
           <p className="resume-fluent__eyebrow">Curriculum vitae</p>
           <h1 className="resume-fluent__title">Resume</h1>
           <p className="resume-fluent__lede">
-            Work history, education, skills, and credentials — kept in sync with
+            Work history, education, skills, and credentials - kept in sync with
             the live NodeDa Resume snapshot. Download a PDF when you need an
             offline copy.
           </p>

@@ -7,7 +7,7 @@ import GlowButton from "@/components/GlowButton";
 import FluentReveal from "@/components/FluentReveal";
 
 /**
- * Certifications — standalone section that used to live inside `Education`.
+ * Certifications - standalone section that used to live inside `Education`.
  *
  * Lives on its own now so the Experience page can surface it as a top-level
  * tab (Experience / Education / Certifications). Keeping it in its own file
@@ -37,8 +37,8 @@ const CERTIFICATIONS: Certification[] = [
   { name: "Accounting (ACCT1001)", issuer: "Sophia Learning", date: "Mar 2021", category: "projectManagement", description: "Fundamental principles and procedures of modern accounting. Bookkeeping and financial reports.", url: CREDLY_PROFILE_URL },
   { name: "Microsoft Excel for Accounting", issuer: "Wiley Finance & Accounting", date: "Sep 2025", category: "projectManagement", description: "Excel functions and tools to create and analyze data effectively. Accounting-based skills.", url: CREDLY_PROFILE_URL },
   { name: "Google UX Design Professional Certificate", issuer: "Coursera", date: "Apr 2022", category: "uxDesign", description: "End-to-end design process: empathizing with users, defining pain points, ideating solutions, wireframes and prototypes, testing designs.", url: CREDLY_PROFILE_URL },
-  { name: "UX Foundations: Accessibility", issuer: "Southern New Hampshire University", date: "—", category: "uxDesign", url: CREDLY_PROFILE_URL },
-  { name: "Visual Communications (VisComm1001)", issuer: "Sophia Learning", date: "Mar 2023", category: "uxDesign", description: "Basic concepts of visual design, visual theories, key elements and principles of design—color, typography, and layout.", url: CREDLY_PROFILE_URL },
+  { name: "UX Foundations: Accessibility", issuer: "Southern New Hampshire University", date: " - ", category: "uxDesign", url: CREDLY_PROFILE_URL },
+  { name: "Visual Communications (VisComm1001)", issuer: "Sophia Learning", date: "Mar 2023", category: "uxDesign", description: "Basic concepts of visual design, visual theories, key elements and principles of design - color, typography, and layout.", url: CREDLY_PROFILE_URL },
   { name: "Introduction to Web Development (CS1005)", issuer: "Sophia Learning", date: "Mar 2023", category: "uxDesign", description: "Basic computer concepts for web developers. How the internet works, roles of software engineering and web development.", url: CREDLY_PROFILE_URL },
   { name: "Google AI Essentials", issuer: "Coursera", date: "Apr 2024", category: "ai", description: "Integrating AI into work. Generative AI tools, writing effective prompts, using AI responsibly.", url: CREDLY_PROFILE_URL },
   { name: "Introduction to Statistics (STAT1001)", issuer: "Sophia Learning", date: "Dec 2022", category: "projectManagement", description: "Basic principles of statistics: statistical principles, research methodologies, data analysis, and hypothesis testing.", url: CREDLY_PROFILE_URL },
@@ -173,7 +173,7 @@ export default function Certifications({
               </h3>
             </div>
 
-            {/* Category filter pills — hidden when credentials come from the
+            {/* Category filter pills - hidden when credentials come from the
                 Resume API (no category metadata in the public schema). */}
             {!fromApi && (
             <div
