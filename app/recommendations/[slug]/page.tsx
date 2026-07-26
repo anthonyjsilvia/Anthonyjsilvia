@@ -7,6 +7,7 @@ import {
   recommendations,
   getRecommendationBySlug,
 } from "@/lib/recommendations";
+import GlowLink from "@/components/GlowLink";
 
 /**
  * Recommendation detail page — `/recommendations/<slug>`.
@@ -140,13 +141,14 @@ export default async function RecommendationDetailPage({ params }: PageProps) {
         {/* Bottom action — proper "back" button so visitors who scroll all
             the way through have a clear way back without scrolling up. */}
         <div className="mt-16 pt-10 border-t border-black/[0.08] dark:border-white/10 flex justify-center">
-          <Link
+          <GlowLink
             href="/#recommendations"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--primary)] text-white font-semibold text-sm hover:bg-[var(--primary-dark)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 transition-colors"
+            variant="primary"
+            className="rounded-full bg-[var(--primary)] px-5 py-3 text-white font-semibold text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             <span>Back to recommendations</span>
-          </Link>
+          </GlowLink>
         </div>
       </div>
     </article>

@@ -3,8 +3,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import GlowLink from "@/components/GlowLink";
 
 const PROJECT_A = "Lowe's Return Space";
 const PROJECT_B = "Lowe's Centralized Return to Vendor";
@@ -149,14 +149,15 @@ export default function EvidencePage() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
             transition={{ duration: 0.5 }}
           >
-            <Link
+            <GlowLink
               href="/portfolio"
-              className="mt-10 mb-12 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)] transition-opacity"
+              variant="primary"
+              className="mt-10 mb-12 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
               aria-label="Back to portfolio"
             >
               <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               Back to portfolio
-            </Link>
+            </GlowLink>
 
             <header className="mb-16">
               <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
@@ -239,14 +240,15 @@ export default function EvidencePage() {
             </div>
 
             <footer className="mt-24 pt-8 border-t border-[var(--border-light)]">
-              <Link
+              <GlowLink
                 href="/portfolio"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)] transition-opacity"
+                variant="primary"
+                className="px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
                 aria-label="Back to portfolio"
               >
                 <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                 Back to portfolio
-              </Link>
+              </GlowLink>
             </footer>
           </motion.div>
       </div>

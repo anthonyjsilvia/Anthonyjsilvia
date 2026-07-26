@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import GlowLink from "@/components/GlowLink";
 
 /**
  * 404 fallback for `/recommendations/<unknown-slug>`. Next.js routes here
@@ -19,13 +19,14 @@ export default function RecommendationNotFound() {
           We couldn&rsquo;t find that recommendation. It may have been moved or the
           link may be slightly off.
         </p>
-        <Link
+        <GlowLink
           href="/#recommendations"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--primary)] text-white font-semibold text-sm hover:bg-[var(--primary-dark)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 transition-colors"
+          variant="primary"
+          className="rounded-full bg-[var(--primary)] px-5 py-3 text-white font-semibold text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           <span>Back to all recommendations</span>
-        </Link>
+        </GlowLink>
       </div>
     </section>
   );

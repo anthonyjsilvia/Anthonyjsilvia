@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Award, Command, Linkedin, Mail } from "lucide-react";
+import GlowLink from "@/components/GlowLink";
 
 /**
  * Footer — the site's wayfinding-and-handshake bar at the bottom of every
@@ -15,18 +16,22 @@ import { ArrowUpRight, Award, Command, Linkedin, Mail } from "lucide-react";
  *   2. Sitemap grid  — brand block on the left, internal page links + social
  *                      / credential links on the right, in the muted utility
  *                      style portfolios usually use down here.
- *   3. Bottom bar    — dynamic copyright year and a discoverability hint
- *                      for the global ⌘K terminal easter egg.
- *
- * Deliberately *not* using any "hosted by" credit anymore — this is a
- * personal portfolio and the bottom of the page should read as Anthony's
- * own surface, not a hosting provider's storefront.
+ *   3. Bottom bar    — copyright, NodeDa credits, and a ⌘K terminal hint.
  */
 
 const CONTACT = {
   email: "contact@anthonysilvia.com",
   linkedin: "https://linkedin.com/in/anthonyjsilvia",
   credly: "https://www.credly.com/users/anthony-silvia",
+} as const;
+
+const NODEDA = {
+  home: "https://nodeda.com",
+  work: "https://work.nodeda.com",
+  logoLight: "https://nodeda.com/logos/NodeDa.svg",
+  logoDark: "https://nodeda.com/logos/NodeDa.darkmode.svg",
+  workLogoLight: "https://nodeda.com/logos/NodeDa.work.svg",
+  workLogoDark: "https://nodeda.com/logos/NodeDa.work.darkmode.svg",
 } as const;
 
 const PAGE_LINKS: { href: string; label: string }[] = [
@@ -114,10 +119,11 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-col items-start gap-3 md:items-end">
-            <Link
+            <GlowLink
               href="/contact"
+              variant="primary"
               aria-label="Open Contact page"
-              className="group inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-[var(--primary-dark)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
+              className="group rounded-full bg-[var(--primary)] px-6 py-3.5 text-base font-semibold text-white shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
               <Mail className="h-4 w-4" aria-hidden="true" />
               <span>Get in touch</span>
@@ -125,7 +131,7 @@ export default function Footer() {
                 className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 aria-hidden="true"
               />
-            </Link>
+            </GlowLink>
             <a
               href={`mailto:${CONTACT.email}`}
               aria-label={`Email ${CONTACT.email}`}
@@ -241,17 +247,60 @@ export default function Footer() {
         </section>
 
         {/* ───────── Bottom bar ───────── */}
-        <div className="flex flex-col-reverse items-start justify-between gap-3 border-t border-[var(--border-light)] py-6 sm:flex-row sm:items-center">
-          <p className="text-xs text-[var(--text-tertiary)]">
-            © {year} Anthony Silvia. All rights reserved.
-          </p>
-          <p className="inline-flex items-center gap-2 text-xs text-[var(--text-tertiary)]">
-            <span>Try the terminal —</span>
-            <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
-              <Command className="h-2.5 w-2.5" aria-hidden="true" />
-              <span>K</span>
-            </kbd>
-          </p>
+        <div className="flex flex-col gap-5 border-t border-[var(--border-light)] py-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-2">
+            <a
+              href={NODEDA.home}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Hosted using NodeDa (opens in new tab)"
+              className="inline-flex items-center gap-2 rounded-md text-xs text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
+            >
+              <span>Hosted using</span>
+              <img
+                src={NODEDA.logoLight}
+                alt=""
+                className="h-4 w-auto object-contain dark:hidden"
+              />
+              <img
+                src={NODEDA.logoDark}
+                alt=""
+                className="hidden h-4 w-auto object-contain dark:block"
+              />
+            </a>
+            <a
+              href={NODEDA.work}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Powered by NodeDa Work (opens in new tab)"
+              className="inline-flex items-center gap-2 rounded-md text-xs text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
+            >
+              <span>Powered by</span>
+              <img
+                src={NODEDA.workLogoLight}
+                alt=""
+                className="h-4 w-auto object-contain dark:hidden"
+              />
+              <img
+                src={NODEDA.workLogoDark}
+                alt=""
+                className="hidden h-4 w-auto object-contain dark:block"
+              />
+            </a>
+          </div>
+
+          <div className="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
+            <p className="text-xs text-[var(--text-tertiary)]">
+              © {year} Anthony Silvia. All rights reserved.
+            </p>
+            <p className="inline-flex items-center gap-2 text-xs text-[var(--text-tertiary)]">
+              <span>Try the terminal —</span>
+              <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
+                <Command className="h-2.5 w-2.5" aria-hidden="true" />
+                <span>K</span>
+              </kbd>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

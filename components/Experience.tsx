@@ -2,11 +2,13 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Briefcase, Calendar, MapPin, ExternalLink } from "lucide-react";
-import Tilt3D from "@/components/Tilt3D";
+import GlowLink from "@/components/GlowLink";
+import type { MappedExperienceEntry, MappedProject } from "@/lib/resume-public";
 
 // NodeDa — projects and former clients, shown as buttons in Experience
+// (used when the live API does not supply project links for NodeDa).
 const NODEDA_PROJECTS = [
   { name: "Kinlily", href: "https://kinlily.com", ariaLabel: "Visit Kinlily (opens in new tab)" },
 ];
@@ -109,6 +111,7 @@ type Role = {
 type ExperienceEntry = {
   company: string;
   roles: Role[];
+  projects?: { name: string; href: string; ariaLabel: string }[];
 };
 
 // EXACT LinkedIn Experience entries — bullet copy is word-for-word; only the
@@ -200,59 +203,85 @@ function getCompanyTotalLabel(exp: ExperienceEntry, nowMy: MonthYear): string {
   return formatDuration(diffMonthsInclusive(earliestStart, latestEnd));
 }
 
-export default function Experience() {
+export default function Experience({
+  entries,
+  projects,
+  summary,
+}: {
+  /** Live entries from NodeDa Resume embed API. Falls back to static LinkedIn copy. */
+  entries?: MappedExperienceEntry[] | null;
+  /** Live projects from the API (shown as their own card when present). */
+  projects?: MappedProject[] | null;
+  /** Optional About/summary from profile.basics */
+  summary?: string | null;
+}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
   // Live "now" — drives every duration string on the page so they tick over
   // on their own at month boundaries.
   const nowMy = monthYearFromDate(useNow());
+  const list = useMemo(
+    () => (entries && entries.length > 0 ? entries : experiences),
+    [entries],
+  );
+  const apiProjects = useMemo(
+    () => (projects && projects.length > 0 ? projects : null),
+    [projects],
+  );
 
   return (
     <section
       id="experience"
       ref={ref}
-      className="py-24 md:py-32 bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)]"
+      className="hp-cine-stage bg-[var(--background)]"
       aria-labelledby="experience-heading"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[var(--hp-cine-max)] mx-auto">
         <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
+          className="mb-12 md:mb-16 max-w-3xl"
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24, filter: shouldReduceMotion ? "blur(0px)" : "blur(6px)" }}
+          animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
+            Career
+          </p>
           <h2
             id="experience-heading"
-            className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6"
+            className="font-display mt-3 text-[clamp(2.1rem,4.5vw,3.5rem)] font-extrabold tracking-[-0.045em] leading-[1.05] text-[var(--text-primary)]"
           >
             Experience
           </h2>
-          <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full" />
+          {summary?.trim() ? (
+            <p className="mt-5 text-[clamp(1.05rem,1.5vw,1.2rem)] font-medium leading-[1.55] text-[var(--text-secondary)]">
+              {summary.trim()}
+            </p>
+          ) : null}
         </motion.div>
 
-        <div className="space-y-16">
-          {experiences.map((exp, expIndex) => (
+        <div className="space-y-10 md:space-y-14">
+          {list.map((exp, expIndex) => {
+            const isNodeDa = /nodeda/i.test(exp.company);
+            // Site enrichment when the live snapshot has no projects yet.
+            const projectLinks =
+              !apiProjects && isNodeDa ? NODEDA_PROJECTS : null;
+            return (
             <motion.div
               key={exp.company}
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-              transition={{ delay: expIndex * 0.2, duration: shouldReduceMotion ? 0 : 0.6 }}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
+              transition={{ delay: shouldReduceMotion ? 0 : expIndex * 0.08, duration: shouldReduceMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <Tilt3D
-                max={4}
-                lift={14}
-                scale={1.005}
-                className="card-3d bg-white dark:bg-black p-8 md:p-10 rounded-2xl border border-[var(--border-light)]"
-              >
-                <div className="flex items-start justify-between mb-6 flex-wrap gap-4" style={{ transform: "translateZ(18px)" }}>
+              <article className="border-t border-[var(--border-light)] pt-8 md:pt-10">
+                <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-2 flex items-center gap-3">
-                      <Briefcase className="w-6 h-6 text-[var(--primary)] drop-shadow-md" aria-hidden="true" />
+                    <h3 className="font-display text-[clamp(1.5rem,3vw,2rem)] font-extrabold tracking-[-0.03em] text-[var(--text-primary)] mb-2 flex items-center gap-3">
+                      <Briefcase className="w-5 h-5 text-[var(--primary)]" aria-hidden="true" />
                       {exp.company}
                     </h3>
                     <p
-                      className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] text-lg"
+                      className="text-[var(--text-secondary)] text-base md:text-lg font-medium"
                       aria-live="polite"
                     >
                       {getCompanyTotalLabel(exp, nowMy)}
@@ -260,13 +289,13 @@ export default function Experience() {
                   </div>
                 </div>
 
-                <div className="space-y-8 mt-8">
+                <div className="space-y-8 mt-6">
                   {exp.roles.map((role, roleIndex) => (
                     <div
                       key={`${role.title}-${roleIndex}`}
                       className={roleIndex > 0 ? "pt-8 border-t border-[var(--border-light)]" : ""}
                     >
-                      <h4 className="text-xl md:text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
+                      <h4 className="text-lg md:text-xl font-bold tracking-[-0.02em] text-[var(--text-primary)] mb-4">
                         {role.title}
                       </h4>
                       <div className="space-y-2 mb-4">
@@ -274,10 +303,12 @@ export default function Experience() {
                           <Calendar className="w-4 h-4" aria-hidden="true" />
                           <span aria-live="polite">{getRolePeriodLabel(role, nowMy)}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
-                          <MapPin className="w-4 h-4" aria-hidden="true" />
-                          <span>{role.location}</span>
-                        </div>
+                        {role.location ? (
+                          <div className="flex items-center gap-2 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
+                            <MapPin className="w-4 h-4" aria-hidden="true" />
+                            <span>{role.location}</span>
+                          </div>
+                        ) : null}
                       </div>
 
                       {role.bullets && (
@@ -298,61 +329,106 @@ export default function Experience() {
                       )}
 
                       {role.description && (
-                        <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed mt-4">
+                        <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed mt-4 whitespace-pre-line">
                           {role.description}
                         </p>
                       )}
                     </div>
                   ))}
 
-                {exp.company === "NodeDa" && (
+                {projectLinks && (
                   <>
                     <div className="pt-8 border-t border-[var(--border-light)]">
                       <h4 className="text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
                         Projects
                       </h4>
-                      <div className="flex flex-wrap gap-3" style={{ transform: "translateZ(20px)" }}>
-                        {NODEDA_PROJECTS.map((project) => (
-                          <a
+                      <div className="flex flex-wrap gap-3">
+                        {projectLinks.map((project) => (
+                          <GlowLink
                             key={project.name}
                             href={project.href}
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={project.ariaLabel}
-                            className="btn-3d inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium text-sm focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
+                            variant="primary"
+                            className="px-4 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium text-sm focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
                           >
                             {project.name}
                             <ExternalLink className="w-4 h-4" aria-hidden="true" />
-                          </a>
+                          </GlowLink>
                         ))}
                       </div>
                     </div>
-                    <div className="pt-6 border-t border-[var(--border-light)]">
-                      <h4 className="text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
-                        Former clients
-                      </h4>
-                      <div className="flex flex-wrap gap-3" style={{ transform: "translateZ(20px)" }}>
-                        {NODEDA_FORMER_CLIENTS.map((project) => (
-                          <a
-                            key={project.name}
-                            href={project.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={project.ariaLabel}
-                            className="btn-3d inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium text-sm focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
-                          >
-                            {project.name}
-                            <ExternalLink className="w-4 h-4" aria-hidden="true" />
-                          </a>
-                        ))}
+                    {isNodeDa ? (
+                      <div className="pt-6 border-t border-[var(--border-light)]">
+                        <h4 className="text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
+                          Former clients
+                        </h4>
+                        <div className="flex flex-wrap gap-3">
+                          {NODEDA_FORMER_CLIENTS.map((project) => (
+                            <GlowLink
+                              key={project.name}
+                              href={project.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={project.ariaLabel}
+                              variant="primary"
+                              className="px-4 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium text-sm focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
+                            >
+                              {project.name}
+                              <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                            </GlowLink>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    ) : null}
                   </>
                 )}
                 </div>
-              </Tilt3D>
+              </article>
             </motion.div>
-          ))}
+            );
+          })}
+
+          {apiProjects ? (
+            <motion.div
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
+              transition={{ delay: shouldReduceMotion ? 0 : list.length * 0.08, duration: shouldReduceMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <article className="border-t border-[var(--border-light)] pt-8 md:pt-10">
+                <h3 className="font-display text-[clamp(1.5rem,3vw,2rem)] font-extrabold tracking-[-0.03em] text-[var(--text-primary)] mb-6 flex items-center gap-3">
+                  <ExternalLink className="w-5 h-5 text-[var(--primary)]" aria-hidden="true" />
+                  Projects
+                </h3>
+                <ul className="space-y-6" role="list">
+                  {apiProjects.map((project) => (
+                    <li key={project.name} className="border-t border-[var(--border-light)] pt-6 first:border-t-0 first:pt-0">
+                      {project.href ? (
+                        <a
+                          href={project.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={project.ariaLabel}
+                          className="inline-flex items-center gap-2 text-xl font-bold text-[var(--primary)] hover:underline focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] rounded"
+                        >
+                          {project.name}
+                          <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                        </a>
+                      ) : (
+                        <p className="text-xl font-bold text-[var(--text-primary)]">{project.name}</p>
+                      )}
+                      {project.description ? (
+                        <p className="mt-2 text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
+                          {project.description}
+                        </p>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            </motion.div>
+          ) : null}
         </div>
       </div>
     </section>

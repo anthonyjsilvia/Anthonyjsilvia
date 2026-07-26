@@ -1,136 +1,125 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useReducedMotion, useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
-import Tilt3D from "@/components/Tilt3D";
+import Link from "next/link";
 
+/**
+ * About — NodeDa-style cinematic rhythm:
+ * manifesto billboard → one sparse product-style stage (portrait + copy).
+ */
 export default function About() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const manifestoRef = useRef(null);
+  const stageRef = useRef(null);
+  const manifestoInView = useInView(manifestoRef, { once: true, margin: "-12%" });
+  const stageInView = useInView(stageRef, { once: true, margin: "-10%" });
   const shouldReduceMotion = useReducedMotion();
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
+  const reveal = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 32,
+      filter: shouldReduceMotion ? "blur(0px)" : "blur(6px)",
+    },
     visible: {
       opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
       transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.15,
+        duration: shouldReduceMotion ? 0 : 1,
+        ease: [0.22, 1, 0.36, 1] as const,
       },
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+  const sharpReveal = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 28,
+    },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: shouldReduceMotion ? 0 : 0.6,
-        ease: "easeOut",
+        duration: shouldReduceMotion ? 0 : 0.9,
+        ease: [0.22, 1, 0.36, 1] as const,
       },
     },
   };
 
   return (
-    <section
-      id="about"
-      ref={ref}
-      className="py-24 md:py-32 bg-white dark:bg-black"
-      aria-labelledby="about-heading"
-    >
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          variants={containerVariants}
+    <>
+      {/* Manifesto — one billboard line */}
+      <section
+        id="about"
+        ref={manifestoRef}
+        className="hp-cine-manifesto bg-[var(--background)]"
+        aria-label="About"
+      >
+        <motion.p
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={manifestoInView ? "visible" : "hidden"}
+          variants={reveal}
+          className="font-display mx-auto max-w-[16ch] text-center text-[clamp(2rem,5.5vw,4.25rem)] font-extrabold tracking-[-0.045em] leading-[1.05] text-[var(--text-primary)]"
         >
-          <motion.div variants={itemVariants} className="text-center mb-16">
+          Outcomes that create real value for users and the business.
+        </motion.p>
+      </section>
+
+      {/* Stage — portrait + copy */}
+      <section
+        ref={stageRef}
+        className="hp-cine-stage border-t border-[var(--border-light)] bg-[var(--bg-secondary)]"
+        aria-labelledby="about-heading"
+      >
+        <div className="hp-cine-stage__inner">
+          <motion.div
+            initial="hidden"
+            animate={stageInView ? "visible" : "hidden"}
+            variants={sharpReveal}
+            className="hp-cine-stage__visual"
+          >
+            <Image
+              src="/me.PNG"
+              alt="Anthony Silvia"
+              width={440}
+              height={440}
+              className="h-full w-full object-cover"
+              priority
+            />
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            animate={stageInView ? "visible" : "hidden"}
+            variants={reveal}
+            className="hp-cine-stage__copy"
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
+              About
+            </p>
             <h2
               id="about-heading"
-              className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6"
+              className="font-display mt-4 text-[clamp(2.1rem,4.5vw,3.5rem)] font-extrabold tracking-[-0.04em] leading-[1.05] text-[var(--text-primary)] max-w-[18ch]"
             >
-              About
+              Product experience, end to end.
             </h2>
-            <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full" />
-          </motion.div>
-
-          {/* Image and Content Layout */}
-          <div className="grid md:grid-cols-[280px_1fr] gap-12 items-start mb-12">
-            {/* Profile Image */}
-            <motion.div
-              variants={itemVariants}
-              className="flex justify-center md:justify-start"
+            <p className="mt-5 max-w-[34rem] text-[clamp(1.05rem,1.5vw,1.2rem)] font-medium leading-[1.55] text-[var(--text-secondary)]">
+              Associate Product Designer at Lowe&apos;s, working on complex retail
+              operations—usability, friction, and alignment with product and engineering.
+              Through NodeDa, I lead discovery through delivery with accessibility and
+              operational reality in view.
+            </p>
+            <Link
+              href="/experience"
+              className="mt-8 inline-flex items-center justify-center rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_32px_-14px_rgba(var(--primary-rgb),0.55)] transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
             >
-              <Tilt3D
-                max={14}
-                lift={28}
-                scale={1.04}
-                roundedClassName="rounded-full"
-                containerClassName="inline-block"
-                className="rounded-full"
-              >
-                <motion.div
-                  className="photo-3d rounded-full overflow-hidden border-4 border-[var(--border-light)]"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-                  transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: 0.3 }}
-                >
-                  <Image
-                    src="/me.PNG"
-                    alt="Anthony Silvia"
-                    width={280}
-                    height={280}
-                    className="rounded-full object-cover w-[280px] h-[280px]"
-                    priority
-                  />
-                </motion.div>
-                {/* Decorative ring lifted forward in 3D space */}
-                <div
-                  className="absolute inset-0 rounded-full border-2 border-[var(--primary)] opacity-40 pointer-events-none"
-                  style={{ transform: "translateZ(18px)" }}
-                  aria-hidden="true"
-                />
-                {/* Outer floating ring */}
-                <div
-                  className="absolute -inset-2 rounded-full border border-[var(--accent)] opacity-30 pointer-events-none"
-                  style={{ transform: "translateZ(36px)" }}
-                  aria-hidden="true"
-                />
-              </Tilt3D>
-            </motion.div>
-
-            {/* Text Content */}
-            <motion.div
-              variants={itemVariants}
-              className="space-y-6 text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed text-lg"
-            >
-              <p className="text-xl font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)] leading-relaxed">
-                I am a project-focused product professional with a foundation in UX, dedicated to delivering outcomes that create real value for users and the business.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Main Content - Full Width */}
-          <motion.div
-            variants={itemVariants}
-            className="space-y-6 text-[var(--text-secondary)] dark:text-[var(--text-secondary)] leading-relaxed text-lg max-w-4xl mx-auto"
-          >
-            <div className="prose prose-lg max-w-none">
-              <p>
-                I currently work as an Associate Product Designer at Lowe&apos;s, where I lead and contribute to projects that support complex, high-volume retail operations. My work centers on improving usability, increasing workflow efficiency, and aligning design decisions with product, engineering, and operational goals. I focus on moving initiatives forward, reducing friction in processes, and ensuring that solutions are practical, scalable, and measurable.
-              </p>
-              <p>
-                Alongside my enterprise work, I founded NodeDa as an independent product design practice. Through NodeDa, I have led end-to-end projects, including the design and launch of independent applications and selective consulting engagements. This experience strengthened my ability to take ownership across the full lifecycle, from discovery and definition through delivery, iteration, and post-launch evaluation.
-              </p>
-              <p>
-                My background spans UX research, system design, accessibility-first practices, and cross-functional coordination. I am experienced in working within WCAG 2.2 AA and AAA standards while balancing legacy systems, technical constraints, timelines, and operational realities.
-              </p>
-            </div>
+              View experience
+            </Link>
           </motion.div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }

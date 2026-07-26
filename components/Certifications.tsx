@@ -3,6 +3,8 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Award, ChevronDown } from "lucide-react";
+import GlowButton from "@/components/GlowButton";
+import FluentReveal from "@/components/FluentReveal";
 
 /**
  * Certifications — standalone section that used to live inside `Education`.
@@ -61,12 +63,36 @@ const CERT_CATEGORY_LABELS: Record<CertCategory | "all", string> = {
 
 const CERT_INITIAL_VISIBLE = 3;
 
-export default function Certifications() {
+export default function Certifications({
+  items,
+}: {
+  /** Live credentials from NodeDa Resume embed API. Falls back to static Credly list. */
+  items?: Array<{
+    name: string;
+    issuer: string;
+    date: string;
+    description?: string;
+    url: string;
+    category?: CertCategory;
+  }> | null;
+}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
   const [certTab, setCertTab] = useState<CertCategory | "all">("all");
   const [showAllCerts, setShowAllCerts] = useState(false);
+  const sourceCerts: Certification[] =
+    items && items.length > 0
+      ? items.map((c) => ({
+          name: c.name,
+          issuer: c.issuer,
+          date: c.date,
+          category: c.category ?? "miscellaneous",
+          description: c.description,
+          url: c.url,
+        }))
+      : CERTIFICATIONS;
+  const fromApi = Boolean(items && items.length > 0);
 
   // On wider viewports the cert grid is 2-column, so 4 cards reads as a
   // balanced "two rows" preview rather than the awkward 3 (one row of two
@@ -82,9 +108,9 @@ export default function Certifications() {
   }, []);
 
   const filteredCerts =
-    certTab === "all"
-      ? CERTIFICATIONS
-      : CERTIFICATIONS.filter((c) => c.category === certTab);
+    fromApi || certTab === "all"
+      ? sourceCerts
+      : sourceCerts.filter((c) => c.category === certTab);
   const visibleCerts = showAllCerts ? filteredCerts : filteredCerts.slice(0, certInitialVisible);
   const hasMoreCerts = filteredCerts.length > certInitialVisible;
 
@@ -113,25 +139,10 @@ export default function Certifications() {
     <section
       id="certifications"
       ref={ref}
-      className="py-24 md:py-32 bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)]"
+      className="hp-cine-stage bg-[var(--background)]"
       aria-labelledby="certifications-heading"
     >
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
-        >
-          <h2
-            id="certifications-heading"
-            className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6"
-          >
-            Certifications
-          </h2>
-          <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full" />
-        </motion.div>
-
+      <div className="w-full max-w-[var(--hp-cine-max)] mx-auto">
         {/* Category filter + grid.
             Intentionally NOT wrapped in a Tilt3D card so the filter pills and
             Show-all button stay reliably clickable (no rotation / hit-test
@@ -140,26 +151,38 @@ export default function Certifications() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="w-full max-w-[1600px] mx-auto"
+          className="w-full"
         >
+          <motion.div variants={itemVariants} className="mb-10 max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
+              Credentials
+            </p>
+            <h2
+              id="certifications-heading"
+              className="font-display mt-3 text-[clamp(2.1rem,4.5vw,3.5rem)] font-extrabold tracking-[-0.045em] leading-[1.05] text-[var(--text-primary)]"
+            >
+              Certifications
+            </h2>
+          </motion.div>
+
           <motion.div variants={itemVariants}>
             <div className="flex items-center gap-3 mb-6">
-              <Award className="w-6 h-6 text-[var(--secondary)] drop-shadow-md" aria-hidden="true" />
-              <h3 className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)]">
+              <Award className="w-5 h-5 text-[var(--secondary)]" aria-hidden="true" />
+              <h3 className="text-lg font-bold tracking-[-0.02em] text-[var(--text-primary)]">
                 All credentials
               </h3>
             </div>
 
-            {/* Category filter pills. This is a *nested* tablist (the outer
-                Experience/Education/Certifications tablist lives on the page),
-                so it carries its own distinct aria-label. */}
+            {/* Category filter pills — hidden when credentials come from the
+                Resume API (no category metadata in the public schema). */}
+            {!fromApi && (
             <div
               className="flex flex-wrap gap-2 mb-8"
               role="tablist"
               aria-label="Filter certifications by category"
             >
               {(["all", "projectManagement", "uxDesign", "ai", "miscellaneous"] as const).map((tab) => (
-                <button
+                <GlowButton
                   key={tab}
                   type="button"
                   role="tab"
@@ -167,20 +190,22 @@ export default function Certifications() {
                   aria-controls="cert-content"
                   id={`cert-tab-${tab}`}
                   aria-label={`Filter certifications by ${CERT_CATEGORY_LABELS[tab]}`}
+                  variant={certTab === tab ? "primary" : "secondary"}
                   onClick={() => {
                     setCertTab(tab);
                     setShowAllCerts(false);
                   }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] ${
                     certTab === tab
                       ? "bg-[var(--primary)] text-white"
-                      : "bg-white dark:bg-black text-[var(--text-secondary)] dark:text-[var(--text-secondary)] border border-[var(--border-light)] hover:bg-[var(--bg-tertiary)] dark:hover:bg-[var(--bg-tertiary)]"
+                      : "bg-white dark:bg-black text-[var(--text-secondary)] dark:text-[var(--text-secondary)] border border-[var(--border-light)]"
                   }`}
                 >
                   {CERT_CATEGORY_LABELS[tab]}
-                </button>
+                </GlowButton>
               ))}
             </div>
+            )}
 
             <div
               id="cert-content"
@@ -189,43 +214,46 @@ export default function Certifications() {
             >
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4" role="list">
                 {visibleCerts.map((cert) => (
-                  <li
-                    key={cert.name}
-                    className="card-3d flex flex-col gap-1 p-4 rounded-xl bg-white dark:bg-black border border-[var(--border-light)] hover:-translate-y-0.5"
-                  >
-                    <a
-                      href={cert.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-[var(--primary)] dark:text-[var(--primary)] hover:underline focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] rounded"
-                      aria-label={`View ${cert.name} credential (opens in new tab)`}
+                  <li key={cert.name}>
+                    <FluentReveal
+                      intensity="card"
+                      className="card-3d flex flex-col gap-1 p-4 rounded-xl bg-white dark:bg-black border border-[var(--border-light)] h-full"
                     >
-                      {cert.name}
-                    </a>
-                    <span className="text-sm text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)]">
-                      {cert.issuer} · {cert.date}
-                    </span>
-                    {cert.description && (
-                      <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mt-1 line-clamp-3">
-                        {cert.description}
-                      </p>
-                    )}
+                      <a
+                        href={cert.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-[var(--primary)] dark:text-[var(--primary)] hover:underline focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] rounded"
+                        aria-label={`View ${cert.name} credential (opens in new tab)`}
+                      >
+                        {cert.name}
+                      </a>
+                      <span className="text-sm text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)]">
+                        {[cert.issuer, cert.date].filter(Boolean).join(" · ") || "Credential"}
+                      </span>
+                      {cert.description && (
+                        <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mt-1 line-clamp-3">
+                          {cert.description}
+                        </p>
+                      )}
+                    </FluentReveal>
                   </li>
                 ))}
               </ul>
               {hasMoreCerts && (
-                <button
+                <GlowButton
                   type="button"
+                  variant="secondary"
                   onClick={() => setShowAllCerts(!showAllCerts)}
                   aria-label={showAllCerts ? "Show fewer certifications" : "Show all certifications"}
-                  className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] dark:text-[var(--primary)] hover:underline focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] rounded"
+                  className="mt-6 text-sm font-medium text-[var(--primary)] dark:text-[var(--primary)] focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] rounded px-3 py-2"
                 >
                   {showAllCerts ? "Show less" : "Show all"}
                   <ChevronDown
                     className={`w-4 h-4 transition-transform ${showAllCerts ? "rotate-180" : ""}`}
                     aria-hidden="true"
                   />
-                </button>
+                </GlowButton>
               )}
             </div>
           </motion.div>

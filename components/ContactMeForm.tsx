@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, Mail, Send } from "lucide-react";
+import GlowButton from "@/components/GlowButton";
+import GlowLink from "@/components/GlowLink";
 
 const CATEGORIES: { value: string; label: string }[] = [
   { value: "general", label: "General" },
@@ -137,13 +139,14 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
         <p className="mt-2 text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
           The on-site form is not active on this deployment yet. You can still reach me by email.
         </p>
-        <a
+        <GlowLink
           href={mailto}
-          className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
+          variant="primary"
+          className="mt-5 rounded-lg bg-[var(--primary)] px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
         >
           <Mail className="h-4 w-4" aria-hidden />
           Email {fallbackEmail}
-        </a>
+        </GlowLink>
         {isLocalhost ? (
           <div className="mt-6 rounded-lg border border-[var(--border-light)] bg-[var(--bg-secondary)] p-4 text-left text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
             <p className="font-medium text-[var(--text-primary)] dark:text-[var(--text-primary)]">
@@ -202,13 +205,14 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
             Reference: <code className="rounded bg-[var(--bg-secondary)] px-1.5 py-0.5">{ticketId}</code>
           </p>
         ) : null}
-        <button
+        <GlowButton
           type="button"
           onClick={reset}
-          className="mt-6 inline-flex items-center justify-center rounded-lg bg-[var(--primary)] px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
+          variant="primary"
+          className="mt-6 rounded-lg bg-[var(--primary)] px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
         >
           Send another message
-        </button>
+        </GlowButton>
       </div>
     );
   }
@@ -338,10 +342,11 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
       ) : null}
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <button
+        <GlowButton
           type="submit"
           disabled={status === "submitting"}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-60"
+          variant="primary"
+          className="rounded-lg bg-[var(--primary)] px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:transform-none"
         >
           {status === "submitting" ? (
             <>
@@ -354,7 +359,7 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
               Send message
             </>
           )}
-        </button>
+        </GlowButton>
       </div>
     </form>
   );

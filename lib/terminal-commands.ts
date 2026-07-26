@@ -556,17 +556,22 @@ const COMMANDS: Record<string, CommandHandler> = {
     ],
   }),
 
-  evidence: () => ({
-    output: [
-      "Education + credentials:",
-      "",
-      "  · Southern New Hampshire University — MBA (in progress)",
-      "  · Multiple SNHU Honor Roll and Dean's List terms",
-      "  · South Allegheny HS  ·  Worcester HS",
-      "",
-      "Run `open evidence` for the full record.",
-    ],
-  }),
+  evidence: () => {
+    const mbaGraduated = Date.now() >= Date.UTC(2026, 9, 1);
+    return {
+      output: [
+        "Education + credentials:",
+        "",
+        mbaGraduated
+          ? "  · Southern New Hampshire University — MBA (graduated)"
+          : "  · Southern New Hampshire University — MBA (in progress)",
+        "  · Multiple SNHU Honor Roll and Dean's List terms",
+        "  · South Allegheny HS  ·  Worcester HS",
+        "",
+        "Run `open evidence` for the full record.",
+      ],
+    };
+  },
 
   reco: () => {
     if (recommendations.length === 0) {

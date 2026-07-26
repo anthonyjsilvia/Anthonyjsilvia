@@ -15,7 +15,7 @@ import {
 
 /**
  * SiteChrome is the persistent shell that wraps every page: navigation, footer,
- * floating action nav, accessibility modal, and the skip-links. Moving this out
+ * back-to-top FAB, accessibility modal, and the skip-links. Moving this out
  * of individual pages means each `app/<route>/page.tsx` only owns its own
  * content — keeping the codebase simple now that the site is multi-page rather
  * than a single long-scroll layout.
@@ -85,10 +85,10 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       <a href="#main-content" className="skip-link" aria-label="Skip to main content">
         Skip to main content
       </a>
-      <a href="#main-nav" className="skip-link" aria-label="Skip to main navigation">
-        Skip to navigation
+      <a href="#main-nav" className="skip-link" aria-label="Skip to menu">
+        Skip to menu
       </a>
-      <Navigation />
+      <Navigation onOpenAccessibility={() => setAccessibilityOpen(true)} />
       {/* Keying <main> on `pathname` retriggers the .apple-reveal CSS
           animation on every route change, giving each page an iOS-style
           fade + glide-up entrance for free. The keyframes themselves
@@ -103,7 +103,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
         {children}
       </main>
       <Footer />
-      <FabNav onOpenAccessibility={() => setAccessibilityOpen(true)} />
+      <FabNav />
       <AccessibilityModal
         open={accessibilityOpen}
         onClose={() => setAccessibilityOpen(false)}

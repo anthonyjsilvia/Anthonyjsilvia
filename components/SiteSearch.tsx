@@ -24,7 +24,12 @@ import { searchSite, type SearchEntry } from "@/lib/search-index";
  * only because it owns interactive state — the underlying data and the
  * server-rendered shell are static.
  */
-export default function SiteSearch() {
+type SiteSearchProps = {
+  /** Optional classes for the floating trigger button. */
+  triggerClassName?: string;
+};
+
+export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -131,7 +136,10 @@ export default function SiteSearch() {
         aria-label="Search the site"
         aria-haspopup="dialog"
         title="Search (press /)"
-        className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+        className={
+          triggerClassName ??
+          "inline-flex h-[34px] w-[34px] items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+        }
       >
         <Search className="h-4 w-4" aria-hidden />
       </button>

@@ -5,6 +5,7 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Mail, Linkedin, Globe, ArrowUpRight } from "lucide-react";
 import ContactMeForm from "./ContactMeForm";
+import GlowLink from "@/components/GlowLink";
 
 const NODEDA_LOGO_LIGHT = "https://nodeda.com/logos/NodeDa.black.svg";
 const NODEDA_LOGO_DARK = "https://nodeda.com/logos/NodeDa.white.svg";
@@ -267,16 +268,17 @@ export default function Contact() {
             <p className="text-lg text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-5 max-w-xl mx-auto">
               Looking for development solutions? Contact NodeDa to get a consultation.
             </p>
-            <a
+            <GlowLink
               href={NODEDA_REQUEST_SERVICE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium text-sm hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] transition-opacity"
+              variant="primary"
+              className="px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white font-medium text-sm focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
               aria-label="Request a consultation with NodeDa (opens in new tab)"
             >
               Request a consultation
               <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
-            </a>
+            </GlowLink>
           </div>
         </motion.div>
       </div>

@@ -1,40 +1,18 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { FileText, Linkedin, Mail } from "lucide-react";
-import { type ElementType, type ReactNode, useEffect, useRef, useState } from "react";
-import Tilt3D from "@/components/Tilt3D";
-
-const FADE_START = 0; // start fading as soon as user scrolls
-const FADE_END = 0.27; // finish fading after ~27% of viewport (0.4 / 1.5)
+import { useReducedMotion } from "framer-motion";
+import { ChevronDown, FileText, Linkedin, Mail } from "lucide-react";
+import { type ElementType, type ReactNode, useEffect, useRef } from "react";
 
 /**
- * Hero CTA — a single anchor that owns its whole rectangle as both the click
- * target and the hover target. The whole pill is the link; the icon and label
- * sit on a `relative z-10` content span so they live above the cursor-tracking
- * glow without ever stealing pointer events from the anchor itself.
- *
- * A soft "hover ball" — a radial-gradient orb that follows the cursor — is
- * rendered inside an absolutely-positioned span with `pointer-events: none`.
- * It's positioned via two CSS custom properties (`--glow-x`, `--glow-y`) set
- * directly on the anchor's style on `pointerMove`, so the highlight tracks the
- * cursor at 60fps without re-rendering React on every frame.
- *
- * Reduced motion: the move handler is short-circuited so the ball just sits at
- * the default 50%/50% spot — no chase animation, but the button still hovers.
+ * Hero CTA — pill control with cursor-tracking glow (NodeDa-style shape,
+ * site-native hover orb).
  */
 type HeroCTAProps = {
   href: string;
-  /** External link → opens in a new tab with safe `rel`. */
   external?: boolean;
-  /**
-   * Any React component that can render an icon. Typed as `ElementType` so
-   * lucide-react's `ForwardRefExoticComponent` icons (which use the broader
-   * `Booleanish` type for `aria-hidden`) are assignable here.
-   */
   Icon: ElementType;
   children: ReactNode;
-  /** `primary` = solid brand button (white glow). `secondary` = outlined / pale (primary-blue glow). */
   variant: "primary" | "secondary";
   ariaLabel: string;
 };
@@ -59,206 +37,113 @@ function HeroCTA({
     el.style.setProperty("--glow-y", `${e.clientY - rect.top}px`);
   };
 
-  // `overflow-hidden` clips the glow to the button's rounded corners.
-  // `isolation` keeps the stacking context local to the button so the glow
-  // span and the content span layer cleanly without affecting siblings.
   const base =
-    "hero-cta btn-3d relative isolate overflow-hidden inline-flex items-center justify-center gap-2 min-w-[180px] px-8 py-4 rounded-lg font-semibold text-lg cursor-pointer focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]";
+    "hero-cta hover-glow hover-glow--control relative isolate overflow-hidden inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-[0.95rem] sm:text-base cursor-pointer focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]";
 
   const variantClasses =
     variant === "primary"
-      ? "hero-cta-primary bg-[var(--primary)] text-white"
-      : "hero-cta-secondary btn-3d-light bg-white/95 dark:bg-white/10 text-[var(--text-primary)] dark:text-white border-2 border-white/30 hover:border-white hover:bg-white hover:text-[var(--primary)] dark:hover:bg-white/20";
+      ? "hero-cta-primary hover-glow--primary bg-[var(--primary)] text-white shadow-[0_12px_32px_-14px_rgba(var(--primary-rgb),0.65)]"
+      : "hero-cta-secondary hover-glow--secondary bg-white/12 text-white border border-white/35 backdrop-blur-[8px] hover:bg-white/20 hover:border-white/55";
 
   return (
-    <motion.a
+    <a
       ref={anchorRef}
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       onPointerMove={handlePointerMove}
       className={`${base} ${variantClasses}`}
-      whileHover={shouldReduceMotion ? {} : { scale: 1.04 }}
-      whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
       aria-label={ariaLabel}
     >
-      {/* Cursor-tracking hover ball. Always rendered, opacity-driven via CSS
-          hover/focus state on the parent. Pointer-events disabled so the
-          anchor stays the sole hit target. */}
-      <span aria-hidden="true" className="hero-cta-glow" />
+      <span aria-hidden="true" className="hero-cta-glow hover-glow__orb" />
       <span className="relative z-10 inline-flex items-center gap-2">
-        <Icon className="w-5 h-5" aria-hidden="true" />
+        <Icon className="w-4 h-4 sm:w-[1.1rem] sm:h-[1.1rem]" aria-hidden="true" />
         {children}
       </span>
-    </motion.a>
+    </a>
   );
 }
 
-export default function Hero() {
-  const [mounted, setMounted] = useState(false);
-  const [bgOpacity, setBgOpacity] = useState(1);
-  const shouldReduceMotion = useReducedMotion();
+function HeroScrim() {
+  return <div className="hero-scrim absolute inset-0" aria-hidden="true" />;
+}
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+/** Image drifts slower than the page; copy drifts a touch less (depth cue). */
+const PARALLAX_IMG = 0.38;
+const PARALLAX_COPY = 0.12;
+
+export default function Hero() {
+  const shouldReduceMotion = useReducedMotion();
+  const imgRef = useRef<HTMLImageElement>(null);
+  const copyRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (shouldReduceMotion) return;
 
-    const handleScroll = () => {
-      const vh = window.innerHeight;
-      const scrollY = window.scrollY;
-      const fadeRange = vh * FADE_END;
-      const progress = Math.min(1, scrollY / fadeRange);
-      setBgOpacity(1 - progress);
+    const apply = () => {
+      rafRef.current = null;
+      const y = window.scrollY;
+      // Only drive while the hero is still in play; avoid runaway transforms.
+      const capped = Math.min(y, window.innerHeight);
+      if (imgRef.current) {
+        imgRef.current.style.transform = `translate3d(0, ${capped * PARALLAX_IMG}px, 0) scale(1.12)`;
+      }
+      if (copyRef.current) {
+        copyRef.current.style.transform = `translate3d(0, ${capped * PARALLAX_COPY}px, 0)`;
+      }
     };
 
-    handleScroll(); // set initial
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => {
+      if (rafRef.current != null) return;
+      rafRef.current = requestAnimationFrame(apply);
+    };
+
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    };
   }, [shouldReduceMotion]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.2,
-        delayChildren: shouldReduceMotion ? 0 : 0.3,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: shouldReduceMotion ? 0 : 0.6,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  if (!mounted) {
-    return (
-      <section
-        id="hero"
-        className="min-h-screen flex items-center justify-center relative overflow-hidden"
-        aria-labelledby="hero-heading"
-      >
-        <img
-          src="/homepage/ashero.PNG"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
-        <div className="relative z-10 text-center">
-          <h1 id="hero-heading" className="text-4xl md:text-6xl font-bold text-white">
-            Anthony Silvia
-          </h1>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section
       id="hero"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-white dark:bg-black"
+      className="hp-cine-hero relative h-[100svh] min-h-[100svh] max-h-[100svh] overflow-hidden bg-[#070a12]"
       aria-labelledby="hero-heading"
     >
-      {/* Full-viewport background image + overlay: fade on scroll */}
-      <div
-        className="absolute inset-0 transition-opacity duration-100 ease-out"
-        style={{ opacity: shouldReduceMotion ? 1 : bgOpacity }}
-        aria-hidden="true"
-      >
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
         <img
+          ref={imgRef}
           src="/homepage/ashero.PNG"
           alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center min-h-screen"
+          className="hero-parallax-img absolute inset-0 h-full w-full min-h-full object-cover object-[70%_42%] md:object-[center_42%] will-change-transform"
+          style={
+            shouldReduceMotion
+              ? undefined
+              : { transform: "translate3d(0, 0, 0) scale(1.12)" }
+          }
         />
-        <div className="absolute inset-0 bg-black/40" />
+        <HeroScrim />
       </div>
 
-      <motion.div
-        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center transition-opacity duration-100 ease-out"
-        style={{ opacity: shouldReduceMotion ? 1 : bgOpacity }}
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
+      <div
+        ref={copyRef}
+        className="hp-cine-copy absolute inset-x-0 bottom-0 z-10 will-change-transform"
       >
-        <Tilt3D
-          max={6}
-          lift={18}
-          scale={1.01}
-          glare={false}
-          roundedClassName="rounded-2xl"
-          containerClassName="inline-block w-full"
-          className="rounded-2xl"
+        <h1
+          id="hero-heading"
+          className="font-display text-[clamp(2.4rem,6.5vw,4.25rem)] font-extrabold tracking-[-0.045em] leading-[0.98] text-white max-w-[14ch]"
         >
-          {/* Location badge */}
-          <motion.div
-            variants={itemVariants}
-            className="flex justify-center mb-6"
-            style={{ transform: "translateZ(40px)" }}
-          >
-            <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium border border-white/30 shadow-lg">
-              Charlotte Metro
-            </div>
-          </motion.div>
+          Anthony Silvia
+        </h1>
 
-          {/* Name */}
-          <motion.h1
-            id="hero-heading"
-            variants={itemVariants}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white drop-shadow-2xl"
-            style={{ transform: "translateZ(60px)" }}
-          >
-            Anthony Silvia
-          </motion.h1>
+        <p className="mt-4 md:mt-5 text-[clamp(1.05rem,1.7vw,1.3rem)] font-medium leading-[1.55] text-white/85 max-w-[34rem]">
+          Product experience across UX, engineering, and data.
+        </p>
 
-          {/* Headline: transitioning to PM; product design roots, enterprise & accessibility */}
-          <motion.p
-            variants={itemVariants}
-            className="text-xl md:text-2xl lg:text-3xl text-white/95 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-md"
-            style={{ transform: "translateZ(30px)" }}
-          >
-            Product Experience Manager | UX, Engineering & Data Integration
-          </motion.p>
-        </Tilt3D>
-
-        {/*
-          CTA Row — intentionally rendered OUTSIDE the <Tilt3D> wrapper.
-
-          The Tilt3D applies `transform-style: preserve-3d` plus rotateX /
-          rotateY on hover, which means every descendant becomes a child of a
-          3D scene. Two problems show up for interactive descendants:
-
-            1) Hit-test drift. When the card tilts, the buttons' projected
-               screen rects diverge from their unrotated bounding rects;
-               several browsers (notably WebKit) hit-test against the
-               unrotated rect, leaving "dead zones" near the rotated edges
-               where the button is visible but unclickable.
-            2) Stacking-context conflicts. The HeroCTA uses `overflow-hidden`
-               + `isolation: isolate` to contain its hover-ball glow. Inside
-               a preserve-3d parent, those properties create flattening
-               stacking contexts that interact unpredictably with the parent
-               rotation — manifesting as the "clipping" / lost interactivity
-               you saw.
-
-          Pulling the buttons out keeps them in flat 2D space (perfect hit
-          testing, perfect glow clipping via border-radius) while the
-          wordmark/tagline group above continues to tilt and lift as before.
-        */}
-        <motion.div
-          variants={itemVariants}
-          className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center"
-        >
+        <div className="mt-8 md:mt-10 flex flex-wrap gap-3">
           <HeroCTA
             href="/resume"
             Icon={FileText}
@@ -284,8 +169,22 @@ export default function Hero() {
           >
             Email
           </HeroCTA>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
+
+      <a
+        href="#about"
+        className="hero-read-more absolute bottom-[var(--hp-cine-pad,1.25rem)] left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/80 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:left-auto md:right-[var(--hp-cine-pad,1.25rem)] md:translate-x-0"
+        aria-label="Read more — scroll to about"
+      >
+        <span className="font-display text-[11px] font-bold uppercase tracking-[0.22em]">
+          Read more
+        </span>
+        <ChevronDown
+          className="hero-read-more__chevron h-5 w-5"
+          aria-hidden="true"
+        />
+      </a>
     </section>
   );
 }

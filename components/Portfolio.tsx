@@ -6,6 +6,7 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { ExternalLink, Lock, Shield, X, FileText, Globe } from "lucide-react";
 import Tilt3D from "@/components/Tilt3D";
+import GlowLink from "@/components/GlowLink";
 
 /** NodeDa projects: try iframe first, fall back to clickable placeholder if it fails to load */
 function EmbedPreview({ project }: { project: { title: string; link: string; color: string } }) {
@@ -37,14 +38,14 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
         scrolling="no"
         referrerPolicy="no-referrer"
       />
+      {/* Placeholder only — the portfolio card already wraps this preview in
+          an outer <a>, so nesting another link here would be invalid HTML and
+          trigger a React hydration error. */}
       {!showIframe && (
-        <a
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute inset-0 flex items-center justify-center z-20 group"
+        <div
+          className="absolute inset-0 flex items-center justify-center z-20"
           style={{ backgroundColor: project.color }}
-          aria-label={`Open ${project.title} (opens in new tab)`}
+          aria-hidden="true"
         >
           <div className="absolute inset-0 opacity-10" style={{
             backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`
@@ -54,10 +55,10 @@ function EmbedPreview({ project }: { project: { title: string; link: string; col
               <Globe className="w-16 h-16 opacity-80" />
             </div>
             <p className="text-sm font-semibold opacity-90 mb-1">Website</p>
-            <p className="text-xs opacity-70 group-hover:underline">View live site</p>
+            <p className="text-xs opacity-70">View live site</p>
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
-        </a>
+        </div>
       )}
     </div>
   );
@@ -197,13 +198,14 @@ export default function Portfolio() {
           </h2>
           <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full mb-6" />
           <p className="text-center mb-2">
-            <a
+            <GlowLink
               href="/evidence"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--primary)] dark:bg-[var(--primary)] text-white font-semibold rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-[var(--bg-secondary)] transition-opacity shadow-md"
+              variant="primary"
+              className="px-5 py-2.5 bg-[var(--primary)] text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] shadow-md"
               aria-label="Go to Evidence page, how I work"
             >
               Evidence - How I work
-            </a>
+            </GlowLink>
           </p>
         </motion.div>
 
@@ -257,7 +259,7 @@ export default function Portfolio() {
                     }}></div>
                   </div>
 
-                  <div className="relative z-10 text-white text-center p-8" style={{ transform: "translateZ(30px)" }}>
+                  <div className="relative z-10 text-white text-center p-8">
                     <div className="flex items-center justify-center mb-4" aria-hidden="true">
                       <div className="relative drop-shadow-lg">
                         <Shield className="w-16 h-16 opacity-80" />
@@ -277,7 +279,7 @@ export default function Portfolio() {
                     }}></div>
                   </div>
 
-                  <div className="relative z-10 text-white text-center p-8" style={{ transform: "translateZ(30px)" }}>
+                  <div className="relative z-10 text-white text-center p-8">
                     <div className="flex items-center justify-center mb-4" aria-hidden="true">
                       <FileText className="w-16 h-16 opacity-80 drop-shadow-lg" />
                     </div>
@@ -297,7 +299,7 @@ export default function Portfolio() {
                     }}></div>
                   </div>
 
-                  <div className="relative z-10 text-white text-center p-8" style={{ transform: "translateZ(30px)" }}>
+                  <div className="relative z-10 text-white text-center p-8">
                     <div className="flex items-center justify-center mb-4" aria-hidden="true">
                       <Globe className="w-16 h-16 opacity-80 drop-shadow-lg" />
                     </div>
@@ -315,7 +317,7 @@ export default function Portfolio() {
                     }}></div>
                   </div>
 
-                  <div className="relative z-10 text-white text-center p-8" style={{ transform: "translateZ(30px)" }}>
+                  <div className="relative z-10 text-white text-center p-8">
                     <div className="flex items-center justify-center mb-4" aria-hidden="true">
                       <div className="relative drop-shadow-lg">
                         <Shield className="w-16 h-16 opacity-80" />
@@ -331,7 +333,7 @@ export default function Portfolio() {
 
               <div
                 className="p-8 flex-1 flex flex-col relative"
-                style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }}
+
               >
                 <div className="mb-2">
                   <span className="text-sm font-semibold text-[var(--primary)] dark:text-[var(--primary)] uppercase tracking-wide">
@@ -382,7 +384,7 @@ export default function Portfolio() {
                 {(hasLink || hasPdfs) && (
                   <div
                     className="mt-auto inline-flex items-center gap-2 text-sm font-semibold transition-[gap] duration-200 group-hover:gap-3"
-                    style={{ color: project.color, transform: "translateZ(24px)" }}
+                    style={{ color: project.color }}
                   >
                     {hasPdfs ? (
                       <FileText className="w-4 h-4" aria-hidden="true" />

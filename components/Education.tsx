@@ -6,8 +6,10 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { GraduationCap, Calendar, Trophy, X, Lightbulb, Clock } from "lucide-react";
 import Tilt3D from "@/components/Tilt3D";
+import GlowLink from "@/components/GlowLink";
+import GlowButton from "@/components/GlowButton";
 
-// Easter egg: UX/PM tips when clicking "MBA candidate" (diploma in progress)
+// Easter egg: UX/PM tips when clicking the MBA control
 const MBA_EASTER_EGG_TIPS = [
   { quote: "Plans are nothing; planning is everything.", by: "Dwight D. Eisenhower", tag: "Project Management" },
   { quote: "Don't make me think.", by: "Steve Krug", tag: "UX" },
@@ -17,8 +19,15 @@ const MBA_EASTER_EGG_TIPS = [
   { quote: "Design is not just what it looks like. Design is how it works.", by: "Steve Jobs", tag: "UX" },
 ];
 
+type CollegeEntry = {
+  institution: string;
+  degree: string;
+  period: string;
+  description?: string;
+};
+
 // EXACT LinkedIn Education entries - word-for-word (college only; high school shown separately below)
-const education = [
+const education: CollegeEntry[] = [
   {
     institution: "Southern New Hampshire University",
     degree: "Masters in Business Administration",
@@ -117,6 +126,13 @@ const mastersHonors = [
 
 const MERIT_PAGES_URL = "https://meritpages.com/anthonysilvia";
 const BACHELORS_DIPLOMA_URL = "https://www.parchment.com/u/award/917e24e9b7910565b7671dcdaa09e483";
+
+/** On/after this date, the MBA card shows Graduated + MBA (not candidate / in progress). */
+const MBA_GRADUATED_AT_MS = Date.UTC(2026, 9, 1); // Oct 1, 2026 00:00 UTC
+
+function hasMbaGraduated(nowMs = Date.now()): boolean {
+  return nowMs >= MBA_GRADUATED_AT_MS;
+}
 
 /**
  * SNHU official brand palette — mirrors the colors used inside SNHU.svg
@@ -262,12 +278,20 @@ function SchoolBadge({ school }: { school: HighSchoolBadge }) {
   );
 }
 
-export default function Education() {
+export default function Education({
+  collegeEntries,
+}: {
+  /** Live college rows from NodeDa Resume embed API. Falls back to static copy. */
+  collegeEntries?: CollegeEntry[] | null;
+}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
   const [mbaEasterEggOpen, setMbaEasterEggOpen] = useState(false);
   const [mbaEasterEggTip, setMbaEasterEggTip] = useState(MBA_EASTER_EGG_TIPS[0]);
+  const mbaGraduated = hasMbaGraduated();
+  const collegeList =
+    collegeEntries && collegeEntries.length > 0 ? collegeEntries : education;
 
   const openMbaEasterEgg = () => {
     setMbaEasterEggTip(MBA_EASTER_EGG_TIPS[Math.floor(Math.random() * MBA_EASTER_EGG_TIPS.length)]);
@@ -309,38 +333,48 @@ export default function Education() {
     <section
       id="education"
       ref={ref}
-      className="py-24 md:py-32 bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)]"
+      className="hp-cine-stage bg-[var(--bg-secondary)]"
       aria-labelledby="education-heading"
     >
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[var(--hp-cine-max)] mx-auto">
         <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
+          className="mb-12 md:mb-16 max-w-3xl"
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24, filter: shouldReduceMotion ? "blur(0px)" : "blur(6px)" }}
+          animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
+            Background
+          </p>
           <h2
             id="education-heading"
-            className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-6"
+            className="font-display mt-3 text-[clamp(2.1rem,4.5vw,3.5rem)] font-extrabold tracking-[-0.045em] leading-[1.05] text-[var(--text-primary)]"
           >
             Education
           </h2>
-          <div className="w-24 h-1 bg-[var(--primary)] mx-auto rounded-full" />
         </motion.div>
 
         {/* Education Entries — college only in grid */}
         <div className="mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {education.map((edu, index) => {
-              const isBachelors = edu.institution === "Southern New Hampshire University" && edu.degree.includes("Bachelors");
-              const isMasters = edu.institution === "Southern New Hampshire University" && edu.degree.includes("Masters");
+            {collegeList.map((edu, index) => {
+              const degreeLower = edu.degree.toLowerCase();
+              const isSnhu = /southern new hampshire/i.test(edu.institution);
+              const isBachelors =
+                isSnhu &&
+                (degreeLower.includes("bachelor") || degreeLower.includes("bachelors"));
+              const isMasters =
+                isSnhu &&
+                (degreeLower.includes("master") ||
+                  degreeLower.includes("mba") ||
+                  degreeLower.includes("masters"));
               const honors = isBachelors ? bachelorsHonors : isMasters ? mastersHonors : null;
               return (
               <motion.div
                 key={`${edu.institution}-${index}`}
-                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-                transition={{ delay: index * 0.1, duration: shouldReduceMotion ? 0 : 0.6 }}
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
+                transition={{ delay: shouldReduceMotion ? 0 : index * 0.08, duration: shouldReduceMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className="h-full"
               >
                 <Tilt3D
@@ -379,7 +413,7 @@ export default function Education() {
                       }}
                     />
 
-                    {/* "In Progress" status pill for Master's */}
+                    {/* Status pill for Master's — In Progress until Oct 1 2026, then Graduated */}
                     {isMasters && (
                       <div
                         className="absolute top-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.18em] font-semibold"
@@ -387,12 +421,15 @@ export default function Education() {
                           color: SNHU_BRAND.gold,
                           background: `${SNHU_BRAND.gold}1A`,
                           border: `1px solid ${SNHU_BRAND.gold}66`,
-                          transform: "translateZ(18px)",
                         }}
-                        aria-label="Diploma in progress"
+                        aria-label={mbaGraduated ? "Graduated" : "Diploma in progress"}
                       >
-                        <Clock className="h-3 w-3" aria-hidden="true" />
-                        <span>In Progress</span>
+                        {mbaGraduated ? (
+                          <GraduationCap className="h-3 w-3" aria-hidden="true" />
+                        ) : (
+                          <Clock className="h-3 w-3" aria-hidden="true" />
+                        )}
+                        <span>{mbaGraduated ? "Graduated" : "In Progress"}</span>
                       </div>
                     )}
 
@@ -405,7 +442,7 @@ export default function Education() {
                           plate needed (and no inner shadow / chrome). */}
                       <div
                         className="mb-6 inline-flex h-14 sm:h-16 w-fit items-center justify-center"
-                        style={{ transform: "translateZ(24px)" }}
+
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -435,6 +472,15 @@ export default function Education() {
                         <Calendar className="w-4 h-4" aria-hidden="true" />
                         <span>{edu.period}</span>
                       </div>
+
+                      {edu.description ? (
+                        <p
+                          className="text-sm leading-relaxed mb-6"
+                          style={{ color: "rgba(255, 255, 255, 0.78)" }}
+                        >
+                          {edu.description}
+                        </p>
+                      ) : null}
 
                       {honors && (
                         <div
@@ -478,13 +524,14 @@ export default function Education() {
                       )}
 
                       {(isBachelors || isMasters) && (
-                        <div className="mt-auto flex justify-center" style={{ transform: "translateZ(20px)" }}>
+                        <div className="mt-auto flex justify-center">
                           {isBachelors && (
-                            <a
+                            <GlowLink
                               href={BACHELORS_DIPLOMA_URL}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="btn-3d inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A] transition-shadow"
+                              variant="primary"
+                              className="px-5 py-2.5 rounded-lg font-semibold text-sm focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A]"
                               style={{
                                 background: SNHU_BRAND.gold,
                                 color: SNHU_BRAND.ink,
@@ -494,23 +541,28 @@ export default function Education() {
                               aria-label="View Bachelor's diploma on Parchment (opens in new tab)"
                             >
                               View diploma
-                            </a>
+                            </GlowLink>
                           )}
                           {isMasters && (
-                            <button
+                            <GlowButton
                               type="button"
                               onClick={openMbaEasterEgg}
-                              className="btn-3d inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A] transition-colors"
+                              variant="secondary"
+                              className="px-5 py-2.5 rounded-lg font-semibold text-sm focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A]"
                               style={{
                                 background: "rgba(254, 185, 19, 0.1)",
                                 color: SNHU_BRAND.gold,
                                 border: `1.5px solid ${SNHU_BRAND.gold}`,
                                 "--tw-ring-color": `${SNHU_BRAND.gold}99`,
                               } as React.CSSProperties}
-                              aria-label="MBA candidate — diploma in progress (click for a surprise)"
+                              aria-label={
+                                mbaGraduated
+                                  ? "MBA — click for a surprise"
+                                  : "MBA candidate — diploma in progress (click for a surprise)"
+                              }
                             >
-                              MBA candidate
-                            </button>
+                              {mbaGraduated ? "MBA" : "MBA candidate"}
+                            </GlowButton>
                           )}
                         </div>
                       )}
@@ -532,10 +584,10 @@ export default function Education() {
           aria-labelledby="high-school-heading"
         >
           <motion.div variants={itemVariants} className="flex items-center gap-3 mb-6">
-            <GraduationCap className="w-6 h-6 text-[var(--primary)]" aria-hidden="true" />
+            <GraduationCap className="w-5 h-5 text-[var(--primary)]" aria-hidden="true" />
             <h3
               id="high-school-heading"
-              className="text-2xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)]"
+              className="text-lg font-bold tracking-[-0.02em] text-[var(--text-primary)]"
             >
               High School
             </h3>
@@ -552,7 +604,7 @@ export default function Education() {
 
       </div>
 
-      {/* MBA candidate Easter egg modal */}
+      {/* MBA Easter egg modal */}
       {mbaEasterEggOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
@@ -568,24 +620,27 @@ export default function Education() {
             className="relative bg-white dark:bg-[var(--bg-secondary)] rounded-2xl shadow-xl border border-[var(--border-light)] p-6 max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
+            <GlowButton
               type="button"
               onClick={() => setMbaEasterEggOpen(false)}
-              className="absolute top-4 right-4 p-1 rounded-lg text-[var(--text-tertiary)] hover:bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
+              variant="secondary"
+              className="absolute top-4 right-4 p-1 rounded-lg text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
               aria-label="Close quote dialog"
             >
               <X className="w-5 h-5" aria-hidden="true" />
-            </button>
+            </GlowButton>
             <div className="flex gap-3">
               <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[var(--primary)] flex items-center justify-center">
                 <Lightbulb className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
               <div>
                 <h3 id="mba-easter-egg-title" className="text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-1">
-                  Diploma in progress
+                  {mbaGraduated ? "MBA" : "Diploma in progress"}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-3">
-                  While you wait, here&apos;s a little UX & project management wisdom:
+                  {mbaGraduated
+                    ? "Here's a little UX & project management wisdom:"
+                    : "While you wait, here's a little UX & project management wisdom:"}
                 </p>
                 <blockquote className="text-[var(--text-primary)] dark:text-[var(--text-primary)] font-medium italic border-l-4 border-[var(--primary)] pl-4 py-1">
                   &ldquo;{mbaEasterEggTip.quote}&rdquo;
@@ -593,8 +648,9 @@ export default function Education() {
                 <p className="text-xs text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)] mt-2">
                   — {mbaEasterEggTip.by} · {mbaEasterEggTip.tag}
                 </p>
-                <button
+                <GlowButton
                   type="button"
+                  variant="secondary"
                   onClick={() => {
                     setMbaEasterEggOpen(false);
                     // Now that Certifications is its own tab on the parent
@@ -606,10 +662,10 @@ export default function Education() {
                       window.location.hash = "certifications";
                     }
                   }}
-                  className="mt-4 text-sm font-medium text-[var(--primary)] dark:text-[var(--primary)] hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded"
+                  className="mt-4 text-sm font-medium text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded px-2 py-1"
                 >
                   View my certifications →
-                </button>
+                </GlowButton>
               </div>
             </div>
           </motion.div>
