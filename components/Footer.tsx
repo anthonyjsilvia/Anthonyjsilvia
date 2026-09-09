@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Award, Command, Linkedin, Mail } from "lucide-react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import GlowLink from "@/components/GlowLink";
+import { cineEase, dur } from "@/lib/motion";
 
 /**
  * Footer - the site's wayfinding-and-handshake bar at the bottom of every
@@ -39,6 +41,7 @@ const PAGE_LINKS: { href: string; label: string }[] = [
   { href: "/experience", label: "Experience" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/evidence", label: "Evidence" },
+  { href: "/#ai", label: "AI practice" },
   { href: "/resume", label: "Resume" },
   { href: "/contact", label: "Contact" },
 ];
@@ -82,6 +85,10 @@ export default function Footer() {
   // year than the client viewing it (e.g. a stale CDN cache around a year
   // boundary).
   const [year, setYear] = useState<number>(2026);
+  const ctaRef = useRef(null);
+  const ctaInView = useInView(ctaRef, { once: true, margin: "-15%" });
+  const shouldReduceMotion = useReducedMotion();
+
   useEffect(() => {
     setYear(new Date().getFullYear());
   }, []);
@@ -101,8 +108,25 @@ export default function Footer() {
 
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ───────── Closing CTA ───────── */}
-        <section className="grid gap-10 py-16 md:grid-cols-[1.4fr_1fr] md:items-center md:py-24 md:gap-12 border-b border-[var(--border-light)]">
-          <div>
+        <section
+          ref={ctaRef}
+          className="grid gap-10 py-16 md:grid-cols-[1.4fr_1fr] md:items-center md:py-24 md:gap-12 border-b border-[var(--border-light)]"
+        >
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: shouldReduceMotion ? 0 : 28,
+            }}
+            animate={
+              ctaInView
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: shouldReduceMotion ? 0 : 28 }
+            }
+            transition={{
+              duration: shouldReduceMotion ? 0 : dur.xl,
+              ease: cineEase,
+            }}
+          >
             <h2
               id="footer-cta-heading"
               className="text-4xl font-bold leading-[1.05] tracking-tight text-[var(--text-primary)] dark:text-[var(--text-primary)] md:text-5xl lg:text-6xl"
@@ -111,19 +135,40 @@ export default function Footer() {
               <br />
               <span className="text-[var(--primary)]">worth solving?</span>
             </h2>
+            <span
+              className={`accent-rule mt-6 ${ctaInView ? "accent-rule--animate" : ""}`}
+              aria-hidden="true"
+            />
             <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)] md:text-lg">
-              Open to thoughtful product work - accessibility, enterprise UX,
-              research-led redesigns, or just a conversation about the people
-              behind the screen.
+              Open to Product Experience Manager roles where AI is a real
+              advantage - discovery through delivery in enterprise ops,
+              accessibility-first systems, and research-led decisions that
+              move business outcomes at higher throughput.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col items-start gap-3 md:items-end">
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: shouldReduceMotion ? 0 : 20,
+            }}
+            animate={
+              ctaInView
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }
+            }
+            transition={{
+              duration: shouldReduceMotion ? 0 : dur.lg,
+              delay: shouldReduceMotion ? 0 : 0.12,
+              ease: cineEase,
+            }}
+            className="flex flex-col items-start gap-3 md:items-end"
+          >
             <GlowLink
               href="/contact"
               variant="primary"
               aria-label="Open Contact page"
-              className="group rounded-full bg-[var(--primary)] px-6 py-3.5 text-base font-semibold text-white shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
+              className="group btn-apple-lift rounded-full bg-[var(--primary)] px-6 py-3.5 text-base font-semibold text-white shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
               <Mail className="h-4 w-4" aria-hidden="true" />
               <span>Get in touch</span>
@@ -139,7 +184,7 @@ export default function Footer() {
             >
               <span>{CONTACT.email}</span>
             </a>
-          </div>
+          </motion.div>
         </section>
 
         {/* ───────── Sitemap grid ───────── */}
@@ -157,20 +202,19 @@ export default function Footer() {
               Anthony Silvia
             </Link>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
+              Product Experience Manager - hybrid of product management and UX,
+              AI-accelerated for higher efficiency and output. Currently a
               Product Designer at{" "}
               <span className="font-medium text-[var(--text-primary)]">
-                Lowe&apos;s Companies
-              </span>
-              , designing enterprise tools the people running stores actually
-              use every day. Based in Charlotte, North Carolina.
+                Lowe&apos;s
+              </span>{" "}
+              on enterprise retail ops, and Principal Consultant at NodeDa.
+              Based in Charlotte, North Carolina.
             </p>
 
-            {/* "Currently" status - a small live indicator dot + label.
-                Reads as "I'm not stale; this is what I'm actually doing
-                right now." */}
             <p
               className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--background)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]"
-              aria-label="Currently designing internal systems at Lowe's"
+              aria-label="Currently shipping product experience at Lowe's"
             >
               <span
                 aria-hidden="true"
@@ -179,7 +223,7 @@ export default function Footer() {
                 <span className="absolute inset-0 animate-ping rounded-full bg-[var(--primary)] opacity-60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--primary)]" />
               </span>
-              Currently designing internal systems at Lowe&apos;s
+              Currently shipping product experience at Lowe&apos;s
             </p>
           </div>
 

@@ -17,6 +17,7 @@ const menuItems = [
   { name: "Experience", href: "/experience" },
   { name: "Portfolio", href: "/portfolio" },
   { name: "Evidence", href: "/evidence" },
+  { name: "AI practice", href: "/#ai" },
   { name: "Resume", href: "/resume" },
   { name: "Contact", href: "/contact" },
 ];

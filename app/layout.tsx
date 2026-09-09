@@ -1,26 +1,27 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Manrope } from "next/font/google";
 import "./globals.css";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import SiteChrome from "@/components/SiteChrome";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://anthonysilvia.com"),
-  title: "Anthony Silvia - Product Experience Manager | UX, Engineering & Data Integration",
-  description: "Product Experience Manager focused on UX, engineering, and data integration. Product Designer at Lowe's and Principal Consultant at NodeDa.",
+  title: "Anthony Silvia - Product Experience Manager | AI-Accelerated Product × UX",
+  description:
+    "Product Experience Manager who uses AI to raise efficiency and output across discovery, design exploration, and delivery - with product judgment owning what ships. Product Designer at Lowe's; Principal Consultant at NodeDa.",
   keywords: [
     "Product Experience Manager",
+    "Product Manager",
+    "UX Designer",
     "Product Designer",
+    "AI Product Design",
+    "AI-assisted UX",
+    "Generative AI",
     "Enterprise UX",
     "Operational Workflows",
+    "Discovery",
+    "Prioritization",
+    "Usability Testing",
     "Accessible Systems",
     "WCAG 2.2",
     "UX Design",
@@ -36,8 +37,9 @@ export const metadata: Metadata = {
   creator: "Anthony Silvia",
   publisher: "Anthony Silvia",
   openGraph: {
-    title: "Anthony Silvia - Product Experience Manager | UX, Engineering & Data Integration",
-    description: "Product Experience Manager focused on UX, engineering, and data integration.",
+    title: "Anthony Silvia - Product Experience Manager | AI-Accelerated Product × UX",
+    description:
+      "Product Experience Manager who uses AI to raise efficiency and output - discovery through delivery, with judgment owning what ships.",
     url: "https://anthonysilvia.com",
     siteName: "Anthony Silvia Portfolio",
     type: "website",
@@ -53,8 +55,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anthony Silvia - Product Experience Manager | UX, Engineering & Data Integration",
-    description: "Product Experience Manager focused on UX, engineering, and data integration.",
+    title: "Anthony Silvia - Product Experience Manager | AI-Accelerated Product × UX",
+    description:
+      "Product Experience Manager who uses AI to raise efficiency and output - discovery through delivery, with judgment owning what ships.",
     creator: "@anthonysilvia",
     images: ["/homepage/ashero.PNG"],
   },
@@ -82,7 +85,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} scroll-smooth`}>
+    <html lang="en" className="scroll-smooth">
       <head>
         <link rel="canonical" href="https://anthonysilvia.com" />
       </head>

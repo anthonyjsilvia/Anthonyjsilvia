@@ -4,6 +4,7 @@ import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ExternalLink, Lock, Shield, X, FileText, Globe } from "lucide-react";
 import Tilt3D from "@/components/Tilt3D";
 import GlowLink from "@/components/GlowLink";
@@ -68,58 +69,66 @@ const projects = [
   // ----------------------------------------------------------------------
   //  Lowe's - all enterprise initiatives consolidated into one card with
   //  the confidential banner treatment. Each project ships under NDA, so
-  //  the card surfaces the *breadth* of the work without forcing a wall
-  //  of near-identical "approval required" placeholders.
+  //  the card surfaces outcomes and links to Evidence for how I work.
   // ----------------------------------------------------------------------
   {
-    title: "Lowe's Companies, Inc.",
-    subtitle: "Enterprise design across in-store systems",
+    title: "Shipped product experience across in-store ops",
+    subtitle: "Lowe's Companies, Inc.",
     description:
-      "Enterprise design work across multiple in-store initiatives at Lowe's - from point-of-sale and store operations to AI conversational surfaces. Each project ships under NDA; approval from Lowe's is required before sharing specifics.",
-    category: "Enterprise Product Design",
+      "Product experience work across point-of-sale, store operations, returns, and AI conversational surfaces - discovery, prioritization, and shipped UX under NDA. See Evidence for decision-level detail without confidential UI.",
+    category: "Enterprise Product Experience",
     technologies: [
-      "Enterprise Systems",
+      "Product Experience",
+      "Discovery",
+      "Prioritization",
       "UX Design",
-      "Prototyping",
-      "User Research",
-      "AI/ML",
-      "Conversational Design",
-      "Process Optimization",
-      "Innovation",
+      "Usability Testing",
+      "Design Systems",
+      "Accessibility",
+      "Figma",
     ],
     image: null,
-    link: "https://www.lowes.com",
-    linkText: "Visit Lowe's Website",
+    link: "/evidence",
+    linkText: "Evidence",
     color: "#012169",
-    period: "October 2022 - Present",
     isConfidential: true,
   },
   {
-    title: "Kinlily",
-    subtitle: "Cloud-based cookbook ecosystem",
+    title: "Owned cookbook product from discovery to launch",
+    subtitle: "Kinlily (NodeDa)",
     description:
-      "Recipe and cooking app by NodeDa (formerly Cookbook). Independent product design and development.",
-    category: "Product Design",
-    technologies: ["UX Design", "Mobile Design", "iOS", "Product Design", "Product Management"],
+      "End-to-end product ownership for a cloud-based cookbook ecosystem - research, experience design, and iteration as Principal Consultant at NodeDa.",
+    category: "Product Management + UX",
+    technologies: [
+      "Product Management",
+      "UX Design",
+      "Mobile Design",
+      "iOS",
+      "Product Design",
+    ],
     image: null,
     link: "https://kinlily.com",
     linkText: "Visit kinlily.com",
     color: "#3993C5",
-    period: "NodeDa",
     embedWithIframe: true,
   },
   {
-    title: "Herbswift",
+    title: "Led UX and design systems across web and mobile",
     subtitle: "Herbswift",
     description:
-      "Led UX design for the entire company, creating comprehensive design systems across web and mobile platforms.",
-    category: "Product Design",
-    technologies: ["UX Design", "Mobile Design", "Web Design", "Design Systems"],
+      "Company-wide UX lead: comprehensive design systems and product experience across web and mobile platforms.",
+    category: "Product Design + UX",
+    technologies: [
+      "UX Design",
+      "Design Systems",
+      "Product Design",
+      "Mobile Design",
+      "Web Design",
+    ],
     image: null,
     link: null,
     linkText: null,
     color: "#38B548",
-    period: "June 2018 - June 2019",
     pdfs: [
       { name: "iPad", path: "/portfoilo/Herbswift/Herbswift iPad.pdf" },
       { name: "iPhone (4in, 4.7in, 5.5in)", path: "/portfoilo/Herbswift/Herbswift iPhone (4in, 4.7in, 5.5in).pdf" },
@@ -133,17 +142,22 @@ const projects = [
     companyStatus: "Company no longer exists",
   },
   {
-    title: "Rohde Architects",
+    title: "Owned website performance and content experience",
     subtitle: "Rohde Architects",
     description:
-      "Served as webmaster, managing and maintaining the company website, ensuring optimal performance and user experience. The website has been updated since my tenure.",
-    category: "Web Development",
-    technologies: ["Web Development", "Web Design", "Website Management", "Content Management", "Product Management"],
+      "Served as webmaster with product ownership of the company site - performance, content, and user experience. The site has been updated since my tenure.",
+    category: "Product + Web",
+    technologies: [
+      "Product Management",
+      "Web Design",
+      "Web Development",
+      "Content Management",
+      "UX",
+    ],
     image: null,
     link: "https://www.rohdearchitects.com",
     linkText: "Visit Website",
     color: "#FBBF24",
-    period: "May 2017 - June 2018",
   },
 ];
 
@@ -202,9 +216,9 @@ export default function Portfolio() {
               href="/evidence"
               variant="primary"
               className="px-5 py-2.5 bg-[var(--primary)] text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] shadow-md"
-              aria-label="Go to Evidence page, how I work"
+              aria-label="Open Evidence page"
             >
-              Evidence - How I work
+              Evidence
             </GlowLink>
           </p>
         </motion.div>
@@ -224,8 +238,12 @@ export default function Portfolio() {
             // clicking does.
             const hasLink = Boolean(project.link);
             const hasPdfs = Boolean(project.pdfs);
+            const isInternalLink =
+              hasLink && (project.link!.startsWith("/") || project.link!.startsWith("#"));
             const cardAriaLabel = hasLink
-              ? `${project.title} - ${project.linkText ?? "Visit website"} (opens in new tab)`
+              ? isInternalLink
+                ? `${project.title} - ${project.linkText ?? "Open"}`
+                : `${project.title} - ${project.linkText ?? "Visit website"} (opens in new tab)`
               : hasPdfs
               ? `View ${project.title} design documents`
               : project.title;
@@ -346,11 +364,6 @@ export default function Portfolio() {
                 <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-2 opacity-80">
                   {project.subtitle}
                 </p>
-                {project.period && (
-                  <p className="text-xs text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-2 opacity-70">
-                    {project.period}
-                  </p>
-                )}
                 {project.companyStatus && (
                   <p className="text-xs text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-2 opacity-70 italic">
                     {project.companyStatus}
@@ -410,15 +423,25 @@ export default function Portfolio() {
                   className="card-3d bg-[var(--bg-secondary)] dark:bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-light)] overflow-hidden h-full"
                 >
                   {hasLink ? (
-                    <a
-                      href={project.link!}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={cardAriaLabel}
-                      className={innerClassName}
-                    >
-                      {cardBody}
-                    </a>
+                    isInternalLink ? (
+                      <Link
+                        href={project.link!}
+                        aria-label={cardAriaLabel}
+                        className={innerClassName}
+                      >
+                        {cardBody}
+                      </Link>
+                    ) : (
+                      <a
+                        href={project.link!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={cardAriaLabel}
+                        className={innerClassName}
+                      >
+                        {cardBody}
+                      </a>
+                    )
                   ) : hasPdfs ? (
                     <button
                       type="button"

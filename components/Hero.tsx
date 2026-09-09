@@ -1,8 +1,9 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
-import { ChevronDown, FileText, Linkedin, Mail } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ChevronDown, FileText, Layers, Linkedin } from "lucide-react";
 import { type ElementType, type ReactNode, useEffect, useRef } from "react";
+import { heroItem, heroStagger } from "@/lib/motion";
 
 /**
  * Hero CTA - pill control with cursor-tracking glow (NodeDa-style shape,
@@ -38,7 +39,7 @@ function HeroCTA({
   };
 
   const base =
-    "hero-cta hover-glow hover-glow--control relative isolate overflow-hidden inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-[0.95rem] sm:text-base cursor-pointer focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]";
+    "hero-cta hover-glow hover-glow--control btn-apple-lift relative isolate overflow-hidden inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-[0.95rem] sm:text-base cursor-pointer focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]";
 
   const variantClasses =
     variant === "primary"
@@ -68,15 +69,15 @@ function HeroScrim() {
   return <div className="hero-scrim absolute inset-0" aria-hidden="true" />;
 }
 
-/** Image drifts slower than the page; copy drifts a touch less (depth cue). */
+/** Image drifts on scroll for depth; copy/CTAs scroll with the page (no parallax). */
 const PARALLAX_IMG = 0.38;
-const PARALLAX_COPY = 0.12;
 
 export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
   const imgRef = useRef<HTMLImageElement>(null);
-  const copyRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
+  const item = heroItem(shouldReduceMotion);
+  const stagger = heroStagger(shouldReduceMotion);
 
   useEffect(() => {
     if (shouldReduceMotion) return;
@@ -84,13 +85,9 @@ export default function Hero() {
     const apply = () => {
       rafRef.current = null;
       const y = window.scrollY;
-      // Only drive while the hero is still in play; avoid runaway transforms.
       const capped = Math.min(y, window.innerHeight);
       if (imgRef.current) {
         imgRef.current.style.transform = `translate3d(0, ${capped * PARALLAX_IMG}px, 0) scale(1.12)`;
-      }
-      if (copyRef.current) {
-        copyRef.current.style.transform = `translate3d(0, ${capped * PARALLAX_COPY}px, 0)`;
       }
     };
 
@@ -118,7 +115,7 @@ export default function Hero() {
           ref={imgRef}
           src="/homepage/ashero.PNG"
           alt=""
-          className="hero-parallax-img absolute inset-0 h-full w-full min-h-full object-cover object-[70%_42%] md:object-[center_42%] will-change-transform"
+          className="hero-parallax-img hero-parallax-img--enter absolute inset-0 h-full w-full min-h-full object-cover object-[70%_42%] md:object-[center_42%] will-change-transform"
           style={
             shouldReduceMotion
               ? undefined
@@ -128,22 +125,40 @@ export default function Hero() {
         <HeroScrim />
       </div>
 
-      <div
-        ref={copyRef}
-        className="hp-cine-copy absolute inset-x-0 bottom-0 z-10 will-change-transform"
+      <motion.div
+        className="hp-cine-copy absolute inset-x-0 bottom-0 z-10"
+        initial="hidden"
+        animate="visible"
+        variants={stagger}
       >
-        <h1
+        <motion.h1
           id="hero-heading"
+          variants={item}
           className="font-display text-[clamp(2.4rem,6.5vw,4.25rem)] font-extrabold tracking-[-0.045em] leading-[0.98] text-white max-w-[14ch]"
         >
           Anthony Silvia
-        </h1>
+        </motion.h1>
 
-        <p className="mt-4 md:mt-5 text-[clamp(1.05rem,1.7vw,1.3rem)] font-medium leading-[1.55] text-white/85 max-w-[34rem]">
-          Product experience across UX, engineering, and data.
-        </p>
+        <motion.p
+          variants={item}
+          className="mt-3 md:mt-4 font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold tracking-[-0.02em] text-white"
+        >
+          Product Experience Manager
+        </motion.p>
 
-        <div className="mt-8 md:mt-10 flex flex-wrap gap-3">
+        <motion.p
+          variants={item}
+          className="mt-3 md:mt-4 text-[clamp(1.05rem,1.7vw,1.25rem)] font-medium leading-[1.55] text-white/85 max-w-[36rem]"
+        >
+          Product Experience Manager who uses AI to raise efficiency and
+          output - turning messy operational problems into clear product
+          experiences, with judgment still owning what ships.
+        </motion.p>
+
+        <motion.div
+          variants={item}
+          className="mt-8 md:mt-10 flex flex-wrap gap-3"
+        >
           <HeroCTA
             href="/resume"
             Icon={FileText}
@@ -151,6 +166,14 @@ export default function Hero() {
             ariaLabel="Open resume page"
           >
             View Resume
+          </HeroCTA>
+          <HeroCTA
+            href="/evidence"
+            Icon={Layers}
+            variant="secondary"
+            ariaLabel="How I work - evidence from shipped projects"
+          >
+            How I work
           </HeroCTA>
           <HeroCTA
             href="https://linkedin.com/in/anthonyjsilvia"
@@ -161,30 +184,29 @@ export default function Hero() {
           >
             LinkedIn
           </HeroCTA>
-          <HeroCTA
-            href="mailto:contact@anthonysilvia.com"
-            Icon={Mail}
-            variant="secondary"
-            ariaLabel="Send email to contact at anthonysilvia.com"
-          >
-            Email
-          </HeroCTA>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <a
-        href="#about"
+      <motion.a
+        href="#work"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: shouldReduceMotion ? 0 : 0.6,
+          delay: shouldReduceMotion ? 0 : 1.1,
+          ease: [0.22, 1, 0.36, 1],
+        }}
         className="hero-read-more absolute bottom-[var(--hp-cine-pad,1.25rem)] left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/80 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:left-auto md:right-[var(--hp-cine-pad,1.25rem)] md:translate-x-0"
-        aria-label="Read more - scroll to about"
+        aria-label="See selected work"
       >
         <span className="font-display text-[11px] font-bold uppercase tracking-[0.22em]">
-          Read more
+          Selected work
         </span>
         <ChevronDown
           className="hero-read-more__chevron h-5 w-5"
           aria-hidden="true"
         />
-      </a>
+      </motion.a>
     </section>
   );
 }

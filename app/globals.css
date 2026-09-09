@@ -29,13 +29,13 @@
   /* RGB channels of --primary for rgba() composition (broadest browser support, no color-mix dep) */
   --primary-rgb: 0, 82, 204;
   
-  /* Secondary colors */
-  --secondary: #5c2d91; /* 8.1:1 on white - AAA */
-  --secondary-dark: #4a2473; /* 9.8:1 on white - AAA */
+  /* Secondary / accent - kept for rare credential UI; brand accent is --primary only */
+  --secondary: #334155; /* muted slate - does not compete with blue */
+  --secondary-dark: #1e293b;
   
-  /* Accent colors */
-  --accent: #b8860b; /* 7.8:1 on white - AAA */
-  --accent-dark: #996f09; /* 8.9:1 on white - AAA */
+  /* Accent colors - muted gold, not a competing brand accent */
+  --accent: #64748b;
+  --accent-dark: #475569;
   
   /* UI element colors */
   --border: #000000; /* 21:1 - maximum contrast */
@@ -75,6 +75,8 @@
   --dur-apple-sm: 240ms;
   --dur-apple-md: 360ms;
   --dur-apple-lg: 520ms;
+  --dur-apple-fast: 200ms;
+  --dur-apple-xl: 800ms;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -93,13 +95,13 @@
     --primary-light: #80bfff; /* 5.8:1 on black - AA for large text */
     --primary-rgb: 77, 159, 255;
     
-    /* Secondary colors */
-    --secondary: #9d6fd9; /* 7.5:1 on black - AAA */
-    --secondary-dark: #7c3aed; /* 8.3:1 on black - AAA */
+    /* Secondary / accent - muted; brand accent is --primary only */
+    --secondary: #94a3b8;
+    --secondary-dark: #64748b;
     
     /* Accent colors */
-    --accent: #ffb84d; /* 7.1:1 on black - AAA */
-    --accent-dark: #ff9900; /* 8.2:1 on black - AAA */
+    --accent: #94a3b8;
+    --accent-dark: #64748b;
     
     /* UI element colors */
     --border: #ffffff; /* 21:1 - maximum contrast */
@@ -124,10 +126,10 @@ html.color-scheme-light {
   --primary-dark: #003d99;
   --primary-light: #0066ff;
   --primary-rgb: 0, 82, 204;
-  --secondary: #5c2d91;
-  --secondary-dark: #4a2473;
-  --accent: #b8860b;
-  --accent-dark: #996f09;
+  --secondary: #334155;
+  --secondary-dark: #1e293b;
+  --accent: #64748b;
+  --accent-dark: #475569;
   --border: #000000;
   --border-light: #333333;
   --focus-ring: #0052cc;
@@ -147,10 +149,10 @@ html.dark {
   --primary-dark: #0066ff;
   --primary-light: #80bfff;
   --primary-rgb: 77, 159, 255;
-  --secondary: #9d6fd9;
-  --secondary-dark: #7c3aed;
-  --accent: #ffb84d;
-  --accent-dark: #ff9900;
+  --secondary: #94a3b8;
+  --secondary-dark: #64748b;
+  --accent: #94a3b8;
+  --accent-dark: #64748b;
   --border: #ffffff;
   --border-light: #cccccc;
   --focus-ring: #4d9fff;
@@ -168,19 +170,27 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  /* OS-native UI fonts (SF Pro / Segoe UI / Roboto / etc.) */
+  --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --font-display: var(--font-system);
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   line-height: 1.7; /* Increased for dyslexia-friendly reading */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Modern, dyslexia-friendly sans-serif font stack */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: var(--font-system);
 }
 
-/* Display face for cinematic homepage (Manrope via next/font — NodeDa-style) */
+/* Display headings use the same OS UI stack as body */
 .font-display {
-  font-family: var(--font-display), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-system);
 }
 
 /* ─── Homepage cinematic system (inspired by nodeda.com / work.nodeda.com) ─── */
@@ -235,10 +245,32 @@ html.color-scheme-dark .hero-parallax-img {
   filter: brightness(0.72) saturate(0.92) contrast(1.04);
 }
 
+@keyframes hero-image-settle {
+  from {
+    opacity: 0.72;
+    /* Parallax owns transform after settle; entrance only fades. */
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-parallax-img--enter {
+  animation: hero-image-settle 1.2s var(--hp-cine-ease) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-parallax-img {
     transform: none !important;
   }
+
+  .hero-parallax-img--enter {
+    animation: none;
+  }
+}
+
+html.force-reduce-motion .hero-parallax-img--enter {
+  animation: none;
 }
 
 .hero-read-more__chevron {
@@ -296,6 +328,7 @@ html.force-reduce-motion .hero-parallax-img {
 }
 
 .hp-cine-stage__visual {
+  position: relative;
   overflow: hidden;
   border-radius: clamp(16px, 2vw, 28px);
   min-height: clamp(260px, 34vw, 440px);
@@ -305,6 +338,711 @@ html.force-reduce-motion .hero-parallax-img {
 
 .hp-cine-stage__copy {
   max-width: 34rem;
+}
+
+/* Homepage selected-work — editorial proof board (blue accent only) */
+.selected-work {
+  scroll-margin-top: 5.5rem;
+}
+
+.selected-work__header {
+  display: grid;
+  gap: 1.25rem 3rem;
+  align-items: end;
+}
+
+@media (min-width: 900px) {
+  .selected-work__header {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+}
+
+.selected-work__eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.selected-work__title {
+  margin: 1.1rem 0 0;
+  max-width: 14ch;
+  font-family: var(--font-system);
+  font-size: clamp(2.15rem, 4.4vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  color: var(--text-primary);
+}
+
+.selected-work__title-accent {
+  color: var(--primary);
+}
+
+.selected-work__lede {
+  margin: 0;
+  max-width: 28rem;
+  font-size: clamp(1.05rem, 1.35vw, 1.18rem);
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+@media (min-width: 900px) {
+  .selected-work__lede {
+    padding-bottom: 0.35rem;
+    border-left: 2px solid rgba(var(--primary-rgb), 0.35);
+    padding-left: 1.25rem;
+  }
+}
+
+.selected-work__grid {
+  display: grid;
+  gap: 1rem;
+  margin: 2.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .selected-work__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.15rem;
+    margin-top: 3.5rem;
+  }
+}
+
+.selected-work__item {
+  min-height: 100%;
+  margin: 0;
+}
+
+.selected-work__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  padding: 1.35rem 1.35rem 1.25rem;
+  border: 1px solid var(--border-light);
+  border-radius: clamp(14px, 1.6vw, 22px);
+  background:
+    linear-gradient(
+      165deg,
+      rgba(var(--primary-rgb), 0.055) 0%,
+      transparent 42%
+    ),
+    var(--background);
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  transition:
+    border-color var(--dur-apple-sm) var(--ease-apple-smooth),
+    background-color var(--dur-apple-sm) var(--ease-apple-smooth),
+    transform var(--dur-apple-md) var(--ease-apple-out);
+}
+
+.selected-work__card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    rgba(var(--primary-rgb), 0.35) 70%,
+    transparent 100%
+  );
+  transform: scaleX(0.28);
+  transform-origin: left center;
+  transition: transform var(--dur-apple-md) var(--ease-apple-out);
+}
+
+.selected-work__card:hover,
+.selected-work__card:focus-visible {
+  border-color: rgba(var(--primary-rgb), 0.45);
+  background:
+    linear-gradient(
+      165deg,
+      rgba(var(--primary-rgb), 0.09) 0%,
+      transparent 48%
+    ),
+    var(--background);
+  transform: translate3d(0, -3px, 0);
+}
+
+.selected-work__card:hover::before,
+.selected-work__card:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.selected-work__card:focus-visible {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.selected-work__index {
+  position: absolute;
+  top: 0.85rem;
+  right: 1rem;
+  font-family: var(--font-system);
+  font-size: clamp(2.5rem, 4vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: rgba(var(--primary-rgb), 0.12);
+  pointer-events: none;
+  transition: color var(--dur-apple-sm) var(--ease-apple-smooth);
+}
+
+.selected-work__card:hover .selected-work__index,
+.selected-work__card:focus-visible .selected-work__index {
+  color: rgba(var(--primary-rgb), 0.22);
+}
+
+.selected-work__card-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.selected-work__org {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.selected-work__card-title {
+  margin: 1rem 0 0;
+  max-width: 18ch;
+  font-family: var(--font-system);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--text-primary);
+  transition: color var(--dur-apple-sm) var(--ease-apple-smooth);
+}
+
+.selected-work__card:hover .selected-work__card-title,
+.selected-work__card:focus-visible .selected-work__card-title {
+  color: var(--primary);
+}
+
+.selected-work__context {
+  margin: 0.85rem 0 0;
+  flex: 1;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.selected-work__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(var(--primary-rgb), 0.14);
+}
+
+.selected-work__role {
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.selected-work__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.selected-work__go-label {
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity var(--dur-apple-sm) var(--ease-apple-smooth),
+    transform var(--dur-apple-sm) var(--ease-apple-out);
+}
+
+.selected-work__card:hover .selected-work__go-label,
+.selected-work__card:focus-visible .selected-work__go-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.selected-work__arrow {
+  transition: transform var(--dur-apple-sm) var(--ease-apple-spring);
+}
+
+.selected-work__card:hover .selected-work__arrow,
+.selected-work__card:focus-visible .selected-work__arrow {
+  transform: translate3d(3px, -3px, 0);
+}
+
+.selected-work__footer {
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .selected-work__footer {
+    margin-top: 2.75rem;
+  }
+}
+
+.selected-work__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid rgba(var(--primary-rgb), 0.35);
+  border-radius: 9999px;
+  background: rgba(var(--primary-rgb), 0.06);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: none;
+  transition:
+    background-color var(--dur-apple-sm) var(--ease-apple-smooth),
+    border-color var(--dur-apple-sm) var(--ease-apple-smooth),
+    transform var(--dur-apple-sm) var(--ease-apple-spring);
+}
+
+.selected-work__cta:hover {
+  background: rgba(var(--primary-rgb), 0.12);
+  border-color: var(--primary);
+  transform: translate3d(0, -2px, 0);
+}
+
+.selected-work__cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+html.dark .selected-work__card,
+html.color-scheme-dark .selected-work__card {
+  background:
+    linear-gradient(
+      165deg,
+      rgba(var(--primary-rgb), 0.1) 0%,
+      transparent 42%
+    ),
+    var(--background);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html.dark .selected-work__card:hover,
+html.dark .selected-work__card:focus-visible,
+html.color-scheme-dark .selected-work__card:hover,
+html.color-scheme-dark .selected-work__card:focus-visible {
+  background:
+    linear-gradient(
+      165deg,
+      rgba(var(--primary-rgb), 0.16) 0%,
+      transparent 48%
+    ),
+    var(--background);
+  border-color: rgba(var(--primary-rgb), 0.55);
+}
+
+html.force-reduce-motion .selected-work__card,
+html.force-reduce-motion .selected-work__arrow,
+html.force-reduce-motion .selected-work__cta,
+html.force-reduce-motion .selected-work__go-label {
+  transition: none;
+}
+
+html.force-reduce-motion .selected-work__card:hover,
+html.force-reduce-motion .selected-work__cta:hover {
+  transform: none;
+}
+
+html.force-reduce-motion .selected-work__card::before {
+  transition: none;
+  transform: scaleX(1);
+}
+
+html.force-reduce-motion .selected-work__go-label {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selected-work__card,
+  .selected-work__arrow,
+  .selected-work__cta,
+  .selected-work__go-label {
+    transition: none;
+  }
+
+  .selected-work__card:hover,
+  .selected-work__cta:hover {
+    transform: none;
+  }
+
+  .selected-work__card::before {
+    transition: none;
+    transform: scaleX(1);
+  }
+
+  .selected-work__go-label {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* AI advantage — PXM efficiency / output story */
+.ai-advantage {
+  scroll-margin-top: 5.5rem;
+}
+
+.ai-advantage__header {
+  max-width: 46rem;
+}
+
+.ai-advantage__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(var(--primary-rgb), 0.35);
+  border-radius: 9999px;
+  background: rgba(var(--primary-rgb), 0.08);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.ai-advantage__title {
+  margin: 1.15rem 0 0;
+  max-width: 18ch;
+  font-family: var(--font-system);
+  font-size: clamp(2.15rem, 4.4vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  color: var(--text-primary);
+}
+
+.ai-advantage__title-accent {
+  color: var(--primary);
+}
+
+.ai-advantage__lede {
+  margin: 1.15rem 0 0;
+  max-width: 40rem;
+  font-size: clamp(1.05rem, 1.35vw, 1.18rem);
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.ai-advantage__grid {
+  display: grid;
+  gap: 1rem;
+  margin: 2.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .ai-advantage__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.15rem;
+    margin-top: 3.25rem;
+  }
+}
+
+.ai-advantage__item {
+  margin: 0;
+  min-height: 100%;
+}
+
+.ai-advantage__card {
+  height: 100%;
+  padding: 1.35rem 1.4rem 1.4rem;
+  border: 1px solid var(--border-light);
+  border-radius: clamp(14px, 1.6vw, 22px);
+  background:
+    linear-gradient(
+      165deg,
+      rgba(var(--primary-rgb), 0.06) 0%,
+      transparent 48%
+    ),
+    var(--bg-secondary);
+  transition:
+    border-color var(--dur-apple-sm) var(--ease-apple-smooth),
+    transform var(--dur-apple-md) var(--ease-apple-out);
+}
+
+.ai-advantage__card:hover {
+  border-color: rgba(var(--primary-rgb), 0.4);
+  transform: translate3d(0, -2px, 0);
+}
+
+.ai-advantage__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: rgba(var(--primary-rgb), 0.12);
+  color: var(--primary);
+}
+
+.ai-advantage__card-title {
+  margin: 1rem 0 0;
+  font-family: var(--font-system);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.ai-advantage__card-body {
+  margin: 0.65rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.ai-advantage__outcomes {
+  margin-top: 2.25rem;
+  padding: 1.35rem 1.4rem 1.45rem;
+  border: 1px solid rgba(var(--primary-rgb), 0.28);
+  border-radius: clamp(14px, 1.6vw, 22px);
+  background: rgba(var(--primary-rgb), 0.06);
+}
+
+.ai-advantage__outcomes-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.ai-advantage__outcomes-list {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 900px) {
+  .ai-advantage__outcomes-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+.ai-advantage__outcomes-list li {
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.ai-advantage__outcomes-list strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+html.dark .ai-advantage__card,
+html.color-scheme-dark .ai-advantage__card {
+  background:
+    linear-gradient(
+      165deg,
+      rgba(var(--primary-rgb), 0.12) 0%,
+      transparent 48%
+    ),
+    var(--bg-secondary);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-advantage__card,
+  .ai-advantage__card:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+html.force-reduce-motion .ai-advantage__card,
+html.force-reduce-motion .ai-advantage__card:hover {
+  transition: none;
+  transform: none;
+}
+
+/* Accent hairline that draws in on scroll (section craft signal) */
+.accent-rule {
+  display: block;
+  height: 2px;
+  width: 3.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    rgba(var(--primary-rgb), 0.15) 100%
+  );
+  transform-origin: left center;
+}
+
+.accent-rule--animate {
+  animation: accent-rule-draw var(--dur-apple-lg) var(--ease-apple-out) both;
+}
+
+@keyframes accent-rule-draw {
+  from {
+    transform: scaleX(0);
+    opacity: 0.4;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accent-rule--animate {
+    animation: none;
+  }
+}
+
+html.force-reduce-motion .accent-rule--animate {
+  animation: none;
+}
+
+/* About portrait — quiet presence, slight scale on hover */
+.hp-cine-stage__visual img {
+  transition: transform var(--dur-apple-xl) var(--ease-apple-out);
+  will-change: transform;
+}
+
+.hp-cine-stage__visual:hover img {
+  transform: scale(1.03);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-cine-stage__visual img {
+    transition: none;
+  }
+
+  .hp-cine-stage__visual:hover img {
+    transform: none;
+  }
+}
+
+html.force-reduce-motion .hp-cine-stage__visual img {
+  transition: none;
+}
+
+html.force-reduce-motion .hp-cine-stage__visual:hover img {
+  transform: none;
+}
+
+/* Soft section wash — atmosphere without competing with blue accent */
+.section-atmosphere {
+  position: relative;
+  isolation: isolate;
+}
+
+.section-atmosphere::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 8% 0%,
+      rgba(var(--primary-rgb), 0.06),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 92% 100%,
+      rgba(var(--primary-rgb), 0.04),
+      transparent 50%
+    );
+}
+
+html.dark .section-atmosphere::before,
+html.color-scheme-dark .section-atmosphere::before {
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 8% 0%,
+      rgba(var(--primary-rgb), 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 92% 100%,
+      rgba(var(--primary-rgb), 0.08),
+      transparent 50%
+    );
+}
+
+/* Primary CTA micro-lift */
+.btn-apple-lift {
+  transition:
+    transform var(--dur-apple-sm) var(--ease-apple-spring),
+    background-color var(--dur-apple-sm) var(--ease-apple-smooth),
+    border-color var(--dur-apple-sm) var(--ease-apple-smooth),
+    color var(--dur-apple-sm) var(--ease-apple-smooth);
+}
+
+.btn-apple-lift:hover {
+  transform: translate3d(0, -2px, 0);
+}
+
+.btn-apple-lift:active {
+  transform: translate3d(0, 0, 0) scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-apple-lift,
+  .btn-apple-lift:hover,
+  .btn-apple-lift:active {
+    transition: none;
+    transform: none;
+  }
+}
+
+html.force-reduce-motion .btn-apple-lift {
+  transition: none;
+}
+
+html.force-reduce-motion .btn-apple-lift:hover,
+html.force-reduce-motion .btn-apple-lift:active {
+  transform: none;
 }
 
 .hp-cine-recs {
@@ -379,7 +1117,7 @@ html.use-open-dyslexic {
   gap: 0.75rem;
   border-radius: 9999px;
   padding: 0 1.125rem;
-  font-family: var(--font-display), system-ui, sans-serif;
+  font-family: var(--font-system);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -626,7 +1364,7 @@ html.color-scheme-dark .site-menu-icon-btn--surface:hover {
   flex-shrink: 0;
   border-radius: 9999px;
   padding: 0 1rem;
-  font-family: var(--font-display), system-ui, sans-serif;
+  font-family: var(--font-system);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -870,14 +1608,18 @@ html.dark.reduce-transparency .glass-circle-btn {
   background: var(--bg-secondary) !important;
 }
 
-/* Apply modern sans-serif to all text elements */
-* {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+/* Inherit OS UI stack from body; do not force a face onto every element
+   (that would break monospace, icons, and accessibility overrides). */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 /* Ensure headings maintain readability */
 h1, h2, h3, h4, h5, h6 {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: var(--font-system);
   font-weight: 700;
   letter-spacing: 0.01em; /* Slight letter spacing for readability */
 }
@@ -1926,9 +2668,8 @@ html.force-reduce-motion .apple-press:active {
  * a hidden input that captures keystrokes invisibly. */
 
 .terminal-mode {
-  /* Stack monospace fallbacks the way a real terminal would. */
-  font-family: "JetBrains Mono", "Menlo", "Monaco", "SFMono-Regular",
-    ui-monospace, "Cascadia Mono", "Consolas", "Liberation Mono", monospace;
+  /* OS-native monospace stack (SF Mono / Cascadia / Consolas / etc.). */
+  font-family: var(--font-mono);
   /* Faint phosphor glow on the body text — subtle enough to read but
      still gives the CRT feel. text-shadow is globally disabled above,
      so we restore it for this scope only. */
@@ -2188,8 +2929,7 @@ html.force-reduce-motion .hover-glow--control:active {
  * ========================================================= */
 
 .resume-fluent {
-  --fluent-font: "Segoe UI Variable", "Segoe UI", "Segoe UI Web (West European)",
-    Candara, "DejaVu Sans", sans-serif;
+  --fluent-font: var(--font-system);
   --fluent-radius-control: 6px;
   --fluent-radius-card: 12px;
   --fluent-stroke: rgba(0, 0, 0, 0.08);

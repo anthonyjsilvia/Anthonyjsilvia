@@ -46,7 +46,7 @@ const PAGES: { name: string; path: string; href: string; description: string }[]
   { name: "home", path: "/", href: "/", description: "Landing page" },
   { name: "experience", path: "/experience", href: "/experience", description: "Career timeline" },
   { name: "portfolio", path: "/portfolio", href: "/portfolio", description: "Selected work" },
-  { name: "evidence", path: "/evidence", href: "/evidence", description: "Education + credentials" },
+  { name: "evidence", path: "/evidence", href: "/evidence", description: "Evidence" },
   { name: "resume", path: "/resume", href: "/resume", description: "Downloadable resume" },
   { name: "contact", path: "/contact", href: "/contact", description: "Contact form" },
   {
@@ -460,7 +460,7 @@ const COMMANDS: Record<string, CommandHandler> = {
       "",
       "  experience        Career timeline",
       "  portfolio         Selected work",
-      "  evidence          Education + credentials",
+      "  evidence          Evidence (decision evidence)",
       "  reco              Recommendations",
       "  contact           Contact info",
       "  resume            Resume page",
@@ -485,11 +485,12 @@ const COMMANDS: Record<string, CommandHandler> = {
       "Anthony Silvia",
       "Product Experience Manager - Charlotte Metro",
       "",
-      "Product Designer at Lowe's Companies, Inc.",
-      "Principal Consultant at NodeDa.",
+      "Hybrid of product management and UX: discovery, prioritization,",
+      "and shipped experience - AI-accelerated for higher efficiency",
+      "and output, with judgment owning what ships.",
       "",
-      "Practice: UX, engineering, and data integration. Builder of",
-      "operational tools, design systems, and the occasional indie iOS app.",
+      "Currently Product Designer at Lowe's Companies, Inc.",
+      "Principal Consultant at NodeDa.",
     ],
   }),
 
@@ -556,22 +557,20 @@ const COMMANDS: Record<string, CommandHandler> = {
     ],
   }),
 
-  evidence: () => {
-    const mbaGraduated = Date.now() >= Date.UTC(2026, 9, 1);
-    return {
-      output: [
-        "Education + credentials:",
-        "",
-        mbaGraduated
-          ? "  · Southern New Hampshire University - MBA (graduated)"
-          : "  · Southern New Hampshire University - MBA (in progress)",
-        "  · Multiple SNHU Honor Roll and Dean's List terms",
-        "  · South Allegheny HS  ·  Worcester HS",
-        "",
-        "Run `open evidence` for the full record.",
-      ],
-    };
-  },
+  evidence: () => ({
+    output: [
+      "Evidence - Product Experience Manager decision proof:",
+      "",
+      "  · Trade-offs          Scope, ship, feasibility",
+      "  · Complexity→Clarity  Structure for ops workflows",
+      "  · Ambiguity           Discovery → success criteria",
+      "  · Systems thinking    Upstream / downstream impact",
+      "  · How I've changed    Delivery ownership + PM partnership",
+      "",
+      "Projects: Lowe's Return Space · Pro Supply",
+      "Run `open evidence` for the full narrative.",
+    ],
+  }),
 
   reco: () => {
     if (recommendations.length === 0) {
@@ -655,7 +654,9 @@ const COMMANDS: Record<string, CommandHandler> = {
         "Anthony Silvia",
         "Product Experience Manager - Charlotte Metro",
         "",
-        "Product Designer at Lowe's Companies, Inc.",
+        "Hybrid of product management and UX.",
+        "AI-accelerated efficiency and output.",
+        "Currently Product Designer at Lowe's Companies, Inc.",
         "Principal Consultant at NodeDa.",
       ],
       "contact.txt": [

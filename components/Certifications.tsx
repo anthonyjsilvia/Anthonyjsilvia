@@ -167,7 +167,7 @@ export default function Certifications({
 
           <motion.div variants={itemVariants}>
             <div className="flex items-center gap-3 mb-6">
-              <Award className="w-5 h-5 text-[var(--secondary)]" aria-hidden="true" />
+              <Award className="w-5 h-5 text-[var(--primary)]" aria-hidden="true" />
               <h3 className="text-lg font-bold tracking-[-0.02em] text-[var(--text-primary)]">
                 All credentials
               </h3>

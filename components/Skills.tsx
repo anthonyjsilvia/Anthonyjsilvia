@@ -148,7 +148,7 @@ export default function Skills() {
                   className="flex items-center gap-3 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]"
                 >
                   <span
-                    className="w-2 h-2 rounded-full bg-[var(--accent)]"
+                    className="w-2 h-2 rounded-full bg-[var(--primary)]"
                     aria-hidden="true"
                   />
                   {honor}
@@ -175,7 +175,7 @@ export default function Skills() {
                 className="flex items-center gap-3 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]"
               >
                 <span
-                  className="w-2 h-2 rounded-full bg-[var(--secondary)]"
+                  className="w-2 h-2 rounded-full bg-[var(--primary)]"
                   aria-hidden="true"
                 />
                 {cert}
