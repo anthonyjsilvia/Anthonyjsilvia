@@ -2,22 +2,11 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { GraduationCap, Calendar, Trophy, X, Lightbulb, Clock } from "lucide-react";
+import { GraduationCap, Calendar, Trophy, Clock } from "lucide-react";
 import Tilt3D from "@/components/Tilt3D";
 import GlowLink from "@/components/GlowLink";
-import GlowButton from "@/components/GlowButton";
-
-// Easter egg: UX/PM tips when clicking the MBA control
-const MBA_EASTER_EGG_TIPS = [
-  { quote: "Plans are nothing; planning is everything.", by: "Dwight D. Eisenhower", tag: "Project Management" },
-  { quote: "Don't make me think.", by: "Steve Krug", tag: "UX" },
-  { quote: "What gets measured gets managed.", by: "Peter Drucker", tag: "Project Management" },
-  { quote: "Every click should have a reward. You just got one.", by: "UX principle", tag: "UX" },
-  { quote: "The best time to plan was yesterday. The second best time is now.", by: "Proverb", tag: "Project Management" },
-  { quote: "Design is not just what it looks like. Design is how it works.", by: "Steve Jobs", tag: "UX" },
-];
 
 type CollegeEntry = {
   institution: string;
@@ -30,7 +19,7 @@ type CollegeEntry = {
 const education: CollegeEntry[] = [
   {
     institution: "Southern New Hampshire University",
-    degree: "Masters in Business Administration",
+    degree: "Master of Business Administration (MBA)",
     period: "Aug 2025 - Sep 2026",
   },
   {
@@ -121,17 +110,21 @@ const bachelorsHonors = [
 // date so the badge reads as "earned multiple times" rather than as a
 // one-off in November.
 const mastersHonors = [
-  { name: "Honor Roll", date: "3 times", badge: "/awards/honor-role-SNHU.png" },
+  { name: "Honor Roll", date: "5 times", badge: "/awards/honor-role-SNHU.png" },
 ];
 
 const MERIT_PAGES_URL = "https://meritpages.com/anthonysilvia";
 const BACHELORS_DIPLOMA_URL = "https://www.parchment.com/u/award/917e24e9b7910565b7671dcdaa09e483";
 
-/** On/after this date, the MBA card shows Graduated + MBA (not candidate / in progress). */
+/** On/after this date, the MBA card shows Graduated (otherwise Pending conferral). */
 const MBA_GRADUATED_AT_MS = Date.UTC(2026, 9, 1); // Oct 1, 2026 00:00 UTC
 
 function hasMbaGraduated(nowMs = Date.now()): boolean {
   return nowMs >= MBA_GRADUATED_AT_MS;
+}
+
+function mbaStatusLabel(graduated: boolean): string {
+  return graduated ? "Graduated" : "Pending conferral";
 }
 
 /**
@@ -287,26 +280,9 @@ export default function Education({
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
-  const [mbaEasterEggOpen, setMbaEasterEggOpen] = useState(false);
-  const [mbaEasterEggTip, setMbaEasterEggTip] = useState(MBA_EASTER_EGG_TIPS[0]);
   const mbaGraduated = hasMbaGraduated();
   const collegeList =
     collegeEntries && collegeEntries.length > 0 ? collegeEntries : education;
-
-  const openMbaEasterEgg = () => {
-    setMbaEasterEggTip(MBA_EASTER_EGG_TIPS[Math.floor(Math.random() * MBA_EASTER_EGG_TIPS.length)]);
-    setMbaEasterEggOpen(true);
-  };
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMbaEasterEggOpen(false);
-    };
-    if (mbaEasterEggOpen) {
-      document.addEventListener("keydown", handleEscape);
-      return () => document.removeEventListener("keydown", handleEscape);
-    }
-  }, [mbaEasterEggOpen]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -413,7 +389,7 @@ export default function Education({
                       }}
                     />
 
-                    {/* Status pill for Master's - In Progress until Oct 1 2026, then Graduated */}
+                    {/* Status pill for Master's - Pending conferral until Oct 1 2026, then Graduated */}
                     {isMasters && (
                       <div
                         className="absolute top-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.18em] font-semibold"
@@ -422,14 +398,14 @@ export default function Education({
                           background: `${SNHU_BRAND.gold}1A`,
                           border: `1px solid ${SNHU_BRAND.gold}66`,
                         }}
-                        aria-label={mbaGraduated ? "Graduated" : "Diploma in progress"}
+                        aria-label={mbaStatusLabel(mbaGraduated)}
                       >
                         {mbaGraduated ? (
                           <GraduationCap className="h-3 w-3" aria-hidden="true" />
                         ) : (
                           <Clock className="h-3 w-3" aria-hidden="true" />
                         )}
-                        <span>{mbaGraduated ? "Graduated" : "In Progress"}</span>
+                        <span>{mbaStatusLabel(mbaGraduated)}</span>
                       </div>
                     )}
 
@@ -455,7 +431,9 @@ export default function Education({
                       </div>
 
                       <h3 className="text-2xl font-bold text-white leading-tight mb-3 pr-24">
-                        {edu.degree || edu.institution}
+                        {isMasters
+                          ? "Master of Business Administration (MBA)"
+                          : edu.degree || edu.institution}
                       </h3>
 
                       {/* Hairline gold accent - varsity badge motif */}
@@ -544,25 +522,20 @@ export default function Education({
                             </GlowLink>
                           )}
                           {isMasters && (
-                            <GlowButton
+                            <button
                               type="button"
-                              onClick={openMbaEasterEgg}
-                              variant="secondary"
-                              className="px-5 py-2.5 rounded-lg font-semibold text-sm focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A]"
+                              disabled
+                              className="px-5 py-2.5 rounded-lg font-semibold text-sm cursor-not-allowed opacity-55"
                               style={{
                                 background: "rgba(254, 185, 19, 0.1)",
                                 color: SNHU_BRAND.gold,
-                                border: `1.5px solid ${SNHU_BRAND.gold}`,
-                                "--tw-ring-color": `${SNHU_BRAND.gold}99`,
-                              } as React.CSSProperties}
-                              aria-label={
-                                mbaGraduated
-                                  ? "MBA - click for a surprise"
-                                  : "MBA candidate - diploma in progress (click for a surprise)"
-                              }
+                                border: `1.5px solid ${SNHU_BRAND.gold}66`,
+                              }}
+                              aria-label="View diploma - unavailable while MBA is pending conferral"
+                              title="Available after conferral"
                             >
-                              {mbaGraduated ? "MBA" : "MBA candidate"}
-                            </GlowButton>
+                              View diploma
+                            </button>
                           )}
                         </div>
                       )}
@@ -603,74 +576,6 @@ export default function Education({
         </motion.div>
 
       </div>
-
-      {/* MBA Easter egg modal */}
-      {mbaEasterEggOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="mba-easter-egg-title"
-          onClick={() => setMbaEasterEggOpen(false)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2 }}
-            className="relative bg-white dark:bg-[var(--bg-secondary)] rounded-2xl shadow-xl border border-[var(--border-light)] p-6 max-w-md w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <GlowButton
-              type="button"
-              onClick={() => setMbaEasterEggOpen(false)}
-              variant="secondary"
-              className="absolute top-4 right-4 p-1 rounded-lg text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
-              aria-label="Close quote dialog"
-            >
-              <X className="w-5 h-5" aria-hidden="true" />
-            </GlowButton>
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[var(--primary)] flex items-center justify-center">
-                <Lightbulb className="w-5 h-5 text-white" aria-hidden="true" />
-              </div>
-              <div>
-                <h3 id="mba-easter-egg-title" className="text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-1">
-                  {mbaGraduated ? "MBA" : "Diploma in progress"}
-                </h3>
-                <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)] mb-3">
-                  {mbaGraduated
-                    ? "Here's a little UX & project management wisdom:"
-                    : "While you wait, here's a little UX & project management wisdom:"}
-                </p>
-                <blockquote className="text-[var(--text-primary)] dark:text-[var(--text-primary)] font-medium italic border-l-4 border-[var(--primary)] pl-4 py-1">
-                  &ldquo;{mbaEasterEggTip.quote}&rdquo;
-                </blockquote>
-                <p className="text-xs text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)] mt-2">
-                  - {mbaEasterEggTip.by} · {mbaEasterEggTip.tag}
-                </p>
-                <GlowButton
-                  type="button"
-                  variant="secondary"
-                  onClick={() => {
-                    setMbaEasterEggOpen(false);
-                    // Now that Certifications is its own tab on the parent
-                    // ExperiencePage, jump there via the URL hash. The page's
-                    // `hashchange` listener picks this up, switches to the
-                    // Certifications tab, and scrolls to top. Guarded so we
-                    // only push a new hash if it'd actually change.
-                    if (typeof window !== "undefined" && window.location.hash !== "#certifications") {
-                      window.location.hash = "certifications";
-                    }
-                  }}
-                  className="mt-4 text-sm font-medium text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)] rounded px-2 py-1"
-                >
-                  View my certifications →
-                </GlowButton>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
     </section>
   );
 }

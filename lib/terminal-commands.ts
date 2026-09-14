@@ -482,9 +482,10 @@ const COMMANDS: Record<string, CommandHandler> = {
 
   about: () => ({
     output: [
-      "Anthony Silvia",
+      "Anthony Silvia, MBA",
       "Product Experience Manager - Charlotte Metro",
       "",
+      "MBA pending conferral - Southern New Hampshire University.",
       "Hybrid of product management and UX: discovery, prioritization,",
       "and shipped experience - AI-accelerated for higher efficiency",
       "and output, with judgment owning what ships.",
@@ -567,7 +568,7 @@ const COMMANDS: Record<string, CommandHandler> = {
       "  · Systems thinking    Upstream / downstream impact",
       "  · How I've changed    Delivery ownership + PM partnership",
       "",
-      "Projects: Lowe's Return Space · Pro Supply",
+      "Projects: Lowe's confidential initiatives A and B (redacted)",
       "Run `open evidence` for the full narrative.",
     ],
   }),
@@ -651,9 +652,10 @@ const COMMANDS: Record<string, CommandHandler> = {
     if (!file) return { error: ["cat: usage: cat <file>"] };
     const files: Record<string, string[]> = {
       "about.txt": [
-        "Anthony Silvia",
+        "Anthony Silvia, MBA",
         "Product Experience Manager - Charlotte Metro",
         "",
+        "MBA pending conferral (SNHU).",
         "Hybrid of product management and UX.",
         "AI-accelerated efficiency and output.",
         "Currently Product Designer at Lowe's Companies, Inc.",

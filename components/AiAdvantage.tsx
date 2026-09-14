@@ -11,39 +11,9 @@ import {
   Zap,
 } from "lucide-react";
 import { cineEase, dur, fadeUp } from "@/lib/motion";
+import { aiPracticeIntro, aiPractices } from "@/lib/ai-practices";
 
-type Practice = {
-  Icon: typeof Sparkles;
-  title: string;
-  body: string;
-};
-
-const PRACTICES: Practice[] = [
-  {
-    Icon: FileSearch,
-    title: "Discovery & synthesis",
-    body:
-      "I use AI to cluster notes, surface patterns, and draft problem statements faster - then I validate with associates, stakeholders, and real operational constraints.",
-  },
-  {
-    Icon: Layers,
-    title: "Exploration at speed",
-    body:
-      "AI helps me generate flows, variants, and copy options in minutes so I can pressure-test more directions per cycle - and still ship the one that earns stakeholder alignment.",
-  },
-  {
-    Icon: Workflow,
-    title: "Delivery leverage",
-    body:
-      "From tickets and acceptance criteria to research scripts and handoff notes, AI cuts busywork so I spend more time on prioritization, trade-offs, and experience quality.",
-  },
-  {
-    Icon: Zap,
-    title: "Team multiplier",
-    body:
-      "I lead AI-assisted design practice: share workflows, raise the bar on judgment over generation, and help partners move from drafts to production-ready product experience.",
-  },
-];
+const PRACTICE_ICONS = [FileSearch, Layers, Workflow, Zap] as const;
 
 /**
  * AI advantage — how a Product Experience Manager uses AI to raise
@@ -54,6 +24,10 @@ export default function AiAdvantage() {
   const inView = useInView(ref, { once: true, margin: "-12%" });
   const shouldReduceMotion = useReducedMotion();
   const headerVariants = fadeUp(shouldReduceMotion, 24);
+  const PRACTICES = aiPractices.map((p, i) => ({
+    ...p,
+    Icon: PRACTICE_ICONS[i] ?? Sparkles,
+  }));
 
   return (
     <section
@@ -83,7 +57,7 @@ export default function AiAdvantage() {
             not how I skip judgment.
           </h2>
           <p className="ai-advantage__lede">
-            As a Product Experience Manager I treat AI as operating leverage:
+            As an MBA Product Experience Manager I treat AI as operating leverage:
             faster drafts, broader exploration, tighter delivery loops - with
             product judgment, accessibility, and stakeholder alignment still
             owning the final call. Managers have called out my AI-driven design

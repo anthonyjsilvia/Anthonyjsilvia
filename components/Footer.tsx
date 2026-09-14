@@ -140,9 +140,9 @@ export default function Footer() {
               aria-hidden="true"
             />
             <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)] md:text-lg">
-              Open to Product Experience Manager roles where AI is a real
-              advantage - discovery through delivery in enterprise ops,
-              accessibility-first systems, and research-led decisions that
+              Open to Product Experience Manager roles where an MBA lens and AI
+              are real advantages - discovery through delivery in enterprise
+              ops, accessibility-first systems, and research-led decisions that
               move business outcomes at higher throughput.
             </p>
           </motion.div>
@@ -196,20 +196,20 @@ export default function Footer() {
           <div className="md:col-span-6 lg:col-span-5">
             <Link
               href="/"
-              aria-label="Anthony Silvia - Home"
+              aria-label="Anthony Silvia, MBA - Home"
               className="inline-flex items-baseline rounded-md text-xl font-semibold tracking-tight text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
-              Anthony Silvia
+              Anthony Silvia, MBA
             </Link>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
-              Product Experience Manager - hybrid of product management and UX,
-              AI-accelerated for higher efficiency and output. Currently a
-              Product Designer at{" "}
+              Anthony Silvia, MBA - Product Experience Manager. Hybrid of
+              product management and UX, AI-accelerated for higher efficiency
+              and output. Currently a Product Designer at{" "}
               <span className="font-medium text-[var(--text-primary)]">
                 Lowe&apos;s
               </span>{" "}
-              on enterprise retail ops, and Principal Consultant at NodeDa.
-              Based in Charlotte, North Carolina.
+              on enterprise retail ops, and Principal Consultant at NodeDa. MBA
+              pending conferral (SNHU). Based in Charlotte, North Carolina.
             </p>
 
             <p
@@ -337,12 +337,24 @@ export default function Footer() {
             <p className="text-xs text-[var(--text-tertiary)]">
               © {year} Anthony Silvia. All rights reserved.
             </p>
-            <p className="inline-flex items-center gap-2 text-xs text-[var(--text-tertiary)]">
-              <span>Try the terminal  - </span>
-              <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
-                <Command className="h-2.5 w-2.5" aria-hidden="true" />
-                <span>K</span>
-              </kbd>
+            <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-tertiary)]">
+              <span className="inline-flex items-center gap-2">
+                <span>Try the terminal  - </span>
+                <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
+                  <Command className="h-2.5 w-2.5" aria-hidden="true" />
+                  <span>K</span>
+                </kbd>
+              </span>
+              <span className="text-[var(--border-light)]" aria-hidden="true">
+                ·
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span>Open AnthonyOS  - </span>
+                <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
+                  <Command className="h-2.5 w-2.5" aria-hidden="true" />
+                  <span>.</span>
+                </kbd>
+              </span>
             </p>
           </div>
         </div>

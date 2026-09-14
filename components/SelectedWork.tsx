@@ -5,41 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 import { cineEase, dur, fadeUp } from "@/lib/motion";
-
-type WorkItem = {
-  href: string;
-  eyebrow: string;
-  title: string;
-  context: string;
-  role: string;
-};
-
-const WORK: WorkItem[] = [
-  {
-    href: "/evidence#ambiguity",
-    eyebrow: "Lowe's",
-    title: "Defined success criteria when “better CX” was vague",
-    context:
-      "Return Space: short discovery with associates and managers turned fuzzy goals into measurable direction for faster processing and fewer callbacks.",
-    role: "Design + product partnership",
-  },
-  {
-    href: "/evidence#trade-offs",
-    eyebrow: "Lowe's",
-    title: "Prioritized scope so the first release could ship",
-    context:
-      "Pro Supply returns: aligned leadership on timeline and highest-impact flows, balancing ideal UX against build complexity without blocking delivery.",
-    role: "Prioritization & stakeholder alignment",
-  },
-  {
-    href: "/portfolio",
-    eyebrow: "NodeDa",
-    title: "Owned discovery through delivery on an indie product",
-    context:
-      "Kinlily: end-to-end product lifecycle ownership - research, design, and iteration for a cloud cookbook experience.",
-    role: "Product ownership + UX",
-  },
-];
+import { selectedWorkItems } from "@/lib/selected-work";
 
 /**
  * Homepage proof strip — editorial, scannable proof for hiring managers.
@@ -50,6 +16,7 @@ export default function SelectedWork() {
   const inView = useInView(ref, { once: true, margin: "-12%" });
   const shouldReduceMotion = useReducedMotion();
   const headerVariants = fadeUp(shouldReduceMotion, 24);
+  const WORK = selectedWorkItems;
 
   return (
     <section
@@ -77,9 +44,10 @@ export default function SelectedWork() {
             </h2>
           </div>
           <p className="selected-work__lede">
-            NDA-safe proof from enterprise ops and end-to-end product work -
-            including AI-accelerated discovery and delivery - enough to scan
-            in under a minute, with deeper evidence one click away.
+            NDA-safe proof from enterprise ops and end-to-end product work,
+            including AI-accelerated discovery and delivery. Enough to scan
+            in under a minute, with deeper redacted evidence one click
+            away.
           </p>
         </motion.header>
 

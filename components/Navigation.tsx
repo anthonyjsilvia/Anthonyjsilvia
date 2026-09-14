@@ -59,9 +59,13 @@ function getLeftChromeRect(): DOMRect | null {
  */
 type NavigationProps = {
   onOpenAccessibility?: () => void;
+  onOpenOs?: () => void;
 };
 
-export default function Navigation({ onOpenAccessibility }: NavigationProps) {
+export default function Navigation({
+  onOpenAccessibility,
+  onOpenOs,
+}: NavigationProps) {
   const pathname = usePathname() ?? "/";
   const shouldReduceMotion = useReducedMotion();
   const isHome = pathname === "/";
@@ -331,6 +335,45 @@ export default function Navigation({ onOpenAccessibility }: NavigationProps) {
                   );
                 })}
               </ul>
+
+              {onOpenOs ? (
+                <motion.div
+                  className="mx-auto mt-8 w-full max-w-3xl"
+                  initial={{
+                    opacity: 0,
+                    y: shouldReduceMotion ? 0 : 16,
+                  }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.55,
+                    delay: shouldReduceMotion ? 0 : 0.4,
+                    ease: cineEase,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      close();
+                      onOpenOs();
+                    }}
+                    aria-haspopup="dialog"
+                    className="group flex w-full items-baseline gap-4 rounded-lg border border-white/20 bg-white/10 px-4 py-4 text-left transition-colors hover:bg-white/16 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070a12]"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="site-menu-overlay__index w-8 shrink-0 font-mono text-xs"
+                    >
+                      OS
+                    </span>
+                    <span className="site-menu-overlay__label font-display text-[clamp(1.75rem,4.5vw,2.75rem)] font-extrabold tracking-[-0.045em] leading-[1.05]">
+                      AnthonyOS
+                    </span>
+                    <span className="ml-auto hidden text-xs font-medium uppercase tracking-[0.14em] text-white/55 sm:inline">
+                      ⌘.
+                    </span>
+                  </button>
+                </motion.div>
+              ) : null}
             </nav>
 
             {a11yInMenu && onOpenAccessibility && (

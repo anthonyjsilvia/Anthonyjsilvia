@@ -156,7 +156,7 @@ export default function AccessibilityModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-[var(--background)]"
+          className="fixed inset-0 z-[230] flex flex-col overflow-y-auto bg-[var(--background)]"
           aria-modal="true"
           aria-labelledby="accessibility-settings-title"
           role="dialog"
@@ -166,7 +166,7 @@ export default function AccessibilityModal({
           <motion.button
             type="button"
             onClick={onClose}
-            className="fixed right-6 top-6 z-[61] flex items-center gap-2 rounded-full bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-black/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+            className="fixed right-6 top-6 z-[231] flex items-center gap-2 rounded-full bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-black/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
             aria-label="Close accessibility settings"
             whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}

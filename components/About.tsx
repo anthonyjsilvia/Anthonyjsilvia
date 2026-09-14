@@ -60,13 +60,14 @@ export default function About() {
             Product experience, AI-accelerated.
           </h2>
           <p className="mt-5 max-w-[34rem] text-[clamp(1.05rem,1.5vw,1.2rem)] font-medium leading-[1.55] text-[var(--text-secondary)]">
-            I work at the intersection of product management and UX - and I
-            run that practice with AI in the loop: faster discovery synthesis,
-            broader design exploration, and higher delivery throughput without
-            handing the product decisions to a model. Currently a Product
-            Designer at Lowe&apos;s on enterprise retail ops, and Principal
-            Consultant at NodeDa leading discovery through delivery with
-            accessibility and operational reality in view.
+            I&apos;m an MBA Product Experience Manager at the intersection of
+            product management and UX - running that practice with AI in the
+            loop: faster discovery synthesis, broader design exploration, and
+            higher delivery throughput without handing product decisions to a
+            model. Currently a Product Designer at Lowe&apos;s on enterprise
+            retail ops, and Principal Consultant at NodeDa. Master of Business
+            Administration pending conferral (Southern New Hampshire
+            University).
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link

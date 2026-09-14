@@ -6,10 +6,13 @@ import SiteChrome from "@/components/SiteChrome";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://anthonysilvia.com"),
-  title: "Anthony Silvia - Product Experience Manager | AI-Accelerated Product × UX",
+  title: "Anthony Silvia, MBA - Product Experience Manager | AI-Accelerated Product × UX",
   description:
-    "Product Experience Manager who uses AI to raise efficiency and output across discovery, design exploration, and delivery - with product judgment owning what ships. Product Designer at Lowe's; Principal Consultant at NodeDa.",
+    "Anthony Silvia, MBA - Product Experience Manager who uses AI to raise efficiency and output across discovery, design exploration, and delivery. Master of Business Administration pending conferral (SNHU). Product Designer at Lowe's; Principal Consultant at NodeDa.",
   keywords: [
+    "Anthony Silvia MBA",
+    "MBA",
+    "Master of Business Administration",
     "Product Experience Manager",
     "Product Manager",
     "UX Designer",
@@ -32,14 +35,15 @@ export const metadata: Metadata = {
     "Anthony Silvia",
     "Lowe's",
     "NodeDa",
+    "Southern New Hampshire University",
   ],
   authors: [{ name: "Anthony Silvia" }],
   creator: "Anthony Silvia",
   publisher: "Anthony Silvia",
   openGraph: {
-    title: "Anthony Silvia - Product Experience Manager | AI-Accelerated Product × UX",
+    title: "Anthony Silvia, MBA - Product Experience Manager | AI-Accelerated Product × UX",
     description:
-      "Product Experience Manager who uses AI to raise efficiency and output - discovery through delivery, with judgment owning what ships.",
+      "MBA Product Experience Manager who uses AI to raise efficiency and output - discovery through delivery, with judgment owning what ships. MBA pending conferral (SNHU).",
     url: "https://anthonysilvia.com",
     siteName: "Anthony Silvia Portfolio",
     type: "website",
@@ -49,15 +53,15 @@ export const metadata: Metadata = {
         url: "/homepage/ashero.PNG",
         width: 1200,
         height: 630,
-        alt: "Anthony Silvia - Product Experience Manager",
+        alt: "Anthony Silvia, MBA - Product Experience Manager",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anthony Silvia - Product Experience Manager | AI-Accelerated Product × UX",
+    title: "Anthony Silvia, MBA - Product Experience Manager | AI-Accelerated Product × UX",
     description:
-      "Product Experience Manager who uses AI to raise efficiency and output - discovery through delivery, with judgment owning what ships.",
+      "MBA Product Experience Manager who uses AI to raise efficiency and output - discovery through delivery, with judgment owning what ships.",
     creator: "@anthonysilvia",
     images: ["/homepage/ashero.PNG"],
   },

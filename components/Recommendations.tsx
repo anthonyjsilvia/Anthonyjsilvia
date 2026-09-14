@@ -4,61 +4,92 @@ import { motion, useReducedMotion, useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { recommendations } from "@/lib/recommendations";
+import { ArrowUpRight } from "lucide-react";
+import {
+  recommendations,
+  type Recommendation,
+} from "@/lib/recommendations";
 import { cineEase, dur, fadeUpBlur, staggerContainer } from "@/lib/motion";
 
+/** First paragraph, trimmed for a scannable pull quote on the grid. */
+function pullQuote(testimonial: string, max = 160): string {
+  const first = (testimonial.split("\n\n")[0] ?? testimonial).trim();
+  if (first.length <= max) return first;
+  const cut = first.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 80 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
+}
+
 /**
- * Flat portrait tile - soft hover scale, cinematic radius.
+ * Recommendation card: full-bleed square portrait on the left, soft fade
+ * into copy on the right. Entire surface is the link.
  */
-function RecommendationTile({
-  rec,
-}: {
-  rec: (typeof recommendations)[number];
-}) {
+function RecommendationRow({ rec }: { rec: Recommendation }) {
   const href = `/recommendations/${rec.slug}`;
-  const ariaLabel = `Read recommendation from ${rec.name}, ${rec.role}`;
+  const quote = pullQuote(rec.testimonial);
 
   return (
     <Link
       href={href}
-      aria-label={ariaLabel}
-      className="group relative block w-full aspect-square overflow-hidden apple-hover-lift focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-      style={{ borderRadius: "clamp(16px, 2vw, 28px)" }}
+      className="recs-row group"
+      aria-label={`Read full recommendation from ${rec.name}, ${rec.role}`}
     >
-      <Image
-        src={rec.image}
-        alt=""
-        fill
-        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        sizes="(max-width: 640px) 50vw, (max-width: 768px) 50vw, 25vw"
-      />
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-95 transition-opacity duration-300 group-hover:opacity-100"
-        aria-hidden="true"
-      />
-      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 text-left">
-        <p className="text-white font-bold text-sm sm:text-[0.95rem] tracking-[-0.02em] transition-transform duration-[var(--dur-apple-sm)] group-hover:-translate-y-0.5">
-          {rec.name}
-        </p>
-        <p className="text-white/75 text-xs sm:text-sm mt-0.5 font-medium">
-          {rec.role}
-        </p>
-      </div>
+      <span className="recs-row__media" aria-hidden="true">
+        <Image
+          src={rec.image}
+          alt=""
+          width={280}
+          height={280}
+          className="recs-row__photo"
+          sizes="(min-width: 900px) 180px, 140px"
+        />
+      </span>
+
+      <span className="recs-row__reflection" aria-hidden="true">
+        <Image
+          src={rec.image}
+          alt=""
+          width={280}
+          height={280}
+          className="recs-row__reflection-img"
+          sizes="(min-width: 900px) 280px, 200px"
+        />
+      </span>
+
+      <span className="recs-row__body">
+        <span className="recs-row__copy">
+          <span className="recs-row__identity">
+            <span className="recs-row__name">{rec.name}</span>
+            <span className="recs-row__role">{rec.role}</span>
+          </span>
+          <blockquote className="recs-row__quote">
+            <span className="recs-row__quote-mark" aria-hidden="true">
+              “
+            </span>
+            {quote}
+          </blockquote>
+        </span>
+        <span className="recs-row__cta">
+          Read full recommendation
+          <ArrowUpRight className="recs-row__cta-icon" aria-hidden="true" />
+        </span>
+      </span>
     </Link>
   );
 }
 
 /**
- * Recommendations - sparse cinematic stage after About.
+ * Recommendations — clean editorial social proof:
+ * full-height square portraits fading into quote copy.
  */
 export default function Recommendations() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-10%" });
   const shouldReduceMotion = useReducedMotion();
 
-  const containerVariants = staggerContainer(shouldReduceMotion, 0.08, 0.1);
+  const containerVariants = staggerContainer(shouldReduceMotion, 0.07, 0.08);
   const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 28 },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 22 },
     visible: {
       opacity: 1,
       y: 0,
@@ -74,40 +105,43 @@ export default function Recommendations() {
     <section
       id="recommendations"
       ref={ref}
-      className="hp-cine-recs section-atmosphere scroll-mt-24 bg-[var(--background)] border-t border-[var(--border-light)]"
+      className="recs scroll-mt-24 border-t border-[var(--border-light)] bg-[var(--bg-secondary)]"
       aria-labelledby="recommendations-heading"
     >
-      <div className="hp-cine-recs__inner">
-        <motion.div
+      <div className="recs__inner">
+        <motion.header
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={titleReveal}
-          className="mb-12 md:mb-16 text-center"
+          className="recs__header"
         >
+          <p className="recs__eyebrow">Recommendations</p>
           <span
-            className={`accent-rule mx-auto ${isInView ? "accent-rule--animate" : ""}`}
+            className={`accent-rule mt-4 ${isInView ? "accent-rule--animate" : ""}`}
             aria-hidden="true"
           />
-          <h2
-            id="recommendations-heading"
-            className="font-display mx-auto mt-5 max-w-[14ch] text-[clamp(2.1rem,4.5vw,3.5rem)] font-extrabold tracking-[-0.045em] leading-[1.05] text-[var(--text-primary)]"
-          >
+          <h2 id="recommendations-heading" className="recs__title">
             Kind words from people I&rsquo;ve worked with.
           </h2>
-        </motion.div>
+          <p className="recs__lede">
+            Leaders and peers who saw the work up close. Each note opens to the
+            full recommendation.
+          </p>
+        </motion.header>
 
-        <motion.div
+        <motion.ul
+          role="list"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5 w-full"
+          className="recs__list"
         >
           {recommendations.map((rec) => (
-            <motion.div key={rec.slug} variants={itemVariants}>
-              <RecommendationTile rec={rec} />
-            </motion.div>
+            <motion.li key={rec.slug} variants={itemVariants} className="recs__item">
+              <RecommendationRow rec={rec} />
+            </motion.li>
           ))}
-        </motion.div>
+        </motion.ul>
       </div>
     </section>
   );

@@ -38,7 +38,7 @@ const PAGE_ENTRIES: SearchEntry[] = [
     title: "Home",
     section: "Pages",
     href: "/",
-    description: "Anthony Silvia - AI-accelerated Product Experience Manager",
+    description: "Anthony Silvia, MBA - AI-accelerated Product Experience Manager",
     keywords: [
       "home",
       "hero",
@@ -47,6 +47,7 @@ const PAGE_ENTRIES: SearchEntry[] = [
       "landing",
       "ai",
       "artificial intelligence",
+      "mba",
     ],
   },
   {
@@ -54,7 +55,7 @@ const PAGE_ENTRIES: SearchEntry[] = [
     section: "Pages",
     href: "/#ai",
     description:
-      "How I use AI as a Product Experience Manager to raise efficiency and output",
+      "How I use AI as an MBA Product Experience Manager to raise efficiency and output",
     keywords: [
       "ai",
       "artificial intelligence",
@@ -104,8 +105,23 @@ const PAGE_ENTRIES: SearchEntry[] = [
       "trade-offs",
       "return space",
       "pro supply",
+      "confidential initiative",
       "product experience",
       "decision making",
+      "redacted",
+    ],
+  },
+  {
+    title: "Kind Words",
+    section: "Pages",
+    href: "/kind-words",
+    description: "Recommendations from leaders and peers",
+    keywords: [
+      "recommendations",
+      "testimonials",
+      "kind words",
+      "endorsements",
+      "quotes",
     ],
   },
   {

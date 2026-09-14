@@ -152,7 +152,7 @@ const experiences: ExperienceEntry[] = [
         start: { year: 2019, month: 2 },
         end: { year: 2022, month: 9 },
         location: "United States",
-        description: "Proactively took ownership of customer facing work and operational responsibilities, developing a deep understanding for store workflow, system limitations, and real world constraints. This foundation, directly informs my approach, designing practical, enterprise-scale tools.",
+        description: "Proactively took ownership of customer-facing work and operational responsibilities, developing a deep understanding of frontline workflow, system limitations, and real-world constraints. This foundation directly informs my approach designing practical, enterprise-scale tools.",
       },
     ],
   },

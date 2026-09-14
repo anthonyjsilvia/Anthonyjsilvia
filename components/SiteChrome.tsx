@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import FabNav from "@/components/FabNav";
 import AccessibilityModal from "@/components/AccessibilityModal";
 import TerminalMode from "@/components/TerminalMode";
+import OsMode from "@/components/OsMode";
 import {
   getAccessibilitySettings,
   applyAccessibilitySettings,
@@ -15,16 +16,19 @@ import {
 
 /**
  * SiteChrome is the persistent shell that wraps every page: navigation, footer,
- * back-to-top FAB, accessibility modal, and the skip-links. Moving this out
- * of individual pages means each `app/<route>/page.tsx` only owns its own
- * content - keeping the codebase simple now that the site is multi-page rather
- * than a single long-scroll layout.
+ * back-to-top FAB, accessibility modal, and the skip-links.
+ *
+ * When `?embed=1` is present (AnthonyOS window iframes), chrome and overlays
+ * are omitted so page content can fill an OS window without recursion.
  */
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const [embed, setEmbed] = useState(false);
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
+  const [osOpen, setOsOpen] = useState(false);
+  const [osTerminalToken, setOsTerminalToken] = useState(0);
   const [accessibilitySettings, setAccessibilitySettings] = useState<AccessibilitySettings>({
     reduceTransparency: false,
     reduceMotion: false,
@@ -33,51 +37,71 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   });
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setEmbed(params.get("embed") === "1");
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || embed) return;
     const stored = getAccessibilitySettings();
     setAccessibilitySettings(stored);
     applyAccessibilitySettings(stored);
-  }, [mounted]);
+  }, [mounted, embed]);
 
   /**
-   * Global terminal-mode toggle - ⌘K on macOS, Ctrl+K elsewhere. Flips the
-   * site between the normal page view and the keyboard-only terminal
-   * easter egg. We intentionally bind at the chrome level (not inside
-   * TerminalMode) so the shortcut works from any page, even when the
-   * terminal isn't yet mounted.
-   *
-   * The listener is also smart enough to skip the toggle when the user is
-   * typing into another text input - so ⌘K inside a textbox does the
-   * platform-native thing (e.g. focusing browser search) rather than
-   * hijacking the keystroke.
+   * Global easter-egg shortcuts:
+   *   • ⌘K / Ctrl+K  → terminal (fullscreen, or Terminal.app window if OS open)
+   *   • ⌘. / Ctrl+.  → AnthonyOS desktop
    */
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || embed) return;
     const onKey = (e: KeyboardEvent) => {
-      const isModK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k";
-      if (!isModK) return;
+      const key = e.key.toLowerCase();
+      const isMod = e.metaKey || e.ctrlKey;
+      const isOsToggle = e.code === "Period" || key === ".";
+      if (!isMod || (key !== "k" && !isOsToggle)) return;
+
       const target = e.target as HTMLElement | null;
       const tag = target?.tagName;
       const editable =
         tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable;
-      // If the user is typing in a real input AND the terminal is closed,
-      // let the browser handle ⌘K normally (e.g. focus search, etc).
-      // Once the terminal is open we always want ⌘K to close it again, even
-      // if the focused element is the terminal's own input.
-      if (editable && !terminalOpen) return;
+
+      if (key === "k") {
+        if (editable && !terminalOpen && !osOpen) return;
+        e.preventDefault();
+        if (osOpen) {
+          setOsTerminalToken((n) => n + 1);
+          return;
+        }
+        setTerminalOpen((o) => !o);
+        return;
+      }
+
+      if (editable && !osOpen) return;
       e.preventDefault();
-      setTerminalOpen((o) => !o);
+      setTerminalOpen(false);
+      setOsOpen((o) => !o);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [mounted, terminalOpen]);
+  }, [mounted, embed, terminalOpen, osOpen]);
 
   if (!mounted) {
     return null;
+  }
+
+  if (embed) {
+    return (
+      <main
+        id="main-content"
+        role="main"
+        aria-label="Embedded page"
+        className="os-embed-root"
+      >
+        {children}
+      </main>
+    );
   }
 
   return (
@@ -88,11 +112,13 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       <a href="#main-nav" className="skip-link" aria-label="Skip to menu">
         Skip to menu
       </a>
-      <Navigation onOpenAccessibility={() => setAccessibilityOpen(true)} />
-      {/* Keying <main> on `pathname` retriggers the .apple-reveal CSS
-          animation on every route change, giving each page an iOS-style
-          fade + glide-up entrance for free. The keyframes themselves
-          honor reduced-motion (see `.apple-reveal` in globals.css). */}
+      <Navigation
+        onOpenAccessibility={() => setAccessibilityOpen(true)}
+        onOpenOs={() => {
+          setTerminalOpen(false);
+          setOsOpen(true);
+        }}
+      />
       <main
         key={pathname}
         id="main-content"
@@ -110,9 +136,14 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
         settings={accessibilitySettings}
         onSettingsChange={setAccessibilitySettings}
       />
-      {/* ⌘K easter egg - keyboard-only terminal that takes over the entire
-          viewport. Mounted globally so the toggle works from any page. */}
       <TerminalMode open={terminalOpen} onClose={() => setTerminalOpen(false)} />
+      <OsMode
+        open={osOpen}
+        onClose={() => setOsOpen(false)}
+        terminalLaunchToken={osTerminalToken}
+        accessibilitySettings={accessibilitySettings}
+        onAccessibilitySettingsChange={setAccessibilitySettings}
+      />
     </>
   );
 }

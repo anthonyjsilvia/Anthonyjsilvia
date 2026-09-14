@@ -68,6 +68,7 @@ export function applyAccessibilitySettings(settings: AccessibilitySettings): voi
   const root = document.documentElement;
 
   root.classList.toggle("reduce-transparency", settings.reduceTransparency);
+  root.classList.toggle("force-reduce-transparency", settings.reduceTransparency);
   root.classList.toggle("force-reduce-motion", settings.reduceMotion);
   root.classList.toggle("use-open-dyslexic", settings.openDyslexic);
 

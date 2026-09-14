@@ -134,9 +134,9 @@ export default function Hero() {
         <motion.h1
           id="hero-heading"
           variants={item}
-          className="font-display text-[clamp(2.4rem,6.5vw,4.25rem)] font-extrabold tracking-[-0.045em] leading-[0.98] text-white max-w-[14ch]"
+          className="font-display text-[clamp(2.4rem,6.5vw,4.25rem)] font-extrabold tracking-[-0.045em] leading-[0.98] text-white max-w-[16ch]"
         >
-          Anthony Silvia
+          Anthony Silvia, MBA
         </motion.h1>
 
         <motion.p
@@ -150,7 +150,7 @@ export default function Hero() {
           variants={item}
           className="mt-3 md:mt-4 text-[clamp(1.05rem,1.7vw,1.25rem)] font-medium leading-[1.55] text-white/85 max-w-[36rem]"
         >
-          Product Experience Manager who uses AI to raise efficiency and
+          MBA Product Experience Manager who uses AI to raise efficiency and
           output - turning messy operational problems into clear product
           experiences, with judgment still owning what ships.
         </motion.p>

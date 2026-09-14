@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -12,23 +18,9 @@ import {
 
 /**
  * TerminalMode - the ⌘K easter egg. A keyboard-only, text-only command
- * prompt that takes over the entire viewport when activated. Built to feel
- * like a DOS / unix shell:
- *
- *   • Pure text. No images, no buttons. A blinking block cursor instead
- *     of the browser's I-beam caret.
- *   • Monospace, high-contrast, faint scan-line texture.
- *   • Up/Down arrow history, Tab autocomplete on command names.
- *   • Real terminal keystrokes: Ctrl+C interrupts, Ctrl+U clears the line,
- *     Ctrl+W deletes the previous word, Ctrl+L clears the screen.
- *   • Enter executes; output streams into a scrollback above the prompt.
- *   • Errors render in red, regular output in green.
- *   • Exit via `exit` / `quit`, the `Esc` key, or ⌘K / Ctrl+K (the same
- *     shortcut that opens it - see SiteChrome).
- *
- * The component is purely presentational glue; all command logic lives in
- * `lib/terminal-commands.ts` so the language surface can grow independently
- * of this UI layer.
+ * prompt. Supports:
+ *   • `overlay`   - fullscreen takeover (default, ⌘K outside AnthonyOS)
+ *   • `embedded`  - fills a parent window (AnthonyOS Terminal.app)
  */
 
 type LogLine =
@@ -36,8 +28,6 @@ type LogLine =
   | { kind: "output"; text: string }
   | { kind: "error"; text: string };
 
-/** Convert a `CommandResult` into a flat list of scrollback lines, preserving
- *  the `output` vs `error` distinction so the renderer can colour them. */
 function resultToLines(result: CommandResult): LogLine[] {
   const out: LogLine[] = [];
   if (result.output) {
@@ -56,46 +46,62 @@ function bannerLines(): LogLine[] {
 type Props = {
   open: boolean;
   onClose: () => void;
+  /** Fullscreen overlay vs in-window shell. */
+  variant?: "overlay" | "embedded";
+  /** Override navigation (e.g. leave AnthonyOS before routing). */
+  onNavigate?: (href: string) => void;
 };
 
-export default function TerminalMode({ open, onClose }: Props) {
+export default function TerminalMode({
+  open,
+  onClose,
+  variant = "overlay",
+  onNavigate,
+}: Props) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const embedded = variant === "embedded";
 
   const [lines, setLines] = useState<LogLine[]>(() => bannerLines());
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [historyIdx, setHistoryIdx] = useState<number | null>(null);
   const [cwd, setCwd] = useState("/");
+  const [autofillLocked, setAutofillLocked] = useState(true);
 
-  // Focus the prompt whenever the terminal opens. requestAnimationFrame keeps
-  // us out of React's commit phase so the input is mounted first.
   useEffect(() => {
     if (!open) return;
-    const id = requestAnimationFrame(() => inputRef.current?.focus());
+    setAutofillLocked(true);
+    const id = requestAnimationFrame(() => {
+      const el = inputRef.current;
+      if (!el) return;
+      el.value = "";
+      setInput("");
+      el.setAttribute("autocomplete", "off");
+      el.setAttribute("autocorrect", "off");
+      el.setAttribute("autocapitalize", "none");
+      el.setAttribute("spellcheck", "false");
+      el.focus({ preventScroll: true });
+    });
     return () => cancelAnimationFrame(id);
   }, [open]);
 
-  // Lock host scroll while the terminal is open.
   useEffect(() => {
-    if (!open) return;
+    if (!open || embedded) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [open]);
+  }, [open, embedded]);
 
-  // Auto-scroll to the bottom as the scrollback grows.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
   }, [lines]);
 
-  // Reset to the banner each time the terminal opens fresh - feels cleaner
-  // than resuming a stale session.
   useEffect(() => {
     if (open) {
       setLines(bannerLines());
@@ -103,6 +109,7 @@ export default function TerminalMode({ open, onClose }: Props) {
       setHistory([]);
       setHistoryIdx(null);
       setCwd("/");
+      setAutofillLocked(true);
     }
   }, [open]);
 
@@ -112,15 +119,11 @@ export default function TerminalMode({ open, onClose }: Props) {
     const prompt = promptFor(cwd);
     const inputEntry: LogLine = { kind: "input", text: raw, prompt };
 
-    // Track command history (skip empty / duplicate consecutive entries).
     if (raw.trim()) {
       setHistory((h) => (h[h.length - 1] === raw.trim() ? h : [...h, raw.trim()]));
     }
     setHistoryIdx(null);
 
-    // Special-case `history` here because it needs read access to the
-    // accumulated history state that lives in this component, not in the
-    // command registry.
     if (raw.trim().toLowerCase() === "history") {
       setLines((prev) => [
         ...prev,
@@ -136,8 +139,11 @@ export default function TerminalMode({ open, onClose }: Props) {
       cwd,
       setCwd,
       navigate: (href: string) => {
+        if (onNavigate) {
+          onNavigate(href);
+          return;
+        }
         onClose();
-        // defer router push so the close animation can start first
         requestAnimationFrame(() => router.push(href));
       },
       exit: onClose,
@@ -146,8 +152,6 @@ export default function TerminalMode({ open, onClose }: Props) {
     const result: CommandResult = raw.trim() ? runCommand(raw, ctx) : {};
 
     setLines((prev) => {
-      // `reset` clears the scrollback and reprints the welcome banner  - 
-      // matches the behaviour of reset(1) in a real terminal.
       if (result.clear && result.banner) {
         return bannerLines();
       }
@@ -165,18 +169,14 @@ export default function TerminalMode({ open, onClose }: Props) {
     setInput("");
   };
 
-  // Tab autocomplete - completes the first token if it matches exactly one
-  // command name. Conservative on purpose; doesn't autocomplete arguments.
   const tryComplete = () => {
     const partial = input.trim();
     if (!partial || partial.includes(" ")) return;
-    // Lazy-import to avoid pulling the full registry on first render.
     import("@/lib/terminal-commands").then(({ COMMAND_NAMES }) => {
       const matches = COMMAND_NAMES.filter((n) => n.startsWith(partial.toLowerCase()));
       if (matches.length === 1) {
         setInput(matches[0] + " ");
       } else if (matches.length > 1) {
-        // Append the matches as an output line so the user can pick.
         setLines((prev) => [
           ...prev,
           { kind: "input", text: input, prompt: promptFor(cwd) },
@@ -188,9 +188,6 @@ export default function TerminalMode({ open, onClose }: Props) {
   };
 
   const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
-    // ----- real-terminal control keystrokes -------------------------------
-    // Ctrl+C interrupts: echoes `^C` to the scrollback and clears the
-    // current input line, matching what bash/zsh do on SIGINT.
     if (e.ctrlKey && !e.metaKey && e.key.toLowerCase() === "c") {
       e.preventDefault();
       setLines((prev) => [
@@ -202,7 +199,6 @@ export default function TerminalMode({ open, onClose }: Props) {
       return;
     }
 
-    // Ctrl+U clears the line back to the prompt.
     if (e.ctrlKey && !e.metaKey && e.key.toLowerCase() === "u") {
       e.preventDefault();
       setInput("");
@@ -210,7 +206,6 @@ export default function TerminalMode({ open, onClose }: Props) {
       return;
     }
 
-    // Ctrl+W deletes the previous word (whitespace + non-whitespace run).
     if (e.ctrlKey && !e.metaKey && e.key.toLowerCase() === "w") {
       e.preventDefault();
       setInput((prev) => prev.replace(/\s*\S+\s*$/, ""));
@@ -218,14 +213,12 @@ export default function TerminalMode({ open, onClose }: Props) {
       return;
     }
 
-    // Ctrl+L (or ⌘L) clears, same as `clear` - a classic terminal shortcut.
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "l") {
       e.preventDefault();
       setLines([]);
       return;
     }
 
-    // Ctrl+D on an empty line exits, matching shell behaviour.
     if (
       e.ctrlKey &&
       !e.metaKey &&
@@ -237,7 +230,6 @@ export default function TerminalMode({ open, onClose }: Props) {
       return;
     }
 
-    // ----- standard prompt keystrokes ------------------------------------
     if (e.key === "Enter") {
       e.preventDefault();
       runLine(input);
@@ -280,6 +272,121 @@ export default function TerminalMode({ open, onClose }: Props) {
     }
   };
 
+  const shell = (
+    <>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.18]"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,0.45) 3px)",
+        }}
+      />
+
+      <div
+        ref={scrollRef}
+        onClick={() => inputRef.current?.focus()}
+        className="relative h-full w-full overflow-y-auto px-4 py-5 text-[13px] leading-[1.55] sm:px-6 sm:py-6 sm:text-[14px]"
+      >
+        {lines.map((line, idx) => {
+          if (line.kind === "input") {
+            return (
+              <div key={idx} className="whitespace-pre-wrap break-words">
+                <span className="select-none text-[#99ffaa]">{line.prompt}</span>
+                <span className="text-white"> {line.text}</span>
+              </div>
+            );
+          }
+          if (line.kind === "error") {
+            return (
+              <div
+                key={idx}
+                className="whitespace-pre-wrap break-words text-[#ff5f5f]"
+              >
+                {line.text || "\u00A0"}
+              </div>
+            );
+          }
+          return (
+            <div key={idx} className="whitespace-pre-wrap break-words">
+              {line.text || "\u00A0"}
+            </div>
+          );
+        })}
+
+        <form
+          className="relative flex items-baseline gap-2"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <span className="flex-shrink-0 select-none text-[#99ffaa]">
+            {promptFor(cwd)}
+          </span>
+          <div className="relative flex-1 min-w-0">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none whitespace-pre-wrap break-words"
+            >
+              <span className="text-white">{input}</span>
+              <span className="terminal-block-cursor" />
+            </div>
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKey}
+              onFocus={(e) => {
+                setAutofillLocked(false);
+                const el = e.currentTarget;
+                el.setAttribute("autocomplete", "off");
+                el.setAttribute("autocorrect", "off");
+                el.setAttribute("autocapitalize", "none");
+                if (el.value && el.value !== input) {
+                  el.value = input;
+                }
+              }}
+              type="text"
+              name="as_shell_prompt"
+              id={embedded ? "as-shell-prompt-os" : "as-shell-prompt"}
+              inputMode="text"
+              enterKeyHint="send"
+              role="textbox"
+              readOnly={autofillLocked}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="none"
+              spellCheck={false}
+              aria-autocomplete="none"
+              aria-label="Terminal input"
+              data-form-type="other"
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
+              data-dashlane-ignore="true"
+              className="terminal-input absolute inset-0 w-full bg-transparent text-transparent outline-none"
+            />
+          </div>
+        </form>
+      </div>
+    </>
+  );
+
+  if (embedded) {
+    if (!open) return null;
+    return (
+      <div
+        className="terminal-mode relative h-full w-full bg-black font-mono text-[#33ff66] selection:bg-[#33ff66] selection:text-black"
+        role="region"
+        aria-label="Terminal"
+      >
+        {shell}
+      </div>
+    );
+  }
+
   return (
     <AnimatePresence>
       {open && (
@@ -293,99 +400,7 @@ export default function TerminalMode({ open, onClose }: Props) {
           aria-modal="true"
           aria-label="Terminal mode"
         >
-          {/* Subtle CRT-ish scan-line texture - keeps the easter-egg vibe
-              without the eye strain of a literal flicker. Pointer-events
-              disabled so clicks fall through to the focus-the-input handler. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-[0.18]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(0deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,0.45) 3px)",
-            }}
-          />
-
-          <div
-            ref={scrollRef}
-            // Clicking anywhere focuses the input so the caret never gets lost.
-            onClick={() => inputRef.current?.focus()}
-            className="relative h-full w-full overflow-y-auto px-4 py-5 text-[13px] leading-[1.55] sm:px-8 sm:py-7 sm:text-[14px] md:text-[15px]"
-          >
-            {lines.map((line, idx) => {
-              if (line.kind === "input") {
-                return (
-                  <div key={idx} className="whitespace-pre-wrap break-words">
-                    <span className="select-none text-[#99ffaa]">{line.prompt}</span>
-                    <span className="text-white"> {line.text}</span>
-                  </div>
-                );
-              }
-              if (line.kind === "error") {
-                return (
-                  <div
-                    key={idx}
-                    className="whitespace-pre-wrap break-words text-[#ff5f5f]"
-                  >
-                    {line.text || "\u00A0"}
-                  </div>
-                );
-              }
-              return (
-                <div key={idx} className="whitespace-pre-wrap break-words">
-                  {line.text || "\u00A0"}
-                </div>
-              );
-            })}
-
-            {/* Active prompt line. The visible row shows the prompt, the
-                typed text, and a blinking block cursor; the real <input>
-                is layered on top to capture keystrokes but has its caret
-                and text colour hidden - that way the block we draw is the
-                only cursor the user ever sees. */}
-            <div className="relative flex items-baseline gap-2">
-              <span className="flex-shrink-0 select-none text-[#99ffaa]">
-                {promptFor(cwd)}
-              </span>
-              <div className="relative flex-1 min-w-0">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none whitespace-pre-wrap break-words"
-                >
-                  <span className="text-white">{input}</span>
-                  <span className="terminal-block-cursor" />
-                </div>
-                <input
-                  ref={inputRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKey}
-                  // Defensive cocktail of attributes that tells browsers
-                  // and password managers (1Password, LastPass, Bitwarden,
-                  // Dashlane, Chrome, Safari) to leave this field alone.
-                  // Plain `autoComplete="off"` is widely ignored, hence the
-                  // belt + suspenders.
-                  type="text"
-                  name="terminal-command"
-                  id="terminal-command"
-                  inputMode="text"
-                  enterKeyHint="send"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  autoSave="off"
-                  spellCheck={false}
-                  aria-autocomplete="none"
-                  aria-label="Terminal input"
-                  data-form-type="other"
-                  data-lpignore="true"
-                  data-1p-ignore="true"
-                  data-bwignore="true"
-                  data-dashlane-ignore="true"
-                  className="terminal-input absolute inset-0 w-full bg-transparent text-transparent outline-none"
-                />
-              </div>
-            </div>
-          </div>
+          {shell}
         </motion.div>
       )}
     </AnimatePresence>

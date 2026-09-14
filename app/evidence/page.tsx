@@ -3,146 +3,17 @@
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { useRef } from "react";
 import SiteBackBar from "@/components/SiteBackBar";
-
-const PROJECT_A = "Lowe's Return Space";
-const PROJECT_B = "Lowe's Centralized Return to Vendor";
-/** Trade-offs section only: returns in Pro Supply */
-const PROJECT_B_TRADE_OFFS = "Returns in Lowe's Pro Supply";
-/** Complexity → Clarity section only: Pro Supply */
-const PROJECT_B_COMPLEXITY = "Lowe's Pro Supply";
-/** Ambiguity section only: Pro Supply */
-const PROJECT_B_AMBIGUITY = "Lowe's Pro Supply";
-/** Systems Thinking section only: Pro Supply */
-const PROJECT_B_SYSTEMS = "Lowe's Pro Supply";
-
-const TWO_COLUMN_NAMES = new Set([
+import {
+  evidenceSections as sections,
+  TWO_COLUMN_NAMES,
   PROJECT_A,
   PROJECT_B,
-  PROJECT_B_TRADE_OFFS,
-  PROJECT_B_COMPLEXITY,
-  PROJECT_B_AMBIGUITY,
-  PROJECT_B_SYSTEMS,
-]);
-
-const sections = [
-  {
-    id: "trade-offs",
-    title: "Trade-offs",
-    intro:
-      "Decisions where something was cut, reduced, or changed, and what outcome that protected or enabled.",
-    projects: [
-      {
-        name: PROJECT_A,
-        bullets: [
-          "Prioritized research scheduling so the team could run studies with stores and associates on timeline; kept prep grounded so design decisions for the return space were validated with real feedback.",
-          "Scoped experiences to specific return-space scenarios tied to reducing shrink and return fraud (details confidential); protected launch goals and compliance instead of broadening scope that would delay delivery.",
-          "Invested in library creation and component positioning for the return-space UI so future scenarios could reuse structure without rework.",
-        ],
-      },
-      {
-        name: PROJECT_B_TRADE_OFFS,
-        bullets: [
-          "Aligned with leadership on scope and timeline so we could ship a first release that met business goals while leaving room to iterate; prioritized highest-impact flows for a stable, usable product sooner.",
-          "Partnered with developers on technical constraints; traded ideal UX against build complexity so the experience stayed strong without blocking delivery.",
-          "Aligned operations, vendors, and finance on priorities and language; small concessions in wording and sequence produced one shared model and a consistent experience for users.",
-        ],
-      },
-    ],
-  },
-  {
-    id: "complexity-clarity",
-    title: "Complexity → Clarity",
-    intro:
-      "How messy or complicated situations were simplified with structure or systems.",
-    projects: [
-      {
-        name: PROJECT_A,
-        bullets: [
-          "Some capabilities still lived only in the legacy system; designed a dashboard that surfaced and linked those paths so associates had one place to work during the transition.",
-          "Structured the experience around tender type so differing workflows stayed clear without forcing one flow for all.",
-          "Clarified payment destinations with third parties and surfaced flow in the UI so associates and customers could see where payments were going.",
-        ],
-      },
-      {
-        name: PROJECT_B_COMPLEXITY,
-        bullets: [
-          "Moved the team from AI-accelerated drafts to Figma as the production source of truth - using AI for speed, then structure for handoff, iteration, and developer clarity.",
-          "Gave developers components, layers, and specs in one place so flows were clearer than raw AI-generated outputs alone.",
-          "With flows and screens in Figma, design and development stayed aligned so the built product matched intent and reduced rework.",
-        ],
-      },
-    ],
-  },
-  {
-    id: "ambiguity",
-    title: "Ambiguity",
-    intro:
-      "How unclear or undefined problems were handled: what was unknown, how assumptions were validated, and what created direction.",
-    projects: [
-      {
-        name: PROJECT_A,
-        bullets: [
-          "Defined success criteria when “improved customer experience” was vague: ran short discovery interviews with associates and managers, framed “improved” as faster processing and fewer callbacks, and turned that into measurable goals.",
-          "Validated which return reasons drove volume and pain: sampled real return data and paired it with store visits to decide which codes to keep and how to order them in the UI.",
-          "Framed a speed-vs-accuracy trade-off with concrete scenarios for stakeholders and aligned on accuracy-first with a time target.",
-        ],
-      },
-      {
-        name: PROJECT_B_AMBIGUITY,
-        bullets: [
-          "Defined flows into linear and non-linear patterns so users could see what the product can do and still complete objectives in fewer steps when they already know the path.",
-          "Structured both patterns clearly - guided step-by-step vs. expert shortcuts - reducing ambiguity about how to finish tasks.",
-          "Challenged leadership when a proposed approach did not best serve users; kept the conversation professional so we could align on a balance of business goals and better experience.",
-        ],
-      },
-    ],
-  },
-  {
-    id: "systems-thinking",
-    title: "Systems Thinking",
-    intro:
-      "Awareness of upstream and downstream impacts: how decisions affected other teams, steps, or metrics, and what was done for consistency or scalability.",
-    projects: [
-      {
-        name: PROJECT_A,
-        bullets: [
-          "Involved vendor reconciliation and finance early so label format and reason-code values matched downstream systems and avoided rework after launch.",
-          "Aligned with training on a single source-of-truth flow so store guides and UI stayed in sync when the return flow changed.",
-          "Designed with future RTV centralization in mind (consistent reason codes and status language) so Centralized RTV could extend the Return Space model rather than replace it.",
-        ],
-      },
-      {
-        name: PROJECT_B_SYSTEMS,
-        bullets: [
-          "Adopted the internal design system for Pro Supply while giving DABS flexibility to keep the existing system until transition - progress without blocking other teams.",
-          "Used the design system to shape chatbot components so the flow was designed and specified in one place and stayed consistent.",
-          "Enabled developers to move faster from shared components: understand the flow, extend what they needed, and keep the chatbot build on track.",
-        ],
-      },
-    ],
-  },
-  {
-    id: "how-ive-changed",
-    title: "How I've Changed",
-    intro:
-      "What I learned from Return Space, what I stopped doing, and what I adopted across Lowe's Pro Supply and related work.",
-    projects: [
-      {
-        name: "Learning between the two",
-        bullets: [
-          "Gained leadership experience by aligning with developers and PMs on scope, feasibility, and language instead of designing in isolation - so we could ship without blocking each other.",
-          "Expanded from UX craft into product delivery: in Pro Supply I created tickets and owned backlog items to alleviate pressure on PMs so design and delivery kept moving.",
-          "Adopted a design-system and component-driven approach so developers could understand flows faster and impact scaled beyond pixel-level design.",
-          "Learned to challenge leadership on feature direction when the proposed approach did not best serve users - professionally, so we landed on solutions that balanced business goals with better experience.",
-        ],
-      },
-    ],
-  },
-];
+} from "@/lib/evidence";
 
 /**
  * Evidence — cinematic editorial layout aligned with recommendation detail:
  * fixed back control, viewport-width stage, display typography, wide columns.
+ * Lowe's initiative names and proprietary internals are redacted.
  */
 export default function EvidencePage() {
   const ref = useRef(null);
@@ -186,11 +57,12 @@ export default function EvidencePage() {
             className="mt-7 h-[2px] w-20 rounded-full bg-gradient-to-r from-[var(--primary)] to-transparent"
           />
           <p className="mt-6 text-[1.05rem] leading-[1.7] text-[var(--text-secondary)] md:text-[1.15rem] md:leading-[1.75]">
-            How a Product Experience Manager works - problem framing, trade-offs,
-            systems thinking, and delivery - drawn from{" "}
+            How an MBA Product Experience Manager works: problem framing, trade-offs,
+            systems thinking, and delivery, drawn from{" "}
             <strong>{PROJECT_A}</strong> and{" "}
-            <strong>Lowe&apos;s Pro Supply</strong>. Short, evidence-based bullets
-            hiring managers can scan; confidential UI stays out of view.
+            <strong>{PROJECT_B}</strong>. Short, evidence-based bullets
+            hiring managers can scan. Initiative names, UI, and proprietary
+            details are redacted.
           </p>
         </motion.header>
 
@@ -253,7 +125,7 @@ export default function EvidencePage() {
                   }
                 >
                   {section.projects.map((project) => (
-                    <div key={project.name} className="min-w-0">
+                    <div key={project.name + section.id} className="min-w-0">
                       <h3 className="font-display text-sm font-bold uppercase tracking-[0.14em] text-[var(--text-primary)]">
                         {project.name}
                       </h3>
