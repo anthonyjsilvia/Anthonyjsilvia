@@ -45,17 +45,6 @@ function RecommendationRow({ rec }: { rec: Recommendation }) {
         />
       </span>
 
-      <span className="recs-row__reflection" aria-hidden="true">
-        <Image
-          src={rec.image}
-          alt=""
-          width={280}
-          height={280}
-          className="recs-row__reflection-img"
-          sizes="(min-width: 900px) 280px, 200px"
-        />
-      </span>
-
       <span className="recs-row__body">
         <span className="recs-row__copy">
           <span className="recs-row__identity">

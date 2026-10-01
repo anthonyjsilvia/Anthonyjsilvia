@@ -1164,35 +1164,16 @@ html.force-reduce-motion .btn-apple-lift:active {
   -webkit-mask-image: linear-gradient(
     90deg,
     #000 0%,
-    #000 42%,
-    rgba(0, 0, 0, 0.72) 68%,
-    rgba(0, 0, 0, 0.2) 88%,
+    #000 55%,
+    rgba(0, 0, 0, 0.65) 78%,
     transparent 100%
   );
   mask-image: linear-gradient(
     90deg,
     #000 0%,
-    #000 42%,
-    rgba(0, 0, 0, 0.72) 68%,
-    rgba(0, 0, 0, 0.2) 88%,
+    #000 55%,
+    rgba(0, 0, 0, 0.65) 78%,
     transparent 100%
-  );
-}
-
-/* Extra wash on the photo edge so it dissolves into the reflection */
-.recs-row__media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    transparent 38%,
-    color-mix(in srgb, var(--background) 18%, transparent) 62%,
-    color-mix(in srgb, var(--background) 55%, transparent) 82%,
-    color-mix(in srgb, var(--background) 85%, transparent) 100%
   );
 }
 
@@ -1209,63 +1190,6 @@ html.force-reduce-motion .btn-apple-lift:active {
 .recs-row:hover .recs-row__photo,
 .recs-row:focus-visible .recs-row__photo {
   transform: scale(1.03);
-}
-
-/* Soft mirrored blur bleed into the copy side */
-.recs-row__reflection {
-  position: absolute;
-  z-index: 0;
-  left: 12%;
-  top: -18%;
-  bottom: -18%;
-  width: 78%;
-  pointer-events: none;
-  overflow: hidden;
-  opacity: 0.78;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.35) 12%,
-    rgba(0, 0, 0, 0.9) 32%,
-    rgba(0, 0, 0, 0.7) 58%,
-    transparent 94%
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.35) 12%,
-    rgba(0, 0, 0, 0.9) 32%,
-    rgba(0, 0, 0, 0.7) 58%,
-    transparent 94%
-  );
-}
-
-.recs-row__reflection-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  filter: blur(52px) saturate(1.25) brightness(1.05);
-  transform: scale(1.2) scaleX(-1);
-  transform-origin: center;
-}
-
-/* Stronger wash so copy stays readable over the reflection */
-.recs-row::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    transparent 26%,
-    color-mix(in srgb, var(--background) 22%, transparent) 44%,
-    color-mix(in srgb, var(--background) 72%, transparent) 62%,
-    var(--background) 80%,
-    var(--background) 100%
-  );
 }
 
 .recs-row__body {
@@ -1388,16 +1312,6 @@ html.color-scheme-dark .recs-row:focus-visible {
     0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
-html.dark .recs-row__reflection,
-html.color-scheme-dark .recs-row__reflection {
-  opacity: 0.55;
-}
-
-html.dark .recs-row__reflection-img,
-html.color-scheme-dark .recs-row__reflection-img {
-  filter: blur(56px) saturate(1.3) brightness(0.95);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .recs-row,
   .recs-row__photo,
@@ -1420,25 +1334,10 @@ html.color-scheme-dark .recs-row__reflection-img {
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .recs-row__reflection {
-    display: none;
-  }
-
   .recs-row__media {
     background: var(--bg-tertiary);
     -webkit-mask-image: none;
     mask-image: none;
-  }
-
-  .recs-row__media::after,
-  .recs-row::after {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      transparent 28%,
-      var(--background) 62%,
-      var(--background) 100%
-    );
   }
 }
 

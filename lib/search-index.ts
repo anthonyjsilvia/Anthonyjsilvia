@@ -125,11 +125,11 @@ const PAGE_ENTRIES: SearchEntry[] = [
     ],
   },
   {
-    title: "Resume",
+    title: "Request Resume",
     section: "Pages",
     href: "/resume",
-    description: "Downloadable resume",
-    keywords: ["cv", "pdf", "download", "curriculum vitae"],
+    description: "Request a private copy of the resume",
+    keywords: ["cv", "resume", "pdf", "curriculum vitae", "request"],
   },
   {
     title: "Contact",

@@ -113,9 +113,9 @@ export const OS_APPS: OsApp[] = [
   },
   {
     id: "resume",
-    name: "Resume",
-    subtitle: "CV",
-    description: "Downloadable resume for recruiters and hiring managers.",
+    name: "Request Resume",
+    subtitle: "Private",
+    description: "Request a private copy of the resume — not publicly downloadable.",
     action: "native",
     href: "/resume",
     tint: "rgb(90, 90, 100)",

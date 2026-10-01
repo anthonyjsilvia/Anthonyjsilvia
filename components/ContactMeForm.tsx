@@ -19,17 +19,42 @@ type FormStatus = "idle" | "submitting" | "success" | "error";
 type Props = {
   /** Shown when the support API key is not configured (mailto fallback). */
   fallbackEmail: string;
+  heading?: string;
+  description?: string;
+  defaultSubject?: string;
+  defaultCategory?: string;
+  defaultBody?: string;
+  /** Keep subject fixed (still submitted). */
+  lockSubject?: boolean;
+  hideCategory?: boolean;
+  submitLabel?: string;
+  successTitle?: string;
+  successMessage?: string;
+  successActionLabel?: string;
 };
 
-export default function ContactMeForm({ fallbackEmail }: Props) {
+export default function ContactMeForm({
+  fallbackEmail,
+  heading = "Contact me",
+  description = "Send a message through this site. I'll reply by email.",
+  defaultSubject = "",
+  defaultCategory = "general",
+  defaultBody = "",
+  lockSubject = false,
+  hideCategory = false,
+  submitLabel = "Send message",
+  successTitle = "Message sent",
+  successMessage,
+  successActionLabel = "Send another message",
+}: Props) {
   const [configChecked, setConfigChecked] = useState(false);
   const [formEnabled, setFormEnabled] = useState(true);
 
   const [requesterName, setRequesterName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
-  const [subject, setSubject] = useState("");
-  const [category, setCategory] = useState("general");
-  const [body, setBody] = useState("");
+  const [subject, setSubject] = useState(defaultSubject);
+  const [category, setCategory] = useState(defaultCategory);
+  const [body, setBody] = useState(defaultBody);
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [ticketId, setTicketId] = useState<string | null>(null);
@@ -61,13 +86,13 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
   const reset = useCallback(() => {
     setRequesterName("");
     setContactEmail("");
-    setSubject("");
-    setCategory("general");
-    setBody("");
+    setSubject(defaultSubject);
+    setCategory(defaultCategory);
+    setBody(defaultBody);
     setStatus("idle");
     setErrorMessage("");
     setTicketId(null);
-  }, []);
+  }, [defaultSubject, defaultCategory, defaultBody]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,7 +149,11 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
       window.location.hostname === "[::1]");
 
   if (configChecked && !formEnabled) {
-    const mailto = `mailto:${fallbackEmail}`;
+    const mailtoParams = new URLSearchParams();
+    if (defaultSubject) mailtoParams.set("subject", defaultSubject);
+    if (defaultBody) mailtoParams.set("body", defaultBody);
+    const qs = mailtoParams.toString();
+    const mailto = `mailto:${fallbackEmail}${qs ? `?${qs}` : ""}`;
     return (
       <div
         className="rounded-2xl border border-[var(--border-light)] bg-[var(--background)] p-6 md:p-8 shadow-sm"
@@ -134,7 +163,7 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
           id="contact-me-heading"
           className="text-xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)]"
         >
-          Contact me
+          {heading}
         </h3>
         <p className="mt-2 text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
           The on-site form is not active on this deployment yet. You can still reach me by email.
@@ -191,14 +220,20 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
         aria-live="polite"
       >
         <p className="text-lg font-semibold text-[var(--text-primary)] dark:text-[var(--text-primary)]">
-          Message sent
+          {successTitle}
         </p>
         <p className="mt-2 text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
-          Thanks for reaching out. I&apos;ll get back to you at{" "}
-          <span className="font-medium text-[var(--text-primary)] dark:text-[var(--text-primary)]">
-            {contactEmail.trim()}
-          </span>
-          .
+          {successMessage ? (
+            successMessage
+          ) : (
+            <>
+              Thanks for reaching out. I&apos;ll get back to you at{" "}
+              <span className="font-medium text-[var(--text-primary)] dark:text-[var(--text-primary)]">
+                {contactEmail.trim()}
+              </span>
+              .
+            </>
+          )}
         </p>
         {ticketId ? (
           <p className="mt-3 text-sm text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)]">
@@ -211,7 +246,7 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
           variant="primary"
           className="mt-6 rounded-lg bg-[var(--primary)] px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)]"
         >
-          Send another message
+          {successActionLabel}
         </GlowButton>
       </div>
     );
@@ -240,10 +275,10 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
         id="contact-me-heading"
         className="text-xl font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)]"
       >
-        Contact me
+        {heading}
       </h3>
       <p className="mt-2 text-sm text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
-        Send a message through this site. I&apos;ll reply by email.
+        {description}
       </p>
 
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -293,27 +328,32 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             maxLength={300}
+            readOnly={lockSubject}
             className={inputClass}
           />
         </div>
-        <div className="sm:col-span-2 sm:max-w-xs">
-          <label htmlFor="contact-category" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)]">
-            Category
-          </label>
-          <select
-            id="contact-category"
-            name="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className={inputClass}
-          >
-            {CATEGORIES.map((c) => (
-              <option key={c.value} value={c.value}>
-                {c.label}
-              </option>
-            ))}
-          </select>
-        </div>
+        {hideCategory ? (
+          <input type="hidden" name="category" value={category} />
+        ) : (
+          <div className="sm:col-span-2 sm:max-w-xs">
+            <label htmlFor="contact-category" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[var(--text-tertiary)] dark:text-[var(--text-tertiary)]">
+              Category
+            </label>
+            <select
+              id="contact-category"
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className={inputClass}
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="sm:col-span-2">
           <label htmlFor="contact-body" className="sr-only">
             Message (required)
@@ -356,7 +396,7 @@ export default function ContactMeForm({ fallbackEmail }: Props) {
           ) : (
             <>
               <Send className="h-4 w-4" aria-hidden />
-              Send message
+              {submitLabel}
             </>
           )}
         </GlowButton>

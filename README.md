@@ -232,7 +232,7 @@ This portfolio meets **WCAG 2.2 AAA standards** where applicable:
 ├── lib/
 │   └── firebase.ts          # Firebase configuration
 ├── public/
-│   └── resume.pdf           # Resume PDF (replace with your resume)
+│   └── (resume PDF removed — use Request Resume at /resume)
 └── package.json
 ```
 
@@ -240,7 +240,7 @@ This portfolio meets **WCAG 2.2 AAA standards** where applicable:
 
 All professional content matches Anthony Silvia's LinkedIn export **word-for-word**. The following sections are included:
 
-- **Hero**: Name, headline, location, and CTA buttons (View Resume, LinkedIn, Email)
+- **Hero**: Name, headline, location, and CTA buttons (Request Resume, LinkedIn, How I work)
 - **About**: Complete LinkedIn Summary
 - **Experience**: All LinkedIn experience entries with exact bullet points
 - **Skills**: Top skills, languages, certifications, honors & awards
@@ -249,11 +249,7 @@ All professional content matches Anthony Silvia's LinkedIn export **word-for-wor
 
 ## Resume
 
-The Resume link in the navigation opens `/resume.pdf` in a new tab. 
-
-**To add your resume:**
-1. Replace `/public/resume.pdf` with your actual resume PDF file
-2. The link will automatically work
+The resume is **not** publicly downloadable. Navigation, hero, and AnthonyOS link to **Request Resume** (`/resume`), where visitors submit a short request form. A private copy is shared by email when appropriate.
 
 ## SEO
 

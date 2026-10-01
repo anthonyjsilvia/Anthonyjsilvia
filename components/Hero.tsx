@@ -163,9 +163,9 @@ export default function Hero() {
             href="/resume"
             Icon={FileText}
             variant="primary"
-            ariaLabel="Open resume page"
+            ariaLabel="Request resume"
           >
-            View Resume
+            Request Resume
           </HeroCTA>
           <HeroCTA
             href="/evidence"

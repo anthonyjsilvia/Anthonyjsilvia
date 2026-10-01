@@ -47,7 +47,7 @@ const PAGES: { name: string; path: string; href: string; description: string }[]
   { name: "experience", path: "/experience", href: "/experience", description: "Career timeline" },
   { name: "portfolio", path: "/portfolio", href: "/portfolio", description: "Selected work" },
   { name: "evidence", path: "/evidence", href: "/evidence", description: "Evidence" },
-  { name: "resume", path: "/resume", href: "/resume", description: "Downloadable resume" },
+  { name: "resume", path: "/resume", href: "/resume", description: "Request a private resume copy" },
   { name: "contact", path: "/contact", href: "/contact", description: "Contact form" },
   {
     name: "recommendations",
@@ -463,7 +463,7 @@ const COMMANDS: Record<string, CommandHandler> = {
       "  evidence          Evidence (decision evidence)",
       "  reco              Recommendations",
       "  contact           Contact info",
-      "  resume            Resume page",
+      "  resume            Request Resume",
       "  echo <text>       Print text",
       "  date              Current date and time",
       "  history           Show this session's command history",
@@ -501,7 +501,7 @@ const COMMANDS: Record<string, CommandHandler> = {
     output: [
       "about.txt          contact.txt        evidence/",
       "experience/        portfolio/         recommendations/",
-      "resume.pdf         secrets.txt*",
+      "request-resume.txt secrets.txt*",
       "",
       "* hint: try `sudo cat secrets.txt`",
     ],
@@ -599,8 +599,8 @@ const COMMANDS: Record<string, CommandHandler> = {
 
   resume: () => ({
     output: [
-      "Resume available at /resume.",
-      "Run `open resume` to view.",
+      "Resume is private — request a copy at /resume.",
+      "Run `open resume` to send a request.",
     ],
   }),
 
@@ -665,9 +665,9 @@ const COMMANDS: Record<string, CommandHandler> = {
         "contact@anthonysilvia.com",
         "https://linkedin.com/in/anthonyjsilvia",
       ],
-      "resume.pdf": [
-        "%PDF-1.7",
-        "[binary data - run `open resume` to download]",
+      "request-resume.txt": [
+        "Resume is not publicly downloadable.",
+        "Open /resume to request a private copy.",
       ],
       "secrets.txt": [
         "Permission denied. Try `sudo cat secrets.txt`.",

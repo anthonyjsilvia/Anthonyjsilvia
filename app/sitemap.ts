@@ -25,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/portfolio`, lastModified, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${baseUrl}/evidence`, lastModified, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/kind-words`, lastModified, changeFrequency: 'yearly', priority: 0.65 },
-    { url: `${baseUrl}/resume`, lastModified, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/resume`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/contact`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
     ...recommendationEntries,
   ]

@@ -42,7 +42,7 @@ const PAGE_LINKS: { href: string; label: string }[] = [
   { href: "/portfolio", label: "Portfolio" },
   { href: "/evidence", label: "Evidence" },
   { href: "/#ai", label: "AI practice" },
-  { href: "/resume", label: "Resume" },
+  { href: "/resume", label: "Request Resume" },
   { href: "/contact", label: "Contact" },
 ];
 
