@@ -2,22 +2,14 @@
 
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { useRef } from "react";
-import {
-  Bot,
-  FileSearch,
-  Layers,
-  Sparkles,
-  Workflow,
-  Zap,
-} from "lucide-react";
+import { FileSearch, Layers, Sparkles, Workflow } from "lucide-react";
 import { cineEase, dur, fadeUp } from "@/lib/motion";
 import { aiPracticeIntro, aiPractices } from "@/lib/ai-practices";
 
-const PRACTICE_ICONS = [FileSearch, Layers, Workflow, Zap] as const;
+const PRACTICE_ICONS = [FileSearch, Layers, Workflow] as const;
 
 /**
- * AI advantage — how a Product Experience Manager uses AI to raise
- * efficiency and output without inventing vanity metrics.
+ * How I design: compressed practice strip (AI + craft), not a long sermon.
  */
 export default function AiAdvantage() {
   const ref = useRef(null);
@@ -31,39 +23,29 @@ export default function AiAdvantage() {
 
   return (
     <section
-      id="ai"
+      id="practice"
       ref={ref}
       className="ai-advantage section-atmosphere border-t border-[var(--border-light)] bg-[var(--background)]"
-      aria-labelledby="ai-heading"
+      aria-labelledby="practice-heading"
     >
-      <div className="ai-advantage__inner mx-auto w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)] py-20 md:py-28">
+      <div className="ai-advantage__inner mx-auto w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)] py-16 md:py-24">
         <motion.header
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={headerVariants}
           className="ai-advantage__header"
         >
-          <div className="ai-advantage__badge">
-            <Bot className="h-4 w-4" aria-hidden="true" />
-            <span>AI in my PXM practice</span>
-          </div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
+            {aiPracticeIntro.eyebrow}
+          </p>
           <span
             className={`accent-rule mt-5 ${inView ? "accent-rule--animate" : ""}`}
             aria-hidden="true"
           />
-          <h2 id="ai-heading" className="ai-advantage__title">
-            AI is how I{" "}
-            <span className="ai-advantage__title-accent">ship more,</span>{" "}
-            not how I skip judgment.
+          <h2 id="practice-heading" className="ai-advantage__title">
+            {aiPracticeIntro.title}
           </h2>
-          <p className="ai-advantage__lede">
-            As an MBA Product Experience Manager I treat AI as operating leverage:
-            faster drafts, broader exploration, tighter delivery loops - with
-            product judgment, accessibility, and stakeholder alignment still
-            owning the final call. Managers have called out my AI-driven design
-            leadership and how quickly I bring emerging tools into real
-            workflows.
-          </p>
+          <p className="ai-advantage__lede">{aiPracticeIntro.lede}</p>
         </motion.header>
 
         <ul role="list" className="ai-advantage__grid">
@@ -96,40 +78,6 @@ export default function AiAdvantage() {
             </motion.li>
           ))}
         </ul>
-
-        <motion.div
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-          animate={
-            inView
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: shouldReduceMotion ? 0 : 16 }
-          }
-          transition={{
-            duration: shouldReduceMotion ? 0 : dur.md,
-            delay: shouldReduceMotion ? 0 : 0.4,
-            ease: cineEase,
-          }}
-          className="ai-advantage__outcomes"
-        >
-          <p className="ai-advantage__outcomes-label">
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
-            What that means for hiring managers
-          </p>
-          <ul className="ai-advantage__outcomes-list">
-            <li>
-              <strong>Higher throughput</strong> - more concepts, tickets, and
-              research prep completed in the same sprint window.
-            </li>
-            <li>
-              <strong>Faster alignment</strong> - clearer options on the table
-              earlier, so trade-offs get decided sooner.
-            </li>
-            <li>
-              <strong>Quality held</strong> - AI accelerates drafts; I still
-              own success criteria, accessibility, and what ships.
-            </li>
-          </ul>
-        </motion.div>
       </div>
     </section>
   );

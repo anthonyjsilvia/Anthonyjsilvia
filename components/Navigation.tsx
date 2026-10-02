@@ -14,10 +14,10 @@ import SiteSearch from "@/components/SiteSearch";
  */
 const menuItems = [
   { name: "Home", href: "/" },
-  { name: "Experience", href: "/experience" },
   { name: "Portfolio", href: "/portfolio" },
   { name: "Evidence", href: "/evidence" },
-  { name: "AI practice", href: "/#ai" },
+  { name: "Experience", href: "/experience" },
+  { name: "Recommendations", href: "/recommendations" },
   { name: "Request Resume", href: "/resume" },
   { name: "Contact", href: "/contact" },
 ];
@@ -59,12 +59,10 @@ function getLeftChromeRect(): DOMRect | null {
  */
 type NavigationProps = {
   onOpenAccessibility?: () => void;
-  onOpenOs?: () => void;
 };
 
 export default function Navigation({
   onOpenAccessibility,
-  onOpenOs,
 }: NavigationProps) {
   const pathname = usePathname() ?? "/";
   const shouldReduceMotion = useReducedMotion();
@@ -197,7 +195,7 @@ export default function Navigation({
   const onMedia = isHome;
   const triggerTone = onMedia ? "site-menu-trigger--on-media" : "site-menu-trigger--surface";
   const iconTone = onMedia ? "site-menu-icon-btn--on-media" : "site-menu-icon-btn--surface";
-  const a11yInMenu = Boolean(onOpenAccessibility && suppressA11y);
+  const a11yInMenu = Boolean(onOpenAccessibility);
 
   return (
     <>
@@ -278,7 +276,7 @@ export default function Navigation({
             <div className="flex items-center justify-between px-[var(--hp-cine-pad,1.25rem)] pt-5 pb-2">
               <p
                 id={titleId}
-                className="site-menu-overlay__eyebrow font-display text-[11px] font-bold uppercase tracking-[0.22em]"
+                className="site-menu-overlay__eyebrow font-sans text-[11px] font-bold uppercase tracking-[0.18em]"
               >
                 Menu
               </p>
@@ -327,7 +325,7 @@ export default function Navigation({
                         >
                           {String(idx + 1).padStart(2, "0")}
                         </span>
-                        <span className="site-menu-overlay__label font-display text-[clamp(2rem,5.5vw,3.75rem)] font-extrabold tracking-[-0.045em] leading-[1.05] transition-transform duration-300 group-hover:translate-x-1">
+                        <span className="site-menu-overlay__label font-sans text-[clamp(1.85rem,5vw,3.25rem)] font-bold tracking-[-0.02em] leading-[1.12] transition-transform duration-300 group-hover:translate-x-1">
                           {item.name}
                         </span>
                       </Link>
@@ -335,45 +333,6 @@ export default function Navigation({
                   );
                 })}
               </ul>
-
-              {onOpenOs ? (
-                <motion.div
-                  className="mx-auto mt-8 w-full max-w-3xl"
-                  initial={{
-                    opacity: 0,
-                    y: shouldReduceMotion ? 0 : 16,
-                  }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: shouldReduceMotion ? 0 : 0.55,
-                    delay: shouldReduceMotion ? 0 : 0.4,
-                    ease: cineEase,
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      close();
-                      onOpenOs();
-                    }}
-                    aria-haspopup="dialog"
-                    className="group flex w-full items-baseline gap-4 rounded-lg border border-white/20 bg-white/10 px-4 py-4 text-left transition-colors hover:bg-white/16 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070a12]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="site-menu-overlay__index w-8 shrink-0 font-mono text-xs"
-                    >
-                      OS
-                    </span>
-                    <span className="site-menu-overlay__label font-display text-[clamp(1.75rem,4.5vw,2.75rem)] font-extrabold tracking-[-0.045em] leading-[1.05]">
-                      AnthonyOS
-                    </span>
-                    <span className="ml-auto hidden text-xs font-medium uppercase tracking-[0.14em] text-white/55 sm:inline">
-                      ⌘.
-                    </span>
-                  </button>
-                </motion.div>
-              ) : null}
             </nav>
 
             {a11yInMenu && onOpenAccessibility && (
@@ -389,7 +348,7 @@ export default function Navigation({
                   className="mx-auto flex w-full max-w-3xl items-center gap-3 rounded-2xl border border-white/25 bg-white/10 px-5 py-4 text-left text-white transition-colors hover:bg-white/16 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070a12]"
                 >
                   <UniversalAccess className="h-5 w-5 shrink-0 fill-current" aria-hidden />
-                  <span className="font-display text-sm font-bold uppercase tracking-[0.18em]">
+                  <span className="font-sans text-sm font-bold uppercase tracking-[0.16em]">
                     Accessibility
                   </span>
                 </button>

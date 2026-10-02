@@ -1,4 +1,4 @@
-/** AI practice pillars — shared by homepage #ai + AnthonyOS app. */
+/** Design practice pillars, shared by homepage #practice + AnthonyOS app. */
 
 export type AiPractice = {
   id: string;
@@ -17,25 +17,19 @@ export const aiPractices: AiPractice[] = [
     id: "exploration",
     title: "Exploration at speed",
     body:
-      "AI helps me generate flows, variants, and copy options in minutes so I can pressure-test more directions per cycle - and still ship the one that earns stakeholder alignment.",
+      "AI helps me generate flows, variants, and copy options in minutes so I can pressure-test more directions per cycle, and still ship the one that earns stakeholder alignment.",
   },
   {
     id: "delivery",
-    title: "Delivery leverage",
+    title: "Craft to production",
     body:
-      "From tickets and acceptance criteria to research scripts and handoff notes, AI cuts busywork so I spend more time on prioritization, trade-offs, and experience quality.",
-  },
-  {
-    id: "multiplier",
-    title: "Team multiplier",
-    body:
-      "I lead AI-assisted design practice: share workflows, raise the bar on judgment over generation, and help partners move from drafts to production-ready product experience.",
+      "I move from AI-assisted exploration into Figma as the source of truth (components, specs, and handoff clarity) so engineering builds what we intended.",
   },
 ];
 
 export const aiPracticeIntro = {
-  eyebrow: "AI practice",
-  title: "AI as product leverage, not a substitute for judgment.",
+  eyebrow: "How I design",
+  title: "AI accelerates exploration. Judgment ships the product.",
   lede:
-    "As an MBA Product Experience Manager, I use AI to raise efficiency and output across discovery, exploration, and delivery - with human judgment owning what ships.",
+    "Claude, Cursor, and Figma are part of my day-to-day practice for synthesis, prototyping, and delivery speed. Product judgment, accessibility, and stakeholder alignment still own the final call.",
 };

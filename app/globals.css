@@ -171,12 +171,12 @@ html {
 }
 
 :root {
-  /* OS-native UI fonts (SF Pro / Segoe UI / Roboto / etc.) */
-  --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Plus Jakarta Sans (UI/body) + Outfit (large headlines) */
+  --font-system: var(--font-jakarta), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
-  --font-display: var(--font-system);
+  --font-display: var(--font-outfit), var(--font-jakarta), system-ui, sans-serif;
 }
 
 body {
@@ -188,9 +188,12 @@ body {
   font-family: var(--font-system);
 }
 
-/* Display headings use the same OS UI stack as body */
-.font-display {
+.font-sans {
   font-family: var(--font-system);
+}
+
+.font-display {
+  font-family: var(--font-display);
 }
 
 /* ─── Homepage cinematic system (inspired by nodeda.com / work.nodeda.com) ─── */
@@ -307,7 +310,7 @@ html.force-reduce-motion .hero-parallax-img {
 }
 
 .hp-cine-stage {
-  padding-block: clamp(4.5rem, 10vw, 7.5rem);
+  padding-block: clamp(3.5rem, 8vw, 6rem);
   padding-inline: var(--hp-cine-pad);
 }
 
@@ -710,7 +713,7 @@ html.force-reduce-motion .selected-work__go-label {
   }
 }
 
-/* AI advantage — PXM efficiency / output story */
+/* How I design — AI-assisted practice strip */
 .ai-advantage {
   scroll-margin-top: 5.5rem;
 }
@@ -1045,10 +1048,311 @@ html.force-reduce-motion .btn-apple-lift:active {
   transform: none;
 }
 
-/* Recommendations — Apple-craft people list (visible quotes, AAA text) */
+/* Portfolio page: cinematic editorial project index */
+.portfolio-cine {
+  scroll-margin-top: 5.5rem;
+}
+
+.portfolio-cine__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3.5rem, 8vw, 6.5rem);
+}
+
+.portfolio-cine__item {
+  margin: 0;
+}
+
+.portfolio-cine__row {
+  position: relative;
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  border-radius: 0;
+  transition: transform var(--dur-apple-md) var(--ease-apple-out);
+}
+
+@media (min-width: 900px) {
+  .portfolio-cine__row {
+    grid-template-columns: auto minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(1.75rem, 3vw, 3.25rem);
+  }
+
+  .portfolio-cine__row--reverse .portfolio-cine__visual {
+    order: 3;
+  }
+
+  .portfolio-cine__row--reverse .portfolio-cine__copy {
+    order: 2;
+  }
+}
+
+.portfolio-cine__row:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 6px;
+  border-radius: 12px;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .portfolio-cine__row:hover {
+    transform: translateY(-2px);
+  }
+
+  .portfolio-cine__row:hover .portfolio-cine__media-img {
+    transform: scale(calc(var(--media-zoom, 1) * 1.035));
+  }
+
+  .portfolio-cine__row:hover .portfolio-cine__cta {
+    gap: 0.65rem;
+  }
+
+  .portfolio-cine__row:hover .portfolio-cine__cta-icon {
+    transform: translate(2px, -2px);
+  }
+}
+
+.portfolio-cine__index {
+  display: none;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: rgba(var(--primary-rgb), 0.22);
+  user-select: none;
+}
+
+@media (min-width: 900px) {
+  .portfolio-cine__index {
+    display: block;
+    align-self: start;
+    padding-top: 0.35rem;
+  }
+}
+
+.portfolio-cine__visual {
+  min-width: 0;
+}
+
+.portfolio-cine__media-frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  overflow: hidden;
+  border-radius: clamp(16px, 2vw, 28px);
+  background: var(--bg-secondary);
+}
+
+@media (min-width: 900px) {
+  .portfolio-cine__media-frame {
+    aspect-ratio: 5 / 6;
+  }
+}
+
+.portfolio-cine__media-img {
+  object-fit: cover;
+  object-position: top center;
+  transform: scale(var(--media-zoom, 1));
+  transform-origin: center center;
+  transition: transform var(--dur-apple-xl) var(--ease-apple-out);
+  will-change: transform;
+}
+
+.portfolio-cine__media-badge {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portfolio-cine__media-frame--confidential,
+.portfolio-cine__media-frame--typo {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  background:
+    linear-gradient(
+      160deg,
+      rgba(var(--primary-rgb), 0.14) 0%,
+      transparent 45%
+    ),
+    linear-gradient(180deg, #0a0e18 0%, #121826 100%);
+  color: #fff;
+}
+
+html:not(.dark) .portfolio-cine__media-frame--typo {
+  background:
+    linear-gradient(
+      160deg,
+      rgba(var(--primary-rgb), 0.1) 0%,
+      transparent 42%
+    ),
+    linear-gradient(180deg, #f3f4f6 0%, #e8eaee 100%);
+  color: var(--text-primary);
+}
+
+.portfolio-cine__media-frame--typo::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: var(--project-accent, var(--primary));
+  opacity: 0.85;
+}
+
+.portfolio-cine__media-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.portfolio-cine__media-mark {
+  margin: 0.65rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.85rem, 3.5vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  max-width: 12ch;
+}
+
+.portfolio-cine__media-note {
+  margin: 0.85rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.portfolio-cine__copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.portfolio-cine__logo {
+  display: inline-flex;
+  align-items: center;
+  max-width: min(100%, 11.5rem);
+  margin-bottom: 0.85rem;
+}
+
+.portfolio-cine__logo-img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 1.85rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.portfolio-cine__org {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.portfolio-cine__category {
+  margin: 0.45rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.portfolio-cine__project-title {
+  margin: 0.85rem 0 0;
+  max-width: 18ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 2.8vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  color: var(--text-primary);
+}
+
+.portfolio-cine__status {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
+.portfolio-cine__desc {
+  margin: 1rem 0 0;
+  max-width: 34rem;
+  font-size: clamp(1rem, 1.25vw, 1.08rem);
+  font-weight: 500;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.portfolio-cine__cta {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+  transition: gap var(--dur-apple-sm) var(--ease-apple-smooth);
+}
+
+.portfolio-cine__cta-icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform var(--dur-apple-sm) var(--ease-apple-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-cine__row,
+  .portfolio-cine__media-img,
+  .portfolio-cine__cta,
+  .portfolio-cine__cta-icon {
+    transition: none !important;
+  }
+
+  .portfolio-cine__row:hover {
+    transform: none;
+  }
+
+  .portfolio-cine__row:hover .portfolio-cine__media-img {
+    transform: scale(var(--media-zoom, 1));
+  }
+}
+
+/* Recommendations: Apple-craft people list (visible quotes, AAA text) */
+
 .recs {
   padding-block: clamp(4.75rem, 11vw, 8rem);
   padding-inline: var(--hp-cine-pad);
+}
+
+.recs--page {
+  border-top: none;
+  min-height: calc(100vh - 4.75rem);
 }
 
 .recs__inner {

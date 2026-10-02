@@ -17,7 +17,7 @@ export const resumeRequestCopy = {
   submitLabel: "Request resume",
   successTitle: "Request sent",
   successMessage:
-    "Thanks — I’ll review your note and send a resume if it’s a fit.",
+    "Thanks, I’ll review your note and send a resume if it’s a fit.",
   successActionLabel: "Submit another request",
   fallbackEmail: contactInfo.email,
 } as const;

@@ -1,4 +1,4 @@
-/** Evidence sections — shared by Evidence page + AnthonyOS Evidence app. */
+/** Evidence sections: shared by Evidence page + AnthonyOS Evidence app. */
 
 /** Public employer label only. Initiative names and internals are redacted. */
 export const PROJECT_A = "Lowe's · Confidential initiative A";

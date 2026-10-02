@@ -3,7 +3,7 @@
 import ContactMeForm from "@/components/ContactMeForm";
 import { resumeRequestCopy } from "@/lib/resume-request";
 
-/** Request Resume — no live document or PDF inside AnthonyOS. */
+/** Request Resume: no live document or PDF inside AnthonyOS. */
 export default function ResumeApp({ embedded = false }: { embedded?: boolean }) {
   return (
     <div className={`os-app os-app--single${embedded ? " os-app--embedded" : ""}`}>

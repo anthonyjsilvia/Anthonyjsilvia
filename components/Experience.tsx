@@ -10,11 +10,13 @@ import type { MappedExperienceEntry, MappedProject } from "@/lib/resume-public";
 // NodeDa - projects and former clients, shown as buttons in Experience
 // (used when the live API does not supply project links for NodeDa).
 const NODEDA_PROJECTS = [
-  { name: "Kinlily", href: "https://kinlily.com", ariaLabel: "Visit Kinlily (opens in new tab)" },
+  {
+    name: "NodeDa Work",
+    href: "https://work.nodeda.com",
+    ariaLabel: "Visit NodeDa Work (opens in new tab)",
+  },
 ];
-const NODEDA_FORMER_CLIENTS = [
-  { name: "Rohde Architects", href: "https://rohdearchitects.com", ariaLabel: "Visit Rohde Architects (opens in new tab)" },
-];
+const NODEDA_FORMER_CLIENTS: { name: string; href: string; ariaLabel: string }[] = [];
 
 /* ---------------------------------------------------------------------------
    Smart, real-time tenure math
@@ -126,11 +128,10 @@ const experiences: ExperienceEntry[] = [
         start: { year: 2026, month: 5 },
         location: "Charlotte, North Carolina · Hybrid",
         bullets: [
-          "Own end-to-end product experience for critical internal systems: lead discovery, define success criteria, prioritize scope, and ship interaction design through usability validation in high-volume operational workflows.",
-          "Use AI across the PXM loop - research synthesis, exploration, tickets, and research scripts - to raise personal and team throughput while keeping product judgment, accessibility, and stakeholder alignment on the final call.",
-          "Partner with product, engineering, operations, and end users to translate complex needs into scalable, accessible, business-aligned experiences.",
-          "Plan and facilitate usability testing and design validation; synthesize research into roadmap priorities and product strategy recommendations.",
-          "Drive experience quality by identifying usability gaps, evaluating design and delivery trade-offs, and supporting accessible solutions from concept through implementation.",
+          "Own end-to-end product design for critical internal systems: lead discovery, define success criteria, prioritize scope, and ship interaction design through usability validation in high-volume operational workflows.",
+          "Use AI for research synthesis, exploration, and delivery prep, raising throughput while keeping product judgment, accessibility, and stakeholder alignment on the final call.",
+          "Partner with product, engineering, operations, and end users to turn complex needs into scalable, accessible experiences.",
+          "Plan and facilitate usability testing; synthesize research into roadmap priorities.",
         ],
       },
       {
@@ -139,12 +140,10 @@ const experiences: ExperienceEntry[] = [
         end: { year: 2026, month: 5 },
         location: "Charlotte Metro · Hybrid",
         bullets: [
-          "Led end-to-end product experience for critical internal systems, partnering with product and engineering to improve usability, operational efficiency, and business outcomes in high-volume environments.",
-          "Led AI-driven design efforts: adopted emerging tools, accelerated exploration and delivery prep, and helped the team rethink how work gets done without lowering quality.",
-          "Planned and facilitated usability testing; translated research into prioritized product improvements adopted across the roadmap.",
-          "Created wireframes and interactive prototypes in Figma to define product direction, validate concepts, and align cross-functional stakeholders.",
-          "Contributed to and evolved internal design systems with an accessibility-first approach, supporting scalable development and consistent experiences.",
-          "Designed within WCAG 2.2 AA/AAA standards while balancing accessibility, technical constraints, and operational priorities.",
+          "Led end-to-end product design for critical internal systems, partnering with product and engineering to improve usability and operational efficiency in high-volume environments.",
+          "Adopted AI tools to accelerate exploration and delivery prep without lowering craft quality.",
+          "Created wireframes and interactive prototypes in Figma; contributed to design systems with an accessibility-first approach (WCAG 2.2).",
+          "Planned and facilitated usability testing; translated research into prioritized product improvements.",
         ],
       },
       {
@@ -361,7 +360,7 @@ export default function Experience({
                         ))}
                       </div>
                     </div>
-                    {isNodeDa ? (
+                    {isNodeDa && NODEDA_FORMER_CLIENTS.length > 0 ? (
                       <div className="pt-6 border-t border-[var(--border-light)]">
                         <h4 className="text-lg font-bold text-[var(--text-primary)] dark:text-[var(--text-primary)] mb-4">
                           Former clients

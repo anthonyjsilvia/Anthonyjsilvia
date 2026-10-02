@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ChevronDown, FileText, Layers, Linkedin } from "lucide-react";
+import { ChevronDown, FileText, Layers } from "lucide-react";
 import { type ElementType, type ReactNode, useEffect, useRef } from "react";
 import { heroItem, heroStagger } from "@/lib/motion";
 
@@ -134,25 +134,30 @@ export default function Hero() {
         <motion.h1
           id="hero-heading"
           variants={item}
-          className="font-display text-[clamp(2.4rem,6.5vw,4.25rem)] font-extrabold tracking-[-0.045em] leading-[0.98] text-white max-w-[16ch]"
+          className="font-display text-[clamp(2.4rem,6.5vw,4.25rem)] font-extrabold tracking-[-0.025em] leading-[1.02] text-white max-w-[14ch]"
         >
-          Anthony Silvia, MBA
+          Anthony Silvia
         </motion.h1>
 
         <motion.p
           variants={item}
-          className="mt-3 md:mt-4 font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold tracking-[-0.02em] text-white"
+          className="mt-2 font-sans text-[clamp(0.8rem,1.2vw,0.95rem)] font-semibold uppercase tracking-[0.18em] text-white/70"
         >
-          Product Experience Manager
+          MBA
         </motion.p>
 
         <motion.p
           variants={item}
-          className="mt-3 md:mt-4 text-[clamp(1.05rem,1.7vw,1.25rem)] font-medium leading-[1.55] text-white/85 max-w-[36rem]"
+          className="mt-3 md:mt-4 font-sans text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold tracking-[-0.01em] text-white"
         >
-          MBA Product Experience Manager who uses AI to raise efficiency and
-          output - turning messy operational problems into clear product
-          experiences, with judgment still owning what ships.
+          Product Designer
+        </motion.p>
+
+        <motion.p
+          variants={item}
+          className="mt-3 md:mt-4 font-sans text-[clamp(1.05rem,1.7vw,1.25rem)] font-medium leading-[1.6] text-white/85 max-w-[36rem]"
+        >
+          I turn complex operational workflows into clear product experiences.
         </motion.p>
 
         <motion.div
@@ -160,29 +165,20 @@ export default function Hero() {
           className="mt-8 md:mt-10 flex flex-wrap gap-3"
         >
           <HeroCTA
+            href="#work"
+            Icon={Layers}
+            variant="primary"
+            ariaLabel="See selected work"
+          >
+            Selected work
+          </HeroCTA>
+          <HeroCTA
             href="/resume"
             Icon={FileText}
-            variant="primary"
+            variant="secondary"
             ariaLabel="Request resume"
           >
             Request Resume
-          </HeroCTA>
-          <HeroCTA
-            href="/evidence"
-            Icon={Layers}
-            variant="secondary"
-            ariaLabel="How I work - evidence from shipped projects"
-          >
-            How I work
-          </HeroCTA>
-          <HeroCTA
-            href="https://linkedin.com/in/anthonyjsilvia"
-            external
-            Icon={Linkedin}
-            variant="secondary"
-            ariaLabel="Open LinkedIn profile in new tab"
-          >
-            LinkedIn
           </HeroCTA>
         </motion.div>
       </motion.div>
@@ -199,7 +195,7 @@ export default function Hero() {
         className="hero-read-more absolute bottom-[var(--hp-cine-pad,1.25rem)] left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/80 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:left-auto md:right-[var(--hp-cine-pad,1.25rem)] md:translate-x-0"
         aria-label="See selected work"
       >
-        <span className="font-display text-[11px] font-bold uppercase tracking-[0.22em]">
+        <span className="font-sans text-[11px] font-bold uppercase tracking-[0.18em]">
           Selected work
         </span>
         <ChevronDown

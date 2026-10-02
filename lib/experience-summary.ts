@@ -24,7 +24,7 @@ export const experienceRoles: OsExperienceRole[] = [
       "Own end-to-end product experience for critical internal systems across discovery, prioritization, and shipped UX.",
     bullets: [
       "Lead discovery, define success criteria, prioritize scope, and ship interaction design through usability validation.",
-      "Use AI across the PXM loop while keeping product judgment and accessibility on the final call.",
+      "Use AI across discovery and delivery while keeping product judgment and accessibility on the final call.",
       "Partner with product, engineering, operations, and end users on scalable, accessible experiences.",
     ],
   },
@@ -58,10 +58,10 @@ export const experienceRoles: OsExperienceRole[] = [
     period: "May 2017 - Present",
     location: "United States",
     summary:
-      "Independent consultancy for product strategy and experience design; launched Kinlily end-to-end.",
+      "Independent consultancy for product strategy and experience design across early-stage and growth products.",
     bullets: [
       "Discovery-through-delivery engagements with AI-assisted exploration and delivery output.",
-      "Hands-on product lifecycle ownership for Kinlily (formerly Cookbook).",
+      "Hands-on product lifecycle ownership from discovery through launch.",
     ],
   },
 ];

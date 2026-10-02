@@ -16,13 +16,13 @@ export default function AiPracticeApp({ embedded = false }: { embedded?: boolean
     <OsAppShell
       embedded={embedded}
       eyebrow={aiPracticeIntro.eyebrow}
-      sidebarTitle="AI leverage"
+      sidebarTitle="Practice"
       items={aiPractices.map((i) => ({ id: i.id, title: i.title }))}
       activeId={active.id}
       onSelect={setActiveId}
       detailTitle={active.title}
       detailSubtitle={aiPracticeIntro.title}
-      siteHref="/#ai"
+      siteHref="/#practice"
       siteLabel="Open on home"
     >
       <p className="os-app__lede">{aiPracticeIntro.lede}</p>

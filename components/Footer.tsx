@@ -38,10 +38,10 @@ const NODEDA = {
 
 const PAGE_LINKS: { href: string; label: string }[] = [
   { href: "/", label: "Home" },
-  { href: "/experience", label: "Experience" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/evidence", label: "Evidence" },
-  { href: "/#ai", label: "AI practice" },
+  { href: "/experience", label: "Experience" },
+  { href: "/recommendations", label: "Recommendations" },
   { href: "/resume", label: "Request Resume" },
   { href: "/contact", label: "Contact" },
 ];
@@ -78,7 +78,11 @@ const SOCIAL_LINKS: SocialLink[] = [
   },
 ];
 
-export default function Footer() {
+type FooterProps = {
+  onOpenOs?: () => void;
+};
+
+export default function Footer({ onOpenOs }: FooterProps) {
   // Copyright year is computed on the client after mount so the static HTML
   // ships with a sensible default and the dynamic value takes over once
   // hydrated. Avoids hydration mismatches if SSR is generated in a different
@@ -140,10 +144,10 @@ export default function Footer() {
               aria-hidden="true"
             />
             <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)] md:text-lg">
-              Open to Product Experience Manager roles where an MBA lens and AI
-              are real advantages - discovery through delivery in enterprise
-              ops, accessibility-first systems, and research-led decisions that
-              move business outcomes at higher throughput.
+              Open to Product Designer roles where systems thinking, frontline
+              ops UX, and an MBA lens are real advantages: research-led
+              decisions, accessibility-first craft, and AI practice that raises
+              throughput without skipping judgment.
             </p>
           </motion.div>
 
@@ -202,9 +206,9 @@ export default function Footer() {
               Anthony Silvia, MBA
             </Link>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
-              Anthony Silvia, MBA - Product Experience Manager. Hybrid of
-              product management and UX, AI-accelerated for higher efficiency
-              and output. Currently a Product Designer at{" "}
+              Anthony Silvia, MBA · Product Designer. Complex operational
+              experiences, systems thinking, and AI-assisted practice. Currently
+              a Product Designer at{" "}
               <span className="font-medium text-[var(--text-primary)]">
                 Lowe&apos;s
               </span>{" "}
@@ -338,18 +342,24 @@ export default function Footer() {
               © {year} Anthony Silvia. All rights reserved.
             </p>
             <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-tertiary)]">
-              <span className="inline-flex items-center gap-2">
-                <span>Try the terminal  - </span>
+              {onOpenOs ? (
+                <button
+                  type="button"
+                  onClick={onOpenOs}
+                  aria-haspopup="dialog"
+                  aria-label="Open AnthonyOS"
+                  className="rounded-md font-medium text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
+                >
+                  AnthonyOS
+                </button>
+              ) : null}
+              <span className="inline-flex items-center gap-2 opacity-70">
+                <span>Easter eggs</span>
                 <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
                   <Command className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>K</span>
                 </kbd>
-              </span>
-              <span className="text-[var(--border-light)]" aria-hidden="true">
-                ·
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <span>Open AnthonyOS  - </span>
+                <span>/</span>
                 <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
                   <Command className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>.</span>

@@ -14,8 +14,8 @@ type Props = {
 export default function HomeApp({ embedded = false, onOpenApp }: Props) {
   const shortcuts = [
     { id: "work", label: "Selected Work", appId: "work" },
-    { id: "ai", label: "AI Practice", appId: "ai" },
     { id: "about", label: "About", appId: "about" },
+    { id: "portfolio", label: "Portfolio", appId: "portfolio" },
     { id: "recommendations", label: "Kind Words", appId: "recommendations" },
   ];
 
@@ -35,8 +35,8 @@ export default function HomeApp({ embedded = false, onOpenApp }: Props) {
           <p className="os-app__eyebrow">Home</p>
           <h1 className="os-app__single-title">Anthony Silvia, MBA</h1>
           <p className="os-app__prose">
-            Product Experience Manager. AI-accelerated product × UX across
-            discovery, exploration, and delivery.
+            Product Designer. Complex operational workflows into clear product
+            experiences, from discovery through delivery.
           </p>
           <p className="os-app__meta">{aiPracticeIntro.lede}</p>
           <div className="os-app__shortcut-grid">

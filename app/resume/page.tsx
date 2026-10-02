@@ -5,7 +5,7 @@ import ContactMeForm from "@/components/ContactMeForm";
 import { resumeRequestCopy } from "@/lib/resume-request";
 
 /**
- * Request Resume — no public document or PDF.
+ * Request Resume: no public document or PDF.
  * Full CV is shared privately after a request.
  */
 export default function RequestResumePage() {

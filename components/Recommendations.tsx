@@ -67,14 +67,33 @@ function RecommendationRow({ rec }: { rec: Recommendation }) {
   );
 }
 
+type RecommendationsProps = {
+  /** Cap how many cards show. Omit to show all. */
+  limit?: number;
+  /** Use h1 + page spacing (dedicated /recommendations route). */
+  asPage?: boolean;
+};
+
 /**
- * Recommendations — clean editorial social proof:
+ * Recommendations, clean editorial social proof:
  * full-height square portraits fading into quote copy.
+ *
+ * Recruiters expect this after work/about: LinkedIn-style social proof
+ * on the homepage plus a dedicated nav destination.
  */
-export default function Recommendations() {
+export default function Recommendations({
+  limit,
+  asPage = false,
+}: RecommendationsProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-10%" });
   const shouldReduceMotion = useReducedMotion();
+
+  const list =
+    typeof limit === "number"
+      ? recommendations.slice(0, limit)
+      : recommendations;
+  const showMoreLink = !asPage && list.length < recommendations.length;
 
   const containerVariants = staggerContainer(shouldReduceMotion, 0.07, 0.08);
   const itemVariants = {
@@ -89,12 +108,13 @@ export default function Recommendations() {
     },
   };
   const titleReveal = fadeUpBlur(shouldReduceMotion);
+  const Heading = asPage ? "h1" : "h2";
 
   return (
     <section
       id="recommendations"
       ref={ref}
-      className="recs scroll-mt-24 border-t border-[var(--border-light)] bg-[var(--bg-secondary)]"
+      className={`recs scroll-mt-24 border-t border-[var(--border-light)] bg-[var(--bg-secondary)]${asPage ? " recs--page" : ""}`}
       aria-labelledby="recommendations-heading"
     >
       <div className="recs__inner">
@@ -109,12 +129,13 @@ export default function Recommendations() {
             className={`accent-rule mt-4 ${isInView ? "accent-rule--animate" : ""}`}
             aria-hidden="true"
           />
-          <h2 id="recommendations-heading" className="recs__title">
+          <Heading id="recommendations-heading" className="recs__title">
             Kind words from people I&rsquo;ve worked with.
-          </h2>
+          </Heading>
           <p className="recs__lede">
-            Leaders and peers who saw the work up close. Each note opens to the
-            full recommendation.
+            {asPage
+              ? "Managers and peers who saw the work up close. Open any note for the full recommendation."
+              : "A manager who saw the work up close. Open for the full note."}
           </p>
         </motion.header>
 
@@ -125,12 +146,33 @@ export default function Recommendations() {
           animate={isInView ? "visible" : "hidden"}
           className="recs__list"
         >
-          {recommendations.map((rec) => (
+          {list.map((rec) => (
             <motion.li key={rec.slug} variants={itemVariants} className="recs__item">
               <RecommendationRow rec={rec} />
             </motion.li>
           ))}
         </motion.ul>
+
+        {showMoreLink ? (
+          <motion.div
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0 }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : dur.md,
+              delay: shouldReduceMotion ? 0 : 0.2,
+              ease: cineEase,
+            }}
+            className="mt-10"
+          >
+            <Link
+              href="/recommendations"
+              className="inline-flex items-center gap-2 font-semibold text-[var(--primary)] underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
+            >
+              All recommendations
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </motion.div>
+        ) : null}
       </div>
     </section>
   );

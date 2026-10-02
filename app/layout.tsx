@@ -1,25 +1,40 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import SiteChrome from "@/components/SiteChrome";
 
+/** Clean geometric for large headlines only, open shapes, easier than Syne. */
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+  weight: ["500", "600", "700", "800"],
+});
+
+/** High-legibility UI + body face, generous x-height, open apertures. */
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://anthonysilvia.com"),
-  title: "Anthony Silvia, MBA - Product Experience Manager | AI-Accelerated Product × UX",
+  title: "Anthony Silvia, MBA · Product Designer | Ops UX × Systems × AI Practice",
   description:
-    "Anthony Silvia, MBA - Product Experience Manager who uses AI to raise efficiency and output across discovery, design exploration, and delivery. Master of Business Administration pending conferral (SNHU). Product Designer at Lowe's; Principal Consultant at NodeDa.",
+    "Anthony Silvia, MBA · Product Designer who turns complex operational workflows into clear product experiences. Research, systems thinking, and AI-assisted practice with judgment owning what ships. Product Designer at Lowe's; Principal Consultant at NodeDa.",
   keywords: [
     "Anthony Silvia MBA",
     "MBA",
     "Master of Business Administration",
-    "Product Experience Manager",
-    "Product Manager",
-    "UX Designer",
     "Product Designer",
+    "UX Designer",
+    "Product Design",
     "AI Product Design",
     "AI-assisted UX",
-    "Generative AI",
     "Enterprise UX",
     "Operational Workflows",
     "Discovery",
@@ -41,9 +56,9 @@ export const metadata: Metadata = {
   creator: "Anthony Silvia",
   publisher: "Anthony Silvia",
   openGraph: {
-    title: "Anthony Silvia, MBA - Product Experience Manager | AI-Accelerated Product × UX",
+    title: "Anthony Silvia, MBA · Product Designer",
     description:
-      "MBA Product Experience Manager who uses AI to raise efficiency and output - discovery through delivery, with judgment owning what ships. MBA pending conferral (SNHU).",
+      "Product Designer who turns complex operational workflows into clear product experiences. Research, systems, and AI practice with judgment owning what ships. MBA pending conferral (SNHU).",
     url: "https://anthonysilvia.com",
     siteName: "Anthony Silvia Portfolio",
     type: "website",
@@ -53,15 +68,15 @@ export const metadata: Metadata = {
         url: "/homepage/ashero.PNG",
         width: 1200,
         height: 630,
-        alt: "Anthony Silvia, MBA - Product Experience Manager",
+        alt: "Anthony Silvia, MBA · Product Designer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anthony Silvia, MBA - Product Experience Manager | AI-Accelerated Product × UX",
+    title: "Anthony Silvia, MBA · Product Designer",
     description:
-      "MBA Product Experience Manager who uses AI to raise efficiency and output - discovery through delivery, with judgment owning what ships.",
+      "Product Designer who turns complex operational workflows into clear product experiences, with AI practice and judgment owning what ships.",
     creator: "@anthonysilvia",
     images: ["/homepage/ashero.PNG"],
   },
@@ -89,11 +104,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`scroll-smooth ${outfit.variable} ${jakarta.variable}`}>
       <head>
         <link rel="canonical" href="https://anthonysilvia.com" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased font-sans">
         <AnalyticsProvider />
         <Script
           id="nrova-behavior-tracker"

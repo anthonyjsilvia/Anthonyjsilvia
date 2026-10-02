@@ -11,7 +11,7 @@ import {
 } from "@/lib/evidence";
 
 /**
- * Evidence — cinematic editorial layout aligned with recommendation detail:
+ * Evidence, cinematic editorial layout aligned with recommendation detail:
  * fixed back control, viewport-width stage, display typography, wide columns.
  * Lowe's initiative names and proprietary internals are redacted.
  */
@@ -50,15 +50,15 @@ export default function EvidencePage() {
             Evidence
           </p>
           <h1 className="font-display mt-3 text-[clamp(2.25rem,4.5vw,3.75rem)] font-extrabold tracking-[-0.045em] leading-[1.05] text-[var(--text-primary)]">
-            Product experience in practice
+            Product design in practice
           </h1>
           <div
             aria-hidden="true"
             className="mt-7 h-[2px] w-20 rounded-full bg-gradient-to-r from-[var(--primary)] to-transparent"
           />
           <p className="mt-6 text-[1.05rem] leading-[1.7] text-[var(--text-secondary)] md:text-[1.15rem] md:leading-[1.75]">
-            How an MBA Product Experience Manager works: problem framing, trade-offs,
-            systems thinking, and delivery, drawn from{" "}
+            How I work as a Product Designer: problem framing, trade-offs,
+            systems thinking, and delivery. Drawn from{" "}
             <strong>{PROJECT_A}</strong> and{" "}
             <strong>{PROJECT_B}</strong>. Short, evidence-based bullets
             hiring managers can scan. Initiative names, UI, and proprietary

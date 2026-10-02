@@ -114,10 +114,6 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       </a>
       <Navigation
         onOpenAccessibility={() => setAccessibilityOpen(true)}
-        onOpenOs={() => {
-          setTerminalOpen(false);
-          setOsOpen(true);
-        }}
       />
       <main
         key={pathname}
@@ -128,7 +124,12 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       >
         {children}
       </main>
-      <Footer />
+      <Footer
+        onOpenOs={() => {
+          setTerminalOpen(false);
+          setOsOpen(true);
+        }}
+      />
       <FabNav />
       <AccessibilityModal
         open={accessibilityOpen}

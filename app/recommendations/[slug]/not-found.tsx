@@ -20,7 +20,7 @@ export default function RecommendationNotFound() {
           link may be slightly off.
         </p>
         <GlowLink
-          href="/#recommendations"
+          href="/recommendations"
           variant="primary"
           className="rounded-full bg-[var(--primary)] px-5 py-3 text-white font-semibold text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
         >

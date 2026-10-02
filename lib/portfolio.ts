@@ -1,6 +1,13 @@
-/** Portfolio projects — shared by Portfolio page + AnthonyOS Portfolio app. */
+/** Portfolio projects, shared by Portfolio page + AnthonyOS Portfolio app. */
 
-export type PortfolioPdf = { name: string; path: string };
+export type PortfolioLogo = {
+  /** Logo for light page backgrounds. */
+  light: string;
+  /** Logo for dark page backgrounds. */
+  dark: string;
+  /** Accessible label; keep empty alt if decorative beside visible name. */
+  alt: string;
+};
 
 export type PortfolioProject = {
   id: string;
@@ -10,50 +17,54 @@ export type PortfolioProject = {
   category: string;
   technologies: string[];
   image: string | null;
+  /** CSS object-position for the thumbnail crop. */
+  imagePosition?: string;
+  /** Extra zoom so letterboxed marketing art fills the frame (e.g. 1.12). */
+  imageZoom?: number;
+  logo?: PortfolioLogo;
   link: string | null;
   linkText: string | null;
   color: string;
   isConfidential?: boolean;
-  embedWithIframe?: boolean;
-  pdfs?: PortfolioPdf[];
   companyStatus?: string;
 };
 
 export const portfolioProjects: PortfolioProject[] = [
-  // ----------------------------------------------------------------------
-  //  Lowe's - all enterprise initiatives consolidated into one card with
-  //  the confidential banner treatment. Each project ships under NDA, so
-  //  the card surfaces outcomes and links to Evidence for how I work.
-  // ----------------------------------------------------------------------
   {
     id: "lowes",
-    title: "Shipped product experience across enterprise ops",
+    title: "Retail associate-facing tech for enterprise ops",
     subtitle: "Lowe's Companies, Inc.",
     description:
-      "Product experience work across multiple enterprise retail initiatives, discovery, prioritization, and shipped UX under NDA. Initiative names, interfaces, and proprietary details stay redacted. See Evidence for decision-level proof without confidential content.",
-    category: "Enterprise Product Experience",
+      "Product design for tools retail associates rely on under pressure. Confidential under NDA. Request a private walkthrough of decision-level detail.",
+    category: "Retail associate-facing tech",
     technologies: [
-      "Product Experience",
+      "Product Design",
       "Discovery",
-      "Prioritization",
       "UX Design",
       "Usability Testing",
       "Design Systems",
       "Accessibility",
       "Figma",
     ],
-    image: null,
-    link: "/evidence",
-    linkText: "Evidence",
+    image: "/portfolio/lowes/cover.jpg",
+    // Pan left so the store on the right stays in frame
+    imagePosition: "88% 42%",
+    logo: {
+      light: "/portfolio/logos/lowes/logo-light.svg",
+      dark: "/portfolio/logos/lowes/logo-dark.svg",
+      alt: "Lowe's",
+    },
+    link: "/portfolio/lowes",
+    linkText: "Request details",
     color: "#012169",
     isConfidential: true,
   },
   {
     id: "kinlily",
-    title: "Owned cookbook product from discovery to launch",
-    subtitle: "Kinlily (NodeDa)",
+    title: "Owned consumer product from discovery to launch",
+    subtitle: "Kinlily",
     description:
-      "End-to-end product ownership for a cloud-based cookbook ecosystem - research, experience design, and iteration as Principal Consultant at NodeDa.",
+      "End-to-end product ownership for Kinlily: research, experience design, and iteration from discovery through launch.",
     category: "Product Management + UX",
     technologies: [
       "Product Management",
@@ -62,18 +73,46 @@ export const portfolioProjects: PortfolioProject[] = [
       "iOS",
       "Product Design",
     ],
-    image: null,
-    link: "https://kinlily.com",
-    linkText: "Visit kinlily.com",
+    image: "/portfolio/kinlily/gallery/app-screen-1.jpg",
+    logo: {
+      light: "/portfolio/logos/kinlily/logo-light.svg",
+      dark: "/portfolio/logos/kinlily/logo-dark.svg",
+      alt: "Kinlily",
+    },
+    link: "/portfolio/kinlily",
+    linkText: "Open gallery",
     color: "#3993C5",
-    embedWithIframe: true,
+  },
+  {
+    id: "nodeda-work",
+    title: "Designed a unified suite for how teams actually work",
+    subtitle: "NodeDa Work",
+    description:
+      "Product design for Boards, HR, Sign, Docs, Finance, CRM, and Surveys in one subscription. Clearer work with fewer tools, shipped as a live platform.",
+    category: "Product Design + SaaS",
+    technologies: [
+      "Product Design",
+      "UX Design",
+      "Design Systems",
+      "SaaS",
+      "Information Architecture",
+    ],
+    image: "/portfolio/nodeda-work/cover.png",
+    logo: {
+      light: "/portfolio/logos/nodeda-work/logo-light.svg",
+      dark: "/portfolio/logos/nodeda-work/logo-dark.svg",
+      alt: "NodeDa Work",
+    },
+    link: "https://work.nodeda.com",
+    linkText: "Visit NodeDa Work",
+    color: "#3B82F6",
   },
   {
     id: "herbswift",
     title: "Led UX and design systems across web and mobile",
     subtitle: "Herbswift",
     description:
-      "Company-wide UX lead: comprehensive design systems and product experience across web and mobile platforms.",
+      "Company-wide UX lead: design systems and product experience across iPhone, iPad, and web. Gallery of curated craft from 2018 builds.",
     category: "Product Design + UX",
     technologies: [
       "UX Design",
@@ -82,39 +121,18 @@ export const portfolioProjects: PortfolioProject[] = [
       "Mobile Design",
       "Web Design",
     ],
-    image: null,
-    link: null,
-    linkText: null,
+    image: "/portfolio/herbswift/cover.png",
+    // Anchor near top so logo stays in frame; light zoom clears side gray
+    imagePosition: "center top",
+    imageZoom: 1.08,
+    logo: {
+      light: "/portfolio/logos/herbswift/logo-light.png",
+      dark: "/portfolio/logos/herbswift/logo-dark.png",
+      alt: "Herbswift",
+    },
+    link: "/portfolio/herbswift",
+    linkText: "Open gallery",
     color: "#38B548",
-    pdfs: [
-      { name: "iPad", path: "/portfoilo/Herbswift/Herbswift iPad.pdf" },
-      { name: "iPhone (4in, 4.7in, 5.5in)", path: "/portfoilo/Herbswift/Herbswift iPhone (4in, 4.7in, 5.5in).pdf" },
-      { name: "iPhone X", path: "/portfoilo/Herbswift/Herbswift iPhone X.pdf" },
-      { name: "App Build 08252018-B", path: "/portfoilo/Herbswift/Herbswift App Build 08252018-B.pdf" },
-      { name: "App Build 08242018", path: "/portfoilo/Herbswift/Herbswift App Build 08242018.pdf" },
-      { name: "App Build 080218", path: "/portfoilo/Herbswift/Herbswift App - Build 080218.pdf" },
-      { name: "Web Build 071118-14", path: "/portfoilo/Herbswift/Herbswift Web - Build 071118-14 .pdf" },
-      { name: "Web Build 071018-39", path: "/portfoilo/Herbswift/Herbswift Web - Build 071018-39.pdf" },
-    ],
     companyStatus: "Company no longer exists",
-  },
-  {
-    id: "rohde",
-    title: "Owned website performance and content experience",
-    subtitle: "Rohde Architects",
-    description:
-      "Served as webmaster with product ownership of the company site - performance, content, and user experience. The site has been updated since my tenure.",
-    category: "Product + Web",
-    technologies: [
-      "Product Management",
-      "Web Design",
-      "Web Development",
-      "Content Management",
-      "UX",
-    ],
-    image: null,
-    link: "https://www.rohdearchitects.com",
-    linkText: "Visit Website",
-    color: "#FBBF24",
   },
 ];

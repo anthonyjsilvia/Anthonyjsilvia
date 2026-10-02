@@ -1,4 +1,4 @@
-/** Contact channels — shared by Contact page + AnthonyOS Contact app. */
+/** Contact channels: shared by Contact page + AnthonyOS Contact app. */
 
 export const contactInfo = {
   email: "contact@anthonysilvia.com",

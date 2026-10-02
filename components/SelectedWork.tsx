@@ -8,7 +8,7 @@ import { cineEase, dur, fadeUp } from "@/lib/motion";
 import { selectedWorkItems } from "@/lib/selected-work";
 
 /**
- * Homepage proof strip — editorial, scannable proof for hiring managers.
+ * Homepage proof strip, editorial, scannable proof for hiring managers.
  * Surfaces are interaction containers (links), not decorative card chrome.
  */
 export default function SelectedWork() {
@@ -25,7 +25,7 @@ export default function SelectedWork() {
       className="selected-work section-atmosphere border-t border-[var(--border-light)] bg-[var(--bg-secondary)]"
       aria-labelledby="work-heading"
     >
-      <div className="selected-work__inner mx-auto w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)] py-20 md:py-28">
+      <div className="selected-work__inner mx-auto w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)] py-14 md:py-20">
         <motion.header
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -39,15 +39,13 @@ export default function SelectedWork() {
               aria-hidden="true"
             />
             <h2 id="work-heading" className="selected-work__title">
-              Problem, decision,{" "}
-              <span className="selected-work__title-accent">outcome.</span>
+              Selected{" "}
+              <span className="selected-work__title-accent">work</span>
             </h2>
           </div>
           <p className="selected-work__lede">
-            NDA-safe proof from enterprise ops and end-to-end product work,
-            including AI-accelerated discovery and delivery. Enough to scan
-            in under a minute, with deeper redacted evidence one click
-            away.
+            A few proofs recruiters can scan fast. Full case depth on Evidence and
+            Portfolio.
           </p>
         </motion.header>
 
@@ -113,8 +111,8 @@ export default function SelectedWork() {
           }}
           className="selected-work__footer"
         >
-          <Link href="/evidence" className="selected-work__cta group">
-            Read how I work
+          <Link href="/portfolio" className="selected-work__cta group">
+            Full portfolio
             <ArrowUpRight
               className="h-4 w-4 transition-transform duration-[var(--dur-apple-sm)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               aria-hidden="true"

@@ -30,27 +30,11 @@ interface Certification {
 const CREDLY_PROFILE_URL = "https://www.credly.com/users/anthony-silvia";
 
 const CERTIFICATIONS: Certification[] = [
-  { name: "Project Management (PM1001)", issuer: "Sophia Learning", date: "Apr 2023", category: "projectManagement", description: "Life cycle of managing a project, from designing scope to completion. Applied experience with project planning, resources, and risks.", url: CREDLY_PROFILE_URL },
-  { name: "The Essentials of Managing Conflict (CONRES1000)", issuer: "Sophia Learning", date: "Mar 2023", category: "projectManagement", description: "Foundational knowledge about managing and resolving conflict. Types and causes of conflict, conflict styles, and resolution techniques.", url: CREDLY_PROFILE_URL },
-  { name: "Conflict Resolution (ConRes1001)", issuer: "Sophia Learning", date: "Apr 2023", category: "projectManagement", description: "Basic concepts of conflict resolution applied in real-world situations. Key theories and skills in organizational, intercultural, family, and interpersonal contexts.", url: CREDLY_PROFILE_URL },
-  { name: "Workplace Communication (COMM1010)", issuer: "Sophia Learning", date: "Mar 2023", category: "projectManagement", description: "Successful workplace communication: oral and written communication, professional writing, collaboration and productivity tools.", url: CREDLY_PROFILE_URL },
-  { name: "Accounting (ACCT1001)", issuer: "Sophia Learning", date: "Mar 2021", category: "projectManagement", description: "Fundamental principles and procedures of modern accounting. Bookkeeping and financial reports.", url: CREDLY_PROFILE_URL },
-  { name: "Microsoft Excel for Accounting", issuer: "Wiley Finance & Accounting", date: "Sep 2025", category: "projectManagement", description: "Excel functions and tools to create and analyze data effectively. Accounting-based skills.", url: CREDLY_PROFILE_URL },
   { name: "Google UX Design Professional Certificate", issuer: "Coursera", date: "Apr 2022", category: "uxDesign", description: "End-to-end design process: empathizing with users, defining pain points, ideating solutions, wireframes and prototypes, testing designs.", url: CREDLY_PROFILE_URL },
   { name: "UX Foundations: Accessibility", issuer: "Southern New Hampshire University", date: " - ", category: "uxDesign", url: CREDLY_PROFILE_URL },
-  { name: "Visual Communications (VisComm1001)", issuer: "Sophia Learning", date: "Mar 2023", category: "uxDesign", description: "Basic concepts of visual design, visual theories, key elements and principles of design - color, typography, and layout.", url: CREDLY_PROFILE_URL },
-  { name: "Introduction to Web Development (CS1005)", issuer: "Sophia Learning", date: "Mar 2023", category: "uxDesign", description: "Basic computer concepts for web developers. How the internet works, roles of software engineering and web development.", url: CREDLY_PROFILE_URL },
   { name: "Google AI Essentials", issuer: "Coursera", date: "Apr 2024", category: "ai", description: "Integrating AI into work. Generative AI tools, writing effective prompts, using AI responsibly.", url: CREDLY_PROFILE_URL },
-  { name: "Introduction to Statistics (STAT1001)", issuer: "Sophia Learning", date: "Dec 2022", category: "projectManagement", description: "Basic principles of statistics: statistical principles, research methodologies, data analysis, and hypothesis testing.", url: CREDLY_PROFILE_URL },
-  { name: "Personal Finance (ECON1010)", issuer: "Sophia Learning", date: "Apr 2023", category: "miscellaneous", description: "Key concepts of economics and personal finance. Economic mindset, tools for financial analysis.", url: CREDLY_PROFILE_URL },
-  { name: "Spanish I (SPAN1001)", issuer: "Sophia Learning", date: "Apr 2023", category: "miscellaneous", description: "Fundamentals to read, write, and speak Spanish. Linguistic and cultural lens.", url: CREDLY_PROFILE_URL },
-  { name: "IT Career Exploration (CS1003)", issuer: "Sophia Learning", date: "Apr 2023", category: "miscellaneous", description: "Skills needed in the IT industry. Roles including UX Designer, QA, Web Developer, Software Engineer.", url: CREDLY_PROFILE_URL },
-  { name: "Introduction to Psychology (PSYC1010)", issuer: "Sophia Learning", date: "Apr 2023", category: "miscellaneous", description: "Learning, motivation, development, emotion, and personality. Using knowledge to make smarter decisions.", url: CREDLY_PROFILE_URL },
-  { name: "Introduction to Information Technology (CS1001)", issuer: "Sophia Learning", date: "Apr 2023", category: "miscellaneous", description: "Overview of information systems: hardware and software, networking, database management, privacy, security, ethics.", url: CREDLY_PROFILE_URL },
-  { name: "Workplace Writing II (ENG1020)", issuer: "Sophia Learning", date: "Apr 2023", category: "miscellaneous", description: "Research process, sourcing information, persuasive essay writing. Professional communication and problem solving.", url: CREDLY_PROFILE_URL },
-  { name: "US History I (HIST1001)", issuer: "Sophia Learning", date: "May 2023", category: "miscellaneous", description: "Key events and figures in US history from prehistory through Reconstruction.", url: CREDLY_PROFILE_URL },
-  { name: "Introduction to Nutrition (HLTH1010)", issuer: "Sophia Learning", date: "May 2023", category: "miscellaneous", description: "Concepts and practical applications of nutrition. Scientific principles, nutrients, disease management.", url: CREDLY_PROFILE_URL },
   { name: "Data Analytics Core Concepts Certificate", issuer: "Association of International Certified Professional Accountants", date: "Feb 2026", category: "projectManagement", description: "Analytical mindset and core concepts of data analytics. Frame problems, define scopes, outcome-driven projects.", url: CREDLY_PROFILE_URL },
+  { name: "Microsoft Excel for Accounting", issuer: "Wiley Finance & Accounting", date: "Sep 2025", category: "projectManagement", description: "Excel functions and tools to create and analyze data effectively.", url: CREDLY_PROFILE_URL },
 ];
 
 const CERT_CATEGORY_LABELS: Record<CertCategory | "all", string> = {
@@ -83,14 +67,16 @@ export default function Certifications({
   const [showAllCerts, setShowAllCerts] = useState(false);
   const sourceCerts: Certification[] =
     items && items.length > 0
-      ? items.map((c) => ({
-          name: c.name,
-          issuer: c.issuer,
-          date: c.date,
-          category: c.category ?? "miscellaneous",
-          description: c.description,
-          url: c.url,
-        }))
+      ? items
+          .filter((c) => !/sophia/i.test(c.issuer))
+          .map((c) => ({
+            name: c.name,
+            issuer: c.issuer,
+            date: c.date,
+            category: c.category ?? "miscellaneous",
+            description: c.description,
+            url: c.url,
+          }))
       : CERTIFICATIONS;
   const fromApi = Boolean(items && items.length > 0);
 

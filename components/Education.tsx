@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { GraduationCap, Calendar, Trophy, Clock } from "lucide-react";
 import Tilt3D from "@/components/Tilt3D";
@@ -15,7 +15,7 @@ type CollegeEntry = {
   description?: string;
 };
 
-// EXACT LinkedIn Education entries - word-for-word (college only; high school shown separately below)
+// EXACT LinkedIn Education entries - word-for-word (college only)
 const education: CollegeEntry[] = [
   {
     institution: "Southern New Hampshire University",
@@ -26,75 +26,6 @@ const education: CollegeEntry[] = [
     institution: "Southern New Hampshire University",
     degree: "Bachelors, Graphic Design and Media Arts, Minoring in User Experience Design",
     period: "May 2022 - Aug 2024",
-  },
-];
-
-/**
- * High schools rendered as brand-colored varsity badges.
- *
- * `logoSrc` is optional. If you drop an official logo PNG/SVG at the listed
- * path (transparent background works best), the badge will render it inside
- * the medallion. Otherwise we fall back to a typographic monogram so the
- * badge still ships looking intentional.
- */
-type HighSchoolBadge = {
-  institution: string;
-  shortName: string;
-  mascot: string;
-  monogram: string;
-  location: string;
-  period: string;
-  classOf?: string;
-  degree?: string;
-  websiteUrl: string;
-  logoSrc?: string;
-  colors: {
-    bgFrom: string;
-    bgTo: string;
-    accent: string;
-    ink: string;
-    ringShadow: string;
-  };
-};
-
-const highSchools: HighSchoolBadge[] = [
-  {
-    institution: "Wasilla High School",
-    shortName: "Wasilla High",
-    mascot: "Warriors",
-    monogram: "WHS",
-    location: "Wasilla, Alaska",
-    period: "2015 – 2017",
-    classOf: "Class of 2017",
-    degree: "High School Diploma",
-    websiteUrl: "https://whs.matsuk12.us/",
-    logoSrc: "/schools/whs.svg",
-    colors: {
-      // Wasilla Warriors red - saturated, deep, classic athletic red
-      bgFrom: "#C81E1E",
-      bgTo: "#7E1313",
-      accent: "#FFFFFF",
-      ink: "#FFFFFF",
-      ringShadow: "rgba(0, 0, 0, 0.45)",
-    },
-  },
-  {
-    institution: "South Anchorage High School",
-    shortName: "South Anchorage High",
-    mascot: "Wolverines",
-    monogram: "SAHS",
-    location: "Anchorage, Alaska",
-    period: "Jun 2013 – Jun 2015",
-    websiteUrl: "https://www.asdk12.org/south",
-    logoSrc: "/schools/sahs.svg",
-    colors: {
-      // SAHS Wolverines black + Vegas gold
-      bgFrom: "#0E0E0E",
-      bgTo: "#1F1F1F",
-      accent: "#D4AF6E",
-      ink: "#E8D8B5",
-      ringShadow: "rgba(0, 0, 0, 0.6)",
-    },
   },
 ];
 
@@ -140,136 +71,6 @@ const SNHU_BRAND = {
   brightBlue: "#009DEA",
   shadow: "rgba(0, 14, 36, 0.55)",
 } as const;
-
-/**
- * SchoolBadge - square varsity-style badge for a high school.
- *
- * The full card is a link to the school's website. Visually it reads as a
- * sports licensing / class-ring style emblem: brand-colored gradient field,
- * centered medallion (logo if available, monogram otherwise), mascot name,
- * and a year stamp at the bottom.
- */
-function SchoolBadge({ school }: { school: HighSchoolBadge }) {
-  const [logoFailed, setLogoFailed] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
-  const showLogo = Boolean(school.logoSrc) && !logoFailed;
-  const { colors } = school;
-  const bottomLine = school.classOf
-    ? `${school.classOf} · ${school.degree ?? ""}`.replace(/ · $/, "")
-    : school.period;
-
-  return (
-    <Tilt3D
-      max={shouldReduceMotion ? 0 : 4}
-      lift={shouldReduceMotion ? 0 : 10}
-      scale={shouldReduceMotion ? 1 : 1.005}
-      className="card-3d rounded-3xl"
-      containerClassName="h-full"
-    >
-      <a
-        href={school.websiteUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`${school.institution}, ${school.mascot}. ${school.period}. Opens school website in new tab.`}
-        className="group relative block aspect-[5/1] w-full overflow-hidden rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--focus-ring)] focus:ring-offset-2"
-        style={{
-          background: `linear-gradient(135deg, ${colors.bgFrom} 0%, ${colors.bgTo} 100%)`,
-          boxShadow: `0 16px 32px -16px ${colors.ringShadow}, inset 0 0 0 1px ${colors.accent}22`,
-          containerType: "inline-size",
-        }}
-      >
-        {/* Subtle inner frame, like a varsity patch border */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-1.5 rounded-[1rem]"
-          style={{
-            border: `1px solid ${colors.accent}33`,
-          }}
-        />
-
-        {/* Diagonal glint, faintly catching the light */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-overlay"
-          style={{
-            background: `linear-gradient(115deg, transparent 38%, ${colors.accent} 50%, transparent 62%)`,
-          }}
-        />
-
-        <div className="relative flex h-full w-full items-center gap-3 sm:gap-4 px-3 sm:px-4">
-          {/* Medallion: real logo (bare) when available, otherwise typographic
-              monogram inside a varsity bezel. SVG logos use a plain <img>
-              instead of next/image because SVG isn't optimized by Next and
-              would otherwise require `dangerouslyAllowSVG`. */}
-          {showLogo ? (
-            <div className="flex aspect-square h-[88%] flex-shrink-0 items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={school.logoSrc!}
-                alt={`${school.institution} logo`}
-                width={120}
-                height={120}
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.04]"
-                style={{
-                  filter: `drop-shadow(0 4px 8px ${colors.ringShadow})`,
-                }}
-                onError={() => setLogoFailed(true)}
-              />
-            </div>
-          ) : (
-            <div
-              className="flex aspect-square h-[72%] flex-shrink-0 items-center justify-center rounded-full"
-              style={{
-                border: `1.5px solid ${colors.accent}`,
-                background: `radial-gradient(circle at 30% 25%, ${colors.accent}22 0%, transparent 70%)`,
-                boxShadow: `inset 0 0 0 2px ${colors.bgFrom}, 0 4px 12px -4px ${colors.ringShadow}`,
-              }}
-            >
-              <span
-                aria-hidden="true"
-                className="font-black tracking-[0.04em] text-[clamp(0.7rem,2.2cqw,1.05rem)] leading-none"
-                style={{ color: colors.accent }}
-              >
-                {school.monogram}
-              </span>
-            </div>
-          )}
-
-          {/* Mascot wordmark + school name */}
-          <div className="flex min-w-0 flex-1 flex-col justify-center text-left">
-            <p
-              className="font-black uppercase tracking-[0.16em] leading-none text-[clamp(0.85rem,2.6cqw,1.35rem)] truncate"
-              style={{ color: colors.accent }}
-            >
-              {school.mascot}
-            </p>
-            <p
-              className="mt-1 font-semibold leading-tight text-[clamp(0.65rem,1.7cqw,0.85rem)] truncate"
-              style={{ color: colors.ink }}
-            >
-              {school.shortName}
-            </p>
-          </div>
-
-          {/* Year stamp - class ring style */}
-          <div
-            className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 uppercase tracking-[0.18em] font-semibold text-[clamp(0.55rem,1.4cqw,0.7rem)] leading-none"
-            style={{
-              color: colors.ink,
-              background: `${colors.accent}1F`,
-              border: `1px solid ${colors.accent}55`,
-            }}
-          >
-            <Calendar className="h-3 w-3 flex-shrink-0" aria-hidden="true" />
-            <span className="whitespace-nowrap">{bottomLine}</span>
-          </div>
-        </div>
-      </a>
-    </Tilt3D>
-  );
-}
 
 export default function Education({
   collegeEntries,
@@ -548,32 +349,7 @@ export default function Education({
           </div>
         </div>
 
-        {/* High School - two brand-colored varsity badges, side by side */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="mb-16"
-          aria-labelledby="high-school-heading"
-        >
-          <motion.div variants={itemVariants} className="flex items-center gap-3 mb-6">
-            <GraduationCap className="w-5 h-5 text-[var(--primary)]" aria-hidden="true" />
-            <h3
-              id="high-school-heading"
-              className="text-lg font-bold tracking-[-0.02em] text-[var(--text-primary)]"
-            >
-              High School
-            </h3>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {highSchools.map((school) => (
-              <motion.div key={school.institution} variants={itemVariants}>
-                <SchoolBadge school={school} />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        {/* High school omitted: college + MBA only for senior hiring screens */}
 
       </div>
     </section>

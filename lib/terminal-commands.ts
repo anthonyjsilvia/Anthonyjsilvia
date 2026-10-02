@@ -45,14 +45,14 @@ type CommandHandler = (args: string[], ctx: TerminalContext) => CommandResult;
 const PAGES: { name: string; path: string; href: string; description: string }[] = [
   { name: "home", path: "/", href: "/", description: "Landing page" },
   { name: "experience", path: "/experience", href: "/experience", description: "Career timeline" },
-  { name: "portfolio", path: "/portfolio", href: "/portfolio", description: "Selected work" },
+  { name: "portfolio", path: "/portfolio", href: "/portfolio", description: "Selected projects" },
   { name: "evidence", path: "/evidence", href: "/evidence", description: "Evidence" },
   { name: "resume", path: "/resume", href: "/resume", description: "Request a private resume copy" },
   { name: "contact", path: "/contact", href: "/contact", description: "Contact form" },
   {
     name: "recommendations",
     path: "/recommendations",
-    href: "/#recommendations",
+    href: "/recommendations",
     description: "Testimonials list (on home)",
   },
 ];
@@ -483,7 +483,7 @@ const COMMANDS: Record<string, CommandHandler> = {
   about: () => ({
     output: [
       "Anthony Silvia, MBA",
-      "Product Experience Manager - Charlotte Metro",
+      "Product Designer - Charlotte Metro",
       "",
       "MBA pending conferral - Southern New Hampshire University.",
       "Hybrid of product management and UX: discovery, prioritization,",
@@ -550,9 +550,10 @@ const COMMANDS: Record<string, CommandHandler> = {
     output: [
       "Selected work:",
       "",
-      "  · Kinlily           Cloud-based cookbook ecosystem (NodeDa)",
-      "  · Herbswift         Design lead across web + mobile",
       "  · Lowe's internal   Operational tools (confidential)",
+      "  · Kinlily           Cloud-based cookbook ecosystem",
+      "  · NodeDa Work       Unified work suite (Boards through Finance)",
+      "  · Herbswift         Design lead across web + mobile",
       "",
       "Run `open portfolio` to view the case studies in the regular site.",
     ],
@@ -560,7 +561,7 @@ const COMMANDS: Record<string, CommandHandler> = {
 
   evidence: () => ({
     output: [
-      "Evidence - Product Experience Manager decision proof:",
+      "Evidence - Product Designer decision proof:",
       "",
       "  · Trade-offs          Scope, ship, feasibility",
       "  · Complexity→Clarity  Structure for ops workflows",
@@ -599,7 +600,7 @@ const COMMANDS: Record<string, CommandHandler> = {
 
   resume: () => ({
     output: [
-      "Resume is private — request a copy at /resume.",
+      "Resume is private, request a copy at /resume.",
       "Run `open resume` to send a request.",
     ],
   }),
@@ -653,7 +654,7 @@ const COMMANDS: Record<string, CommandHandler> = {
     const files: Record<string, string[]> = {
       "about.txt": [
         "Anthony Silvia, MBA",
-        "Product Experience Manager - Charlotte Metro",
+        "Product Designer - Charlotte Metro",
         "",
         "MBA pending conferral (SNHU).",
         "Hybrid of product management and UX.",

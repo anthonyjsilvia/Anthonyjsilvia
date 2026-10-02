@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import OsAppShell from "@/components/os/OsAppShell";
@@ -32,6 +33,23 @@ export default function PortfolioApp({ embedded = false }: { embedded?: boolean 
       detailSubtitle={active.subtitle}
       siteHref="/portfolio"
     >
+      {active.image ? (
+        <div className="relative mb-4 aspect-[3/4] w-full max-w-xs overflow-hidden rounded-lg">
+          <Image
+            src={active.image}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="280px"
+            style={{
+              objectPosition: active.imagePosition ?? "top center",
+              transform: active.imageZoom
+                ? `scale(${active.imageZoom})`
+                : undefined,
+            }}
+          />
+        </div>
+      ) : null}
       <p className="os-app__meta">{active.category}</p>
       <p className="os-app__prose">{active.description}</p>
       <div className="os-app__tags">
@@ -54,17 +72,6 @@ export default function PortfolioApp({ embedded = false }: { embedded?: boolean 
           {active.linkText ?? "Open"}
           <ArrowUpRight className="os-app__open-icon" aria-hidden="true" />
         </Link>
-      ) : null}
-      {active.pdfs?.length ? (
-        <ul className="os-app__pdfs">
-          {active.pdfs.map((pdf) => (
-            <li key={pdf.path}>
-              <a href={pdf.path} target="_blank" rel="noopener noreferrer">
-                {pdf.name}
-              </a>
-            </li>
-          ))}
-        </ul>
       ) : null}
     </OsAppShell>
   );

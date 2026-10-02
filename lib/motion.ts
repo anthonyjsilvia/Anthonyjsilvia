@@ -1,5 +1,5 @@
 /**
- * Shared Framer Motion presets — Apple HIG–aligned tempo.
+ * Shared Framer Motion presets: Apple HIG–aligned tempo.
  * Motion is purposeful and brief; every consumer must honor reduced motion.
  * Judgment (web): map Apple ease-out / spring to cubic-bezier tokens already
  * defined as --ease-apple-* in globals.css.
@@ -8,7 +8,7 @@
 export const appleEaseOut = [0.16, 1, 0.3, 1] as const;
 export const appleEaseSmooth = [0.32, 0.72, 0, 1] as const;
 export const appleEaseInOut = [0.65, 0, 0.35, 1] as const;
-/** Soft overshoot for press/hover feedback only — not for page reveals. */
+/** Soft overshoot for press/hover feedback only: not for page reveals. */
 export const appleSpring = [0.34, 1.56, 0.64, 1] as const;
 
 export const cineEase = [0.22, 1, 0.36, 1] as const;
@@ -72,7 +72,7 @@ export function staggerContainer(reduced: boolean | null, stagger = 0.08, delay 
   };
 }
 
-/** Hero copy stack — signature orchestrated entrance. */
+/** Hero copy stack: signature orchestrated entrance. */
 export function heroStagger(reduced: boolean | null) {
   return {
     hidden: {},

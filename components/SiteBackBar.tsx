@@ -13,7 +13,7 @@ type SiteBackBarProps = {
 /**
  * Fixed top-left back control.
  *
- * Portaled to `document.body` so `position: fixed` pins to the viewport —
+ * Portaled to `document.body` so `position: fixed` pins to the viewport,
  * not to `<main class="apple-reveal">`, whose entrance animation can create
  * a containing block for fixed descendants (same pattern as Experience tabs).
  */

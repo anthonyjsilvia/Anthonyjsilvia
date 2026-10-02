@@ -1,4 +1,4 @@
-/** Selected work proof items — shared by homepage section + AnthonyOS app. */
+/** Selected work proof items, shared by homepage section + AnthonyOS app. */
 
 export type SelectedWorkItem = {
   id: string;
@@ -11,30 +11,27 @@ export type SelectedWorkItem = {
 
 export const selectedWorkItems: SelectedWorkItem[] = [
   {
-    id: "ambiguity",
-    href: "/evidence#ambiguity",
+    id: "lowes",
+    href: "/portfolio/lowes",
     eyebrow: "Lowe's",
-    title: "Defined success criteria when “better CX” was vague",
-    context:
-      "Confidential initiative A: short discovery with frontline users and managers turned fuzzy goals into measurable direction for faster completion and fewer follow-ups.",
-    role: "Design + product partnership",
-  },
-  {
-    id: "trade-offs",
-    href: "/evidence#trade-offs",
-    eyebrow: "Lowe's",
-    title: "Prioritized scope so the first release could ship",
-    context:
-      "Confidential initiative B: aligned leadership on timeline and highest-impact flows, balancing ideal UX against build complexity without blocking delivery.",
-    role: "Prioritization & stakeholder alignment",
+    title: "Retail associate-facing tech under NDA",
+    context: "Request a confidential walkthrough of decision-level detail.",
+    role: "Product design",
   },
   {
     id: "kinlily",
-    href: "/portfolio",
-    eyebrow: "NodeDa",
-    title: "Owned discovery through delivery on an indie product",
-    context:
-      "Kinlily: end-to-end product lifecycle ownership, research, design, and iteration for a cloud cookbook experience.",
-    role: "Product ownership + UX",
+    href: "/portfolio/kinlily",
+    eyebrow: "Kinlily",
+    title: "Owned consumer product from discovery to launch",
+    context: "End-to-end ownership with a live App Store gallery.",
+    role: "Product + UX",
+  },
+  {
+    id: "herbswift",
+    href: "/portfolio/herbswift",
+    eyebrow: "Herbswift",
+    title: "UX and design systems across web and mobile",
+    context: "Company-wide craft across iPhone, iPad, and web.",
+    role: "Design systems",
   },
 ];
