@@ -68,18 +68,17 @@ function RecommendationRow({ rec }: { rec: Recommendation }) {
 }
 
 type RecommendationsProps = {
-  /** Cap how many cards show. Omit to show all. */
+  /** Cap how many cards show on the full page. Omit to show all. */
   limit?: number;
   /** Use h1 + page spacing (dedicated /recommendations route). */
   asPage?: boolean;
 };
 
 /**
- * Recommendations, clean editorial social proof:
- * full-height square portraits fading into quote copy.
+ * Recommendations, clean editorial social proof.
  *
- * Recruiters expect this after work/about: LinkedIn-style social proof
- * on the homepage plus a dedicated nav destination.
+ * Homepage: portraits only + CTA button into the full list.
+ * /recommendations: full quote rows.
  */
 export default function Recommendations({
   limit,
@@ -93,7 +92,6 @@ export default function Recommendations({
     typeof limit === "number"
       ? recommendations.slice(0, limit)
       : recommendations;
-  const showMoreLink = !asPage && list.length < recommendations.length;
 
   const containerVariants = staggerContainer(shouldReduceMotion, 0.07, 0.08);
   const itemVariants = {
@@ -132,47 +130,89 @@ export default function Recommendations({
           <Heading id="recommendations-heading" className="recs__title">
             Kind words from people I&rsquo;ve worked with.
           </Heading>
-          <p className="recs__lede">
-            {asPage
-              ? "Managers and peers who saw the work up close. Open any note for the full recommendation."
-              : "A manager who saw the work up close. Open for the full note."}
-          </p>
+          {asPage ? (
+            <p className="recs__lede">
+              Managers and peers who saw the work up close. Open any note for
+              the full recommendation.
+            </p>
+          ) : null}
         </motion.header>
 
-        <motion.ul
-          role="list"
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="recs__list"
-        >
-          {list.map((rec) => (
-            <motion.li key={rec.slug} variants={itemVariants} className="recs__item">
-              <RecommendationRow rec={rec} />
-            </motion.li>
-          ))}
-        </motion.ul>
-
-        {showMoreLink ? (
-          <motion.div
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0 }}
-            transition={{
-              duration: shouldReduceMotion ? 0 : dur.md,
-              delay: shouldReduceMotion ? 0 : 0.2,
-              ease: cineEase,
-            }}
-            className="mt-10"
+        {asPage ? (
+          <motion.ul
+            role="list"
+            variants={containerVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="recs__list"
           >
-            <Link
-              href="/recommendations"
-              className="inline-flex items-center gap-2 font-semibold text-[var(--primary)] underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
+            {list.map((rec) => (
+              <motion.li
+                key={rec.slug}
+                variants={itemVariants}
+                className="recs__item"
+              >
+                <RecommendationRow rec={rec} />
+              </motion.li>
+            ))}
+          </motion.ul>
+        ) : (
+          <>
+            <motion.ul
+              role="list"
+              aria-label="People who recommended Anthony"
+              variants={containerVariants}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              className="recs__faces"
             >
-              All recommendations
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </motion.div>
-        ) : null}
+              {recommendations.map((rec) => (
+                <motion.li
+                  key={rec.slug}
+                  variants={itemVariants}
+                  className="recs__face"
+                >
+                  <Link
+                    href={`/recommendations/${rec.slug}`}
+                    className="recs__face-link group"
+                    aria-label={`Read recommendation from ${rec.name}`}
+                  >
+                    <Image
+                      src={rec.image}
+                      alt=""
+                      width={480}
+                      height={480}
+                      className="recs__face-photo"
+                      sizes="(max-width: 719px) 45vw, (max-width: 1480px) 22vw, 340px"
+                    />
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+
+            <motion.div
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0 }}
+              transition={{
+                duration: shouldReduceMotion ? 0 : dur.md,
+                delay: shouldReduceMotion ? 0 : 0.2,
+                ease: cineEase,
+              }}
+              className="mt-10"
+            >
+              <Link
+                href="/recommendations"
+                className="recs__all-btn group inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_-14px_rgba(var(--primary-rgb),0.55)] transition-transform duration-[var(--dur-apple-sm)] hover:translate-y-[-1px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
+              >
+                All recommendations
+                <ArrowUpRight
+                  className="h-4 w-4 transition-transform duration-[var(--dur-apple-sm)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
+            </motion.div>
+          </>
+        )}
       </div>
     </section>
   );

@@ -15,7 +15,7 @@ export default function Home() {
       <Hero />
       <SelectedWork />
       <About />
-      <Recommendations limit={1} />
+      <Recommendations />
     </>
   );
 }

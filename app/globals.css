@@ -1415,6 +1415,86 @@ html:not(.dark) .portfolio-cine__media-frame--typo {
   min-width: 0;
 }
 
+.recs__faces {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.65rem, 1.6vw, 1.25rem);
+  width: 100%;
+}
+
+@media (min-width: 720px) {
+  .recs__faces {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.recs__face {
+  margin: 0;
+  min-width: 0;
+}
+
+.recs__face-link {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: clamp(14px, 2vw, 24px);
+  background: var(--background);
+  outline: none;
+  transition: transform var(--dur-apple-sm) var(--ease-apple-out);
+}
+
+.recs__face-link:hover,
+.recs__face-link:focus-visible {
+  transform: translateY(-3px);
+}
+
+.recs__face-link:focus-visible {
+  box-shadow: 0 0 0 3px var(--background), 0 0 0 5px var(--focus-ring);
+}
+
+.recs__face-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform var(--dur-apple-md) var(--ease-apple-out);
+}
+
+.recs__face-link:hover .recs__face-photo,
+.recs__face-link:focus-visible .recs__face-photo {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recs__face-link,
+  .recs__face-photo {
+    transition: none;
+  }
+
+  .recs__face-link:hover,
+  .recs__face-link:focus-visible,
+  .recs__face-link:hover .recs__face-photo,
+  .recs__face-link:focus-visible .recs__face-photo {
+    transform: none;
+  }
+}
+
+html.force-reduce-motion .recs__face-link,
+html.force-reduce-motion .recs__face-photo {
+  transition: none;
+}
+
+html.force-reduce-motion .recs__face-link:hover,
+html.force-reduce-motion .recs__face-link:focus-visible,
+html.force-reduce-motion .recs__face-link:hover .recs__face-photo,
+html.force-reduce-motion .recs__face-link:focus-visible .recs__face-photo {
+  transform: none;
+}
+
 .recs-row {
   position: relative;
   display: grid;
