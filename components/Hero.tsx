@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown, FileText, Layers } from "lucide-react";
+import Image from "next/image";
 import { type ElementType, type ReactNode, useEffect, useRef } from "react";
 import { heroItem, heroStagger } from "@/lib/motion";
 
@@ -65,16 +66,16 @@ function HeroCTA({
   );
 }
 
-function HeroScrim() {
-  return <div className="hero-scrim absolute inset-0" aria-hidden="true" />;
-}
+/** Portrait drifts slower than scroll for depth; copy stays locked to the stage. */
+const PARALLAX_PORTRAIT = 0.18;
 
-/** Image drifts on scroll for depth; copy/CTAs scroll with the page (no parallax). */
-const PARALLAX_IMG = 0.38;
-
+/**
+ * Cinematic cutout hero: atmospheric stage + oversized portrait bleeding
+ * the right edge, brand copy owning the left. One composition.
+ */
 export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
-  const imgRef = useRef<HTMLImageElement>(null);
+  const portraitRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const item = heroItem(shouldReduceMotion);
   const stagger = heroStagger(shouldReduceMotion);
@@ -86,8 +87,8 @@ export default function Hero() {
       rafRef.current = null;
       const y = window.scrollY;
       const capped = Math.min(y, window.innerHeight);
-      if (imgRef.current) {
-        imgRef.current.style.transform = `translate3d(0, ${capped * PARALLAX_IMG}px, 0) scale(1.12)`;
+      if (portraitRef.current) {
+        portraitRef.current.style.transform = `translate3d(0, ${capped * PARALLAX_PORTRAIT}px, 0)`;
       }
     };
 
@@ -107,22 +108,67 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="hp-cine-hero relative h-[100svh] min-h-[100svh] max-h-[100svh] overflow-hidden bg-[#070a12]"
+      className="hp-cine-hero relative h-[100svh] min-h-[100svh] max-h-[100svh] overflow-hidden"
       aria-labelledby="hero-heading"
     >
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-        <img
-          ref={imgRef}
-          src="/homepage/ashero.PNG"
-          alt=""
-          className="hero-parallax-img hero-parallax-img--enter absolute inset-0 h-full w-full min-h-full object-cover object-[70%_42%] md:object-[center_42%] will-change-transform"
-          style={
-            shouldReduceMotion
-              ? undefined
-              : { transform: "translate3d(0, 0, 0) scale(1.12)" }
-          }
-        />
-        <HeroScrim />
+      <div className="hero-atmosphere" aria-hidden="true">
+        <div className="hero-atmosphere__wash" />
+        <div className="hero-atmosphere__grid" />
+        <div className="hero-atmosphere__craft">
+          <span className="hero-atmosphere__board hero-atmosphere__board--a" />
+          <span className="hero-atmosphere__board hero-atmosphere__board--b" />
+          <span className="hero-atmosphere__board hero-atmosphere__board--c" />
+          <span className="hero-atmosphere__chip hero-atmosphere__chip--a" />
+          <span className="hero-atmosphere__chip hero-atmosphere__chip--b" />
+          <span className="hero-atmosphere__flow" />
+          <span className="hero-atmosphere__guides" />
+
+          {/* Desktop left-side craft — fills empty stage beside copy */}
+          <span className="hero-atmosphere__board hero-atmosphere__board--l1" />
+          <span className="hero-atmosphere__board hero-atmosphere__board--l2" />
+          <span className="hero-atmosphere__board hero-atmosphere__board--l3" />
+          <span className="hero-atmosphere__swatches" />
+          <span className="hero-atmosphere__wire" />
+          <span className="hero-atmosphere__anno" />
+          <span className="hero-atmosphere__rail" />
+        </div>
+        <div className="hero-atmosphere__veil" />
+      </div>
+
+      <div className="hero-portrait-slot" aria-hidden="true">
+        <motion.div
+          ref={portraitRef}
+          className="hero-portrait"
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 1.15,
+            ease: [0.22, 1, 0.36, 1],
+            delay: shouldReduceMotion ? 0 : 0.12,
+          }}
+        >
+          <div className="hero-portrait__glow" />
+          <div className="hero-portrait__shadow" />
+          <Image
+            src="/homepage/hero-cutout.png"
+            alt=""
+            width={3558}
+            height={3658}
+            priority
+            className="hero-portrait__img"
+            sizes="(max-width: 768px) 90vw, 50vw"
+            quality={95}
+          />
+        </motion.div>
+      </div>
+
+      {/* Progressive bottom blur (stacked masked layers — works beyond Safari) */}
+      <div className="hero-fade-blur" aria-hidden="true">
+        <div className="hero-fade-blur__layer hero-fade-blur__layer--1" />
+        <div className="hero-fade-blur__layer hero-fade-blur__layer--2" />
+        <div className="hero-fade-blur__layer hero-fade-blur__layer--3" />
+        <div className="hero-fade-blur__layer hero-fade-blur__layer--4" />
+        <div className="hero-fade-blur__tint" />
       </div>
 
       <motion.div
@@ -131,38 +177,31 @@ export default function Hero() {
         animate="visible"
         variants={stagger}
       >
+        <motion.p
+          variants={item}
+          className="font-sans text-[clamp(0.75rem,1.1vw,0.85rem)] font-bold uppercase tracking-[0.2em] text-white/65"
+        >
+          Product Designer · MBA
+        </motion.p>
+
         <motion.h1
           id="hero-heading"
           variants={item}
-          className="font-display text-[clamp(2.4rem,6.5vw,4.25rem)] font-extrabold tracking-[-0.025em] leading-[1.02] text-white max-w-[14ch]"
+          className="font-display mt-3 text-[clamp(2.6rem,7vw,4.6rem)] font-extrabold tracking-[-0.03em] leading-[0.98] text-white max-w-[11ch]"
         >
           Anthony Silvia
         </motion.h1>
 
         <motion.p
           variants={item}
-          className="mt-2 font-sans text-[clamp(0.8rem,1.2vw,0.95rem)] font-semibold uppercase tracking-[0.18em] text-white/70"
-        >
-          MBA
-        </motion.p>
-
-        <motion.p
-          variants={item}
-          className="mt-3 md:mt-4 font-sans text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold tracking-[-0.01em] text-white"
-        >
-          Product Designer
-        </motion.p>
-
-        <motion.p
-          variants={item}
-          className="mt-3 md:mt-4 font-sans text-[clamp(1.05rem,1.7vw,1.25rem)] font-medium leading-[1.6] text-white/85 max-w-[36rem]"
+          className="mt-4 md:mt-5 font-sans text-[clamp(1.05rem,1.7vw,1.25rem)] font-medium leading-[1.55] text-white/85 max-w-[28rem]"
         >
           I turn complex operational workflows into clear product experiences.
         </motion.p>
 
         <motion.div
           variants={item}
-          className="mt-8 md:mt-10 flex flex-wrap gap-3"
+          className="hero-copy-actions mt-8 md:mt-10 flex flex-wrap gap-3"
         >
           <HeroCTA
             href="#work"

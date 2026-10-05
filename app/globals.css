@@ -215,65 +215,812 @@ body {
 /* Room for the centered “Read more” cue under the CTAs on small screens. */
 @media (max-width: 767px) {
   .hp-cine-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     padding-bottom: calc(var(--hp-cine-pad) + 4.75rem);
+  }
+
+  .hp-cine-copy h1,
+  .hp-cine-copy p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hp-cine-copy .hero-copy-actions {
+    justify-content: center;
   }
 }
 
-/* Photo hero scrim — readable pool bottom-left; image stays cinematic elsewhere */
-.hero-scrim {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.72) 0%,
-      rgba(0, 0, 0, 0.45) 38%,
-      rgba(0, 0, 0, 0.18) 68%,
-      transparent 100%
-    ),
-    linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.78) 0%,
-      rgba(0, 0, 0, 0.35) 42%,
-      transparent 72%
-    ),
-    radial-gradient(
-      ellipse 70% 55% at 18% 78%,
-      rgba(0, 0, 0, 0.55) 0%,
-      transparent 70%
-    );
+/* Design-canvas stage: grid, artboards, soft craft marks */
+.hp-cine-hero {
+  background: #0e1218;
+}
+
+.hero-atmosphere {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
 }
 
-html.dark .hero-parallax-img,
-html.color-scheme-dark .hero-parallax-img {
-  filter: brightness(0.72) saturate(0.92) contrast(1.04);
+.hero-atmosphere__wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 72% 38%,
+      rgba(52, 78, 110, 0.35) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      160deg,
+      #121820 0%,
+      #0e141c 45%,
+      #0b1016 100%
+    );
+}
+
+.hero-atmosphere__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(
+    ellipse 110% 85% at 38% 42%,
+    #000 15%,
+    transparent 78%
+  );
+}
+
+.hero-atmosphere__craft {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-atmosphere__board {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.025);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 24px 48px -28px rgba(0, 0, 0, 0.55);
+}
+
+.hero-atmosphere__board--a {
+  top: 10%;
+  right: 8%;
+  width: min(38vw, 22rem);
+  height: min(52vh, 28rem);
+  border-color: rgba(var(--primary-rgb), 0.28);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.015) 100%
+    );
+}
+
+.hero-atmosphere__board--a::before,
+.hero-atmosphere__board--a::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid rgba(var(--primary-rgb), 0.85);
+  background: #0e1218;
+  border-radius: 2px;
+}
+
+.hero-atmosphere__board--a::before {
+  top: -5px;
+  left: -5px;
+}
+
+.hero-atmosphere__board--a::after {
+  right: -5px;
+  bottom: -5px;
+}
+
+.hero-atmosphere__board--b {
+  top: 18%;
+  right: 34%;
+  width: min(18vw, 11rem);
+  height: min(22vh, 12rem);
+  border-radius: 12px;
+  opacity: 0.7;
+}
+
+.hero-atmosphere__board--c {
+  bottom: 14%;
+  right: 18%;
+  width: min(22vw, 13rem);
+  height: min(16vh, 9rem);
+  border-radius: 12px;
+  opacity: 0.55;
+}
+
+.hero-atmosphere__chip {
+  position: absolute;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(16, 22, 32, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.hero-atmosphere__chip--a {
+  top: 14%;
+  right: 30%;
+  width: 4.5rem;
+  height: 1.35rem;
+  box-shadow: 0 10px 24px -16px rgba(0, 0, 0, 0.8);
+}
+
+.hero-atmosphere__chip--b {
+  top: 22%;
+  right: 12%;
+  width: 6.25rem;
+  height: 1.35rem;
+  border-color: rgba(var(--primary-rgb), 0.35);
+  background: rgba(var(--primary-rgb), 0.12);
+}
+
+.hero-atmosphere__flow {
+  position: absolute;
+  top: 36%;
+  right: 42%;
+  width: min(28vw, 16rem);
+  height: min(28vh, 14rem);
+  opacity: 0.55;
+  background:
+    radial-gradient(
+      circle at 12% 20%,
+      rgba(var(--primary-rgb), 0.55) 0 3px,
+      transparent 4px
+    ),
+    radial-gradient(
+      circle at 88% 72%,
+      rgba(255, 255, 255, 0.45) 0 3px,
+      transparent 4px
+    );
+}
+
+.hero-atmosphere__flow::before {
+  content: "";
+  position: absolute;
+  inset: 8% 6%;
+  border: 1.5px solid transparent;
+  border-top-color: rgba(var(--primary-rgb), 0.35);
+  border-right-color: rgba(255, 255, 255, 0.12);
+  border-radius: 55% 40% 60% 45%;
+  transform: rotate(-18deg);
+}
+
+.hero-atmosphere__guides {
+  position: absolute;
+  top: 8%;
+  left: 42%;
+  width: 1px;
+  height: 34%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 255, 255, 0.16),
+    transparent
+  );
+  opacity: 0.7;
+}
+
+.hero-atmosphere__guides::before,
+.hero-atmosphere__guides::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: #0e1218;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.hero-atmosphere__guides::before {
+  top: 0;
+}
+
+.hero-atmosphere__guides::after {
+  bottom: 0;
+}
+
+/* Left-stage craft (desktop+): denser design canvas beside the copy */
+.hero-atmosphere__board--l1,
+.hero-atmosphere__board--l2,
+.hero-atmosphere__board--l3,
+.hero-atmosphere__swatches,
+.hero-atmosphere__wire,
+.hero-atmosphere__anno,
+.hero-atmosphere__rail {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .hero-atmosphere__board--l1,
+  .hero-atmosphere__board--l2,
+  .hero-atmosphere__board--l3,
+  .hero-atmosphere__swatches,
+  .hero-atmosphere__wire,
+  .hero-atmosphere__anno,
+  .hero-atmosphere__rail {
+    display: block;
+  }
+
+  .hero-atmosphere__board--l1 {
+    top: 9%;
+    left: 5%;
+    width: min(22vw, 15rem);
+    height: min(34vh, 18rem);
+    border-color: rgba(255, 255, 255, 0.14);
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.015) 100%
+      );
+  }
+
+  .hero-atmosphere__board--l1::before {
+    content: "";
+    position: absolute;
+    inset: 12% 10% auto;
+    height: 38%;
+    border-radius: 8px;
+    border: 1px dashed rgba(255, 255, 255, 0.14);
+    background: rgba(var(--primary-rgb), 0.06);
+  }
+
+  .hero-atmosphere__board--l1::after {
+    content: "";
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: 14%;
+    height: 10px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .hero-atmosphere__board--l2 {
+    top: 14%;
+    left: 24%;
+    width: min(14vw, 9.5rem);
+    height: min(18vh, 9.5rem);
+    border-radius: 12px;
+    opacity: 0.85;
+  }
+
+  .hero-atmosphere__board--l2::before {
+    content: "";
+    position: absolute;
+    inset: 16%;
+    border-radius: 8px;
+    background:
+      linear-gradient(
+        135deg,
+        rgba(var(--primary-rgb), 0.22),
+        rgba(255, 255, 255, 0.04)
+      );
+  }
+
+  .hero-atmosphere__board--l3 {
+    top: 36%;
+    left: 7%;
+    width: min(16vw, 11rem);
+    height: min(14vh, 7.5rem);
+    border-radius: 12px;
+    opacity: 0.7;
+  }
+
+  .hero-atmosphere__swatches {
+    position: absolute;
+    top: 11%;
+    left: 18%;
+    display: flex !important;
+    gap: 0.4rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(14, 18, 24, 0.72);
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-atmosphere__swatches::before,
+  .hero-atmosphere__swatches::after {
+    content: "";
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 9999px;
+  }
+
+  .hero-atmosphere__swatches::before {
+    background: rgba(var(--primary-rgb), 0.9);
+    box-shadow:
+      1.15rem 0 0 rgba(255, 255, 255, 0.55),
+      2.3rem 0 0 rgba(120, 160, 200, 0.55);
+    width: 0.85rem;
+    margin-right: 2.3rem;
+  }
+
+  .hero-atmosphere__swatches::after {
+    display: none;
+  }
+
+  .hero-atmosphere__wire {
+    position: absolute;
+    top: 28%;
+    left: 20%;
+    width: min(18vw, 12rem);
+    height: min(20vh, 11rem);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px) 0 0 / 100% 22%,
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 33% 100%,
+      rgba(255, 255, 255, 0.02);
+    opacity: 0.75;
+  }
+
+  .hero-atmosphere__wire::before {
+    content: "";
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 18%;
+    height: 1.15rem;
+    border-radius: 6px;
+    background: rgba(var(--primary-rgb), 0.18);
+  }
+
+  .hero-atmosphere__anno {
+    position: absolute;
+    top: 8%;
+    left: 32%;
+    width: min(12vw, 8rem);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(var(--primary-rgb), 0.55),
+      transparent
+    );
+  }
+
+  .hero-atmosphere__anno::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border: 1.5px solid rgba(var(--primary-rgb), 0.8);
+    border-radius: 2px;
+    background: #0e1218;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-atmosphere__anno::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 2.75rem;
+    height: 0.55rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .hero-atmosphere__rail {
+    position: absolute;
+    top: 6%;
+    left: 4%;
+    width: 1px;
+    height: 42%;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgba(255, 255, 255, 0.18) 20%,
+      rgba(255, 255, 255, 0.18) 80%,
+      transparent
+    );
+  }
+
+  .hero-atmosphere__rail::before {
+    content: "";
+    position: absolute;
+    top: 18%;
+    left: 0;
+    width: min(20vw, 13rem);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.16),
+      transparent
+    );
+  }
+
+  .hero-atmosphere__veil {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(10, 14, 20, 0.72) 0%,
+        rgba(10, 14, 20, 0.32) 34%,
+        rgba(10, 14, 20, 0.1) 58%,
+        transparent 80%
+      ),
+      linear-gradient(
+        0deg,
+        rgba(10, 14, 20, 0.92) 0%,
+        rgba(10, 14, 20, 0.42) 34%,
+        transparent 64%
+      );
+  }
+}
+
+.hero-atmosphere__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(10, 14, 20, 0.88) 0%,
+      rgba(10, 14, 20, 0.45) 36%,
+      rgba(10, 14, 20, 0.12) 62%,
+      transparent 82%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(10, 14, 20, 0.9) 0%,
+      rgba(10, 14, 20, 0.35) 36%,
+      transparent 66%
+    );
+}
+
+/*
+ * Progressive blur that tapers toward the top.
+ * Technique: stacked backdrop-filter layers with CSS masks (Chrome, Firefox,
+ * Safari, Edge). Not the iOS-only progressive-blur API.
+ */
+.hero-fade-blur {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-fade-blur__layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.hero-fade-blur__layer--1 {
+  height: 72%;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 18%,
+    transparent 72%
+  );
+  -webkit-mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 18%,
+    transparent 72%
+  );
+}
+
+.hero-fade-blur__layer--2 {
+  height: 58%;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 22%,
+    transparent 78%
+  );
+  -webkit-mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 22%,
+    transparent 78%
+  );
+}
+
+.hero-fade-blur__layer--3 {
+  height: 44%;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 28%,
+    transparent 85%
+  );
+  -webkit-mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 28%,
+    transparent 85%
+  );
+}
+
+.hero-fade-blur__layer--4 {
+  height: 32%;
+  backdrop-filter: blur(28px) saturate(1.1);
+  -webkit-backdrop-filter: blur(28px) saturate(1.1);
+  mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 35%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 35%,
+    transparent 100%
+  );
+}
+
+.hero-fade-blur__tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 14, 20, 0.55) 0%,
+    rgba(10, 14, 20, 0.22) 28%,
+    rgba(10, 14, 20, 0.06) 52%,
+    transparent 78%
+  );
+}
+
+/* Desktop: keep blur under the copy only — don’t soft-focus the portrait */
+@media (min-width: 768px) {
+  .hero-fade-blur {
+    right: auto;
+    width: min(52%, 36rem);
+  }
+
+  .hero-fade-blur__layer--1 {
+    height: 48%;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .hero-fade-blur__layer--2 {
+    height: 40%;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  .hero-fade-blur__layer--3 {
+    height: 32%;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .hero-fade-blur__layer--4 {
+    height: 24%;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .hero-fade-blur__layer {
+    mask-image: linear-gradient(
+        to top,
+        #000 0%,
+        #000 30%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to right,
+        #000 0%,
+        #000 55%,
+        transparent 100%
+      );
+    -webkit-mask-image: linear-gradient(
+        to top,
+        #000 0%,
+        #000 30%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to right,
+        #000 0%,
+        #000 55%,
+        transparent 100%
+      );
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+  }
+
+  .hero-fade-blur__tint {
+    background: linear-gradient(
+      90deg,
+      rgba(10, 14, 20, 0.35) 0%,
+      rgba(10, 14, 20, 0.12) 55%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to top,
+      #000 0%,
+      #000 40%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to top,
+      #000 0%,
+      #000 40%,
+      transparent 100%
+    );
+  }
+}
+
+/* Fallback when backdrop-filter is unavailable */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .hero-fade-blur__layer {
+    display: none;
+  }
+
+  .hero-fade-blur__tint {
+    background: linear-gradient(
+      to top,
+      rgba(10, 14, 20, 0.82) 0%,
+      rgba(10, 14, 20, 0.45) 32%,
+      rgba(10, 14, 20, 0.12) 58%,
+      transparent 82%
+    );
+  }
+}
+
+html.force-reduce-transparency .hero-fade-blur__layer {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  display: none;
+}
+
+html.force-reduce-transparency .hero-fade-blur__tint {
+  background: linear-gradient(
+    to top,
+    rgba(10, 14, 20, 0.88) 0%,
+    rgba(10, 14, 20, 0.5) 34%,
+    rgba(10, 14, 20, 0.14) 60%,
+    transparent 84%
+  );
+}
+
+@media (max-width: 767px) {
+  .hero-atmosphere__board--b,
+  .hero-atmosphere__board--c,
+  .hero-atmosphere__chip--a,
+  .hero-atmosphere__flow,
+  .hero-atmosphere__guides {
+    display: none;
+  }
+
+  .hero-atmosphere__board--a {
+    right: -4%;
+    top: 6%;
+    width: 58vw;
+    height: 42vh;
+    opacity: 0.7;
+  }
+
+  .hero-atmosphere__grid {
+    opacity: 0.28;
+    background-size: 36px 36px;
+  }
+}
+
+/* Portrait slot: centered on mobile, right-anchored on desktop */
+.hero-portrait-slot {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 0;
+  width: auto;
+  height: 100svh;
+  max-height: 100svh;
+  aspect-ratio: 3558 / 3658;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .hero-portrait-slot {
+    left: auto;
+    right: -2%;
+    transform: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero-portrait-slot {
+    right: 0;
+  }
+}
+
+.hero-portrait {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait {
+    transform: none !important;
+  }
+}
+
+html.force-reduce-motion .hero-portrait {
+  transform: none !important;
+}
+
+.hero-portrait__glow {
+  position: absolute;
+  left: 12%;
+  right: 8%;
+  top: 18%;
+  bottom: 8%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    rgba(180, 210, 240, 0.28) 0%,
+    rgba(var(--primary-rgb), 0.16) 38%,
+    transparent 72%
+  );
+  filter: blur(8px);
+}
+
+.hero-portrait__shadow {
+  position: absolute;
+  left: 18%;
+  right: 14%;
+  bottom: 2%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.45) 0%,
+    transparent 72%
+  );
+  filter: blur(10px);
+}
+
+.hero-portrait__img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 28px 48px rgba(0, 0, 0, 0.35));
 }
 
 @keyframes hero-image-settle {
   from {
     opacity: 0.72;
-    /* Parallax owns transform after settle; entrance only fades. */
   }
   to {
     opacity: 1;
   }
-}
-
-.hero-parallax-img--enter {
-  animation: hero-image-settle 1.2s var(--hp-cine-ease) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-parallax-img {
-    transform: none !important;
-  }
-
-  .hero-parallax-img--enter {
-    animation: none;
-  }
-}
-
-html.force-reduce-motion .hero-parallax-img--enter {
-  animation: none;
 }
 
 .hero-read-more__chevron {
