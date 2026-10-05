@@ -2781,6 +2781,17 @@ html.color-scheme-dark .site-menu-icon-btn--surface:hover {
   color: #ffffff;
 }
 
+.site-menu-overlay__separator {
+  height: 1px;
+  list-style: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.12) 55%,
+    transparent 100%
+  );
+}
+
 /* Experience chapter tabs — same geometry as Menu cluster controls */
 .exp-chapter-tab {
   display: inline-flex;

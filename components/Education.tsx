@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
-import { GraduationCap, Calendar, Trophy, Clock } from "lucide-react";
+import { GraduationCap, Calendar, Trophy } from "lucide-react";
 import Tilt3D from "@/components/Tilt3D";
 import GlowLink from "@/components/GlowLink";
 
@@ -46,17 +46,9 @@ const mastersHonors = [
 
 const MERIT_PAGES_URL = "https://meritpages.com/anthonysilvia";
 const BACHELORS_DIPLOMA_URL = "https://www.parchment.com/u/award/917e24e9b7910565b7671dcdaa09e483";
-
-/** On/after this date, the MBA card shows Graduated (otherwise Pending conferral). */
-const MBA_GRADUATED_AT_MS = Date.UTC(2026, 9, 1); // Oct 1, 2026 00:00 UTC
-
-function hasMbaGraduated(nowMs = Date.now()): boolean {
-  return nowMs >= MBA_GRADUATED_AT_MS;
-}
-
-function mbaStatusLabel(graduated: boolean): string {
-  return graduated ? "Graduated" : "Pending conferral";
-}
+const MBA_DIPLOMA_URL = "https://www.parchment.com/lp/award/16c41a94-e2c5-473c-a2af-b3839b78248c";
+const BACHELORS_CONFERRED = "September 1, 2024";
+const MBA_CONFERRED = "October 1, 2026";
 
 /**
  * SNHU official brand palette - mirrors the colors used inside SNHU.svg
@@ -81,7 +73,6 @@ export default function Education({
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
-  const mbaGraduated = hasMbaGraduated();
   const collegeList =
     collegeEntries && collegeEntries.length > 0 ? collegeEntries : education;
 
@@ -146,6 +137,11 @@ export default function Education({
                   degreeLower.includes("mba") ||
                   degreeLower.includes("masters"));
               const honors = isBachelors ? bachelorsHonors : isMasters ? mastersHonors : null;
+              const conferredDate = isMasters
+                ? MBA_CONFERRED
+                : isBachelors
+                  ? BACHELORS_CONFERRED
+                  : null;
               return (
               <motion.div
                 key={`${edu.institution}-${index}`}
@@ -190,23 +186,19 @@ export default function Education({
                       }}
                     />
 
-                    {/* Status pill for Master's - Pending conferral until Oct 1 2026, then Graduated */}
-                    {isMasters && (
+                    {/* Conferral date pill - shown on both SNHU degree cards */}
+                    {conferredDate && (
                       <div
-                        className="absolute top-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.18em] font-semibold"
+                        className="absolute top-5 right-5 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.14em] font-semibold"
                         style={{
                           color: SNHU_BRAND.gold,
                           background: `${SNHU_BRAND.gold}1A`,
                           border: `1px solid ${SNHU_BRAND.gold}66`,
                         }}
-                        aria-label={mbaStatusLabel(mbaGraduated)}
+                        aria-label={`Conferred ${conferredDate}`}
                       >
-                        {mbaGraduated ? (
-                          <GraduationCap className="h-3 w-3" aria-hidden="true" />
-                        ) : (
-                          <Clock className="h-3 w-3" aria-hidden="true" />
-                        )}
-                        <span>{mbaStatusLabel(mbaGraduated)}</span>
+                        <GraduationCap className="h-3 w-3" aria-hidden="true" />
+                        <span>Conferred {conferredDate}</span>
                       </div>
                     )}
 
@@ -323,20 +315,22 @@ export default function Education({
                             </GlowLink>
                           )}
                           {isMasters && (
-                            <button
-                              type="button"
-                              disabled
-                              className="px-5 py-2.5 rounded-lg font-semibold text-sm cursor-not-allowed opacity-55"
+                            <GlowLink
+                              href={MBA_DIPLOMA_URL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              variant="primary"
+                              className="px-5 py-2.5 rounded-lg font-semibold text-sm focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-[#00193A]"
                               style={{
-                                background: "rgba(254, 185, 19, 0.1)",
-                                color: SNHU_BRAND.gold,
-                                border: `1.5px solid ${SNHU_BRAND.gold}66`,
-                              }}
-                              aria-label="View diploma - unavailable while MBA is pending conferral"
-                              title="Available after conferral"
+                                background: SNHU_BRAND.gold,
+                                color: SNHU_BRAND.ink,
+                                boxShadow: `0 8px 20px -8px ${SNHU_BRAND.gold}80, inset 0 -2px 0 0 ${SNHU_BRAND.goldDeep}`,
+                                "--tw-ring-color": `${SNHU_BRAND.gold}99`,
+                              } as React.CSSProperties}
+                              aria-label="View MBA diploma on Parchment (opens in new tab)"
                             >
                               View diploma
-                            </button>
+                            </GlowLink>
                           )}
                         </div>
                       )}

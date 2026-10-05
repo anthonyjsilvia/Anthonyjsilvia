@@ -12,14 +12,19 @@ import SiteSearch from "@/components/SiteSearch";
  * Site destinations shown in the full-screen Menu overlay.
  * Replaces the old liquid-glass top bar site-wide.
  */
-const menuItems = [
-  { name: "Home", href: "/" },
-  { name: "Portfolio", href: "/portfolio" },
-  { name: "Evidence", href: "/evidence" },
-  { name: "Experience", href: "/experience" },
-  { name: "Recommendations", href: "/recommendations" },
-  { name: "Request Resume", href: "/resume" },
-  { name: "Contact", href: "/contact" },
+type MenuEntry =
+  | { type: "link"; name: string; href: string }
+  | { type: "separator" };
+
+const menuItems: MenuEntry[] = [
+  { type: "link", name: "Home", href: "/" },
+  { type: "link", name: "Portfolio", href: "/portfolio" },
+  { type: "link", name: "Evidence", href: "/evidence" },
+  { type: "link", name: "Experience", href: "/experience" },
+  { type: "link", name: "Recommendations", href: "/recommendations" },
+  { type: "separator" },
+  { type: "link", name: "Request Resume", href: "/resume" },
+  { type: "link", name: "Contact", href: "/contact" },
 ];
 
 const cineEase = [0.22, 1, 0.36, 1] as const;
@@ -296,42 +301,67 @@ export default function Navigation({
               className="flex flex-1 flex-col justify-center px-[var(--hp-cine-pad,1.25rem)] pb-8"
             >
               <ul role="list" className="mx-auto w-full max-w-3xl space-y-1 sm:space-y-2">
-                {menuItems.map((item, idx) => {
-                  const isActive = isLinkActive(pathname, item.href);
-                  return (
-                    <motion.li
-                      key={item.href}
-                      initial={{
-                        opacity: 0,
-                        y: shouldReduceMotion ? 0 : 24,
-                        filter: shouldReduceMotion ? "blur(0px)" : "blur(6px)",
-                      }}
-                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                      transition={{
-                        duration: shouldReduceMotion ? 0 : 0.7,
-                        delay: shouldReduceMotion ? 0 : 0.06 + idx * 0.05,
-                        ease: cineEase,
-                      }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={close}
-                        aria-current={isActive ? "page" : undefined}
-                        className="site-menu-overlay__link group flex items-baseline gap-4 rounded-lg py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070a12]"
-                      >
-                        <span
+                {(() => {
+                  let linkNumber = 0;
+                  return menuItems.map((item, idx) => {
+                    if (item.type === "separator") {
+                      return (
+                        <motion.li
+                          key={`separator-${idx}`}
+                          role="separator"
                           aria-hidden="true"
-                          className="site-menu-overlay__index w-8 shrink-0 font-mono text-xs transition-colors"
+                          initial={{
+                            opacity: 0,
+                            scaleX: shouldReduceMotion ? 1 : 0.6,
+                          }}
+                          animate={{ opacity: 1, scaleX: 1 }}
+                          transition={{
+                            duration: shouldReduceMotion ? 0 : 0.5,
+                            delay: shouldReduceMotion ? 0 : 0.06 + idx * 0.05,
+                            ease: cineEase,
+                          }}
+                          className="site-menu-overlay__separator my-3 sm:my-4 origin-left"
+                        />
+                      );
+                    }
+
+                    linkNumber += 1;
+                    const isActive = isLinkActive(pathname, item.href);
+                    return (
+                      <motion.li
+                        key={item.href}
+                        initial={{
+                          opacity: 0,
+                          y: shouldReduceMotion ? 0 : 24,
+                          filter: shouldReduceMotion ? "blur(0px)" : "blur(6px)",
+                        }}
+                        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                        transition={{
+                          duration: shouldReduceMotion ? 0 : 0.7,
+                          delay: shouldReduceMotion ? 0 : 0.06 + idx * 0.05,
+                          ease: cineEase,
+                        }}
+                      >
+                        <Link
+                          href={item.href}
+                          onClick={close}
+                          aria-current={isActive ? "page" : undefined}
+                          className="site-menu-overlay__link group flex items-baseline gap-4 rounded-lg py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070a12]"
                         >
-                          {String(idx + 1).padStart(2, "0")}
-                        </span>
-                        <span className="site-menu-overlay__label font-sans text-[clamp(1.85rem,5vw,3.25rem)] font-bold tracking-[-0.02em] leading-[1.12] transition-transform duration-300 group-hover:translate-x-1">
-                          {item.name}
-                        </span>
-                      </Link>
-                    </motion.li>
-                  );
-                })}
+                          <span
+                            aria-hidden="true"
+                            className="site-menu-overlay__index w-8 shrink-0 font-mono text-xs transition-colors"
+                          >
+                            {String(linkNumber).padStart(2, "0")}
+                          </span>
+                          <span className="site-menu-overlay__label font-sans text-[clamp(1.85rem,5vw,3.25rem)] font-bold tracking-[-0.02em] leading-[1.12] transition-transform duration-300 group-hover:translate-x-1">
+                            {item.name}
+                          </span>
+                        </Link>
+                      </motion.li>
+                    );
+                  });
+                })()}
               </ul>
             </nav>
 
