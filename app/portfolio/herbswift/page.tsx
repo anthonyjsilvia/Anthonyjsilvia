@@ -7,6 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Download, X } from "lucide-react";
 import SiteBackBar from "@/components/SiteBackBar";
 import {
+  herbswiftFigma,
   herbswiftGallery,
   herbswiftMeta,
   herbswiftPdfs,
@@ -121,7 +122,7 @@ export default function HerbswiftGalleryPage() {
 
   return (
     <article className="min-h-screen bg-[var(--background)] pb-24 md:pb-32">
-      <SiteBackBar href="/portfolio" label="Back to portfolio" />
+      <SiteBackBar href="/#portfolio" label="Back to portfolio" />
       <div className="h-[4.75rem]" aria-hidden="true" />
 
       <div className="mx-auto mt-6 w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)] md:mt-10">
@@ -156,6 +157,35 @@ export default function HerbswiftGalleryPage() {
         </motion.header>
 
         <section
+          aria-labelledby="herbswift-figma"
+          className="mb-16 rounded-[clamp(16px,2vw,28px)] border border-[var(--border-light)] bg-[var(--bg-secondary)] p-6 md:mb-20 md:p-8"
+        >
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
+            {herbswiftFigma.access}
+          </p>
+          <h2
+            id="herbswift-figma"
+            className="font-display mt-3 text-[clamp(1.6rem,3vw,2.25rem)] font-extrabold tracking-[-0.03em] text-[var(--text-primary)]"
+          >
+            Finalized concepts
+          </h2>
+          <p className="mt-3 max-w-2xl text-[1.02rem] leading-[1.7] text-[var(--text-secondary)]">
+            The finalized concepts are in a password-protected Figma file.
+            Early concepts stay on this page.
+          </p>
+          <a
+            href={herbswiftFigma.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_-14px_rgba(var(--primary-rgb),0.55)] transition-transform duration-[var(--dur-apple-sm)] hover:translate-y-[-1px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
+          >
+            Open Figma
+            <span className="sr-only">. Password-protected. Opens in a new tab.</span>
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </section>
+
+        <section
           aria-labelledby="herbswift-story"
           className="mb-16 grid gap-8 border-t border-[var(--border-light)] pt-12 md:mb-20 md:grid-cols-3 md:gap-10"
         >
@@ -187,15 +217,15 @@ export default function HerbswiftGalleryPage() {
                 id="herbswift-gallery-heading"
                 className="font-display text-[clamp(1.6rem,3vw,2.25rem)] font-extrabold tracking-[-0.03em] text-[var(--text-primary)]"
               >
-                Gallery
+                Early concepts
               </h2>
               <p className="mt-2 max-w-xl text-sm text-[var(--text-secondary)]">
-                Polished product overview plus curated frames from iPhone, iPad,
-                and web builds. Click any frame to view full-size.
+                Curated frames from iPhone, iPad, and web. Click any frame to
+                view full-size.
               </p>
             </div>
             <Link
-              href="/portfolio"
+              href="/#portfolio"
               className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--primary)] underline-offset-4 hover:underline"
             >
               All portfolio
@@ -253,8 +283,8 @@ export default function HerbswiftGalleryPage() {
             Source documents
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-[var(--text-secondary)]">
-            Original 2018 build PDFs for reference. The gallery above is the
-            primary way to review the work.
+            Original 2018 build PDFs for reference. The early concepts above
+            are the public way to review the work.
           </p>
           <ul role="list" className="mt-6 flex flex-wrap gap-2">
             {herbswiftPdfs.map((pdf) => (

@@ -13,6 +13,11 @@ export type HerbswiftPdf = {
   path: string;
 };
 
+export const herbswiftFigma = {
+  url: "https://www.figma.com/design/jZnmrCj8iQ529kVtU7rYHZ/E-Commerce?node-id=0-1&t=MfmSYIVApmKrDeHh-1",
+  access: "Password-protected",
+} as const;
+
 export const herbswiftMeta = {
   title: "Herbswift",
   role: "Company-wide UX lead · Product Design + Design Systems",
@@ -25,7 +30,7 @@ export const herbswiftMeta = {
   approach:
     "I owned end-to-end UX across platforms: mapping core journeys, defining reusable patterns, and delivering build-ready visual and interaction specs for iOS and web.",
   outcome:
-    "A documented multi-surface design language and a gallery of production-bound UI across phone, tablet, and web. Foundational craft I still draw on for systems and mobile UX work.",
+    "A documented multi-surface design language and early concepts across phone, tablet, and web. Foundational craft I still draw on for systems and mobile UX work.",
 };
 
 export const herbswiftGallery: HerbswiftGalleryItem[] = [

@@ -35,7 +35,10 @@ export default function SelectedWorkApp({ embedded = false }: { embedded?: boole
       <Link
         href={active.href}
         className="os-app__text-link"
-        target={embedded ? "_top" : undefined}
+        target={
+          active.href.startsWith("http") ? "_blank" : embedded ? "_top" : undefined
+        }
+        rel={active.href.startsWith("http") ? "noopener noreferrer" : undefined}
       >
         Continue on site
         <ArrowUpRight className="os-app__open-icon" aria-hidden="true" />

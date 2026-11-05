@@ -1,20 +1,18 @@
 "use client";
 
 import Hero from "@/components/Hero";
-import SelectedWork from "@/components/SelectedWork";
-import About from "@/components/About";
+import Portfolio from "@/components/Portfolio";
 import Recommendations from "@/components/Recommendations";
 
 /**
- * Home: hero → selected work → about → recommendations.
- * Full recommendation set lives on /recommendations.
+ * Home: hero → portfolio → recommendations.
+ * About lives at /about. Case studies stay at /portfolio/*.
  */
 export default function Home() {
   return (
     <>
       <Hero />
-      <SelectedWork />
-      <About />
+      <Portfolio />
       <Recommendations />
     </>
   );

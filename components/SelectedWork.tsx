@@ -74,7 +74,13 @@ export default function SelectedWork() {
                 <Link
                   href={item.href}
                   className="selected-work__card group"
-                  aria-label={`${item.title}. ${item.role}. Open details.`}
+                  aria-label={
+                    item.href.startsWith("http")
+                      ? `${item.title}. ${item.role}. ${item.context} Opens in a new tab.`
+                      : `${item.title}. ${item.role}. Open details.`
+                  }
+                  target={item.href.startsWith("http") ? "_blank" : undefined}
+                  rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
                 >
                   <span className="selected-work__index" aria-hidden="true">
                     {n}
@@ -111,7 +117,7 @@ export default function SelectedWork() {
           }}
           className="selected-work__footer"
         >
-          <Link href="/portfolio" className="selected-work__cta group">
+          <Link href="/#portfolio" className="selected-work__cta group">
             Full portfolio
             <ArrowUpRight
               className="h-4 w-4 transition-transform duration-[var(--dur-apple-sm)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

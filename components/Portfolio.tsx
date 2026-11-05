@@ -32,8 +32,8 @@ function ProjectMedia({ project }: { project: PortfolioProject }) {
               : undefined
           }
         />
-        {project.isConfidential ? (
-          <span className="portfolio-cine__media-badge">Confidential · request</span>
+        {project.mediaBadge ? (
+          <span className="portfolio-cine__media-badge">{project.mediaBadge}</span>
         ) : null}
       </div>
     );
@@ -66,6 +66,7 @@ function ProjectRow({
   const isInternal =
     hasLink &&
     (project.link!.startsWith("/") || project.link!.startsWith("#"));
+  const hasSecondary = Boolean(project.secondaryLink);
   const reverse = index % 2 === 1;
 
   const ariaLabel = hasLink
@@ -81,7 +82,18 @@ function ProjectRow({
       </span>
 
       <div className="portfolio-cine__visual">
-        <ProjectMedia project={project} />
+        {hasLink && hasSecondary ? (
+          <Link
+            href={project.link!}
+            aria-label={ariaLabel}
+            target={isInternal ? undefined : "_blank"}
+            rel={isInternal ? undefined : "noopener noreferrer"}
+          >
+            <ProjectMedia project={project} />
+          </Link>
+        ) : (
+          <ProjectMedia project={project} />
+        )}
       </div>
 
       <div className="portfolio-cine__copy">
@@ -109,10 +121,38 @@ function ProjectRow({
           <p className="portfolio-cine__status">{project.companyStatus}</p>
         ) : null}
         <p className="portfolio-cine__desc">{project.description}</p>
-        {hasLink ? (
-          <span className="portfolio-cine__cta">
-            <span>{project.linkText}</span>
-            <ArrowUpRight className="portfolio-cine__cta-icon" aria-hidden="true" />
+        {hasLink || hasSecondary ? (
+          <span className="portfolio-cine__cta-row">
+            {hasLink ? (
+              hasSecondary ? (
+                <Link
+                  href={project.link!}
+                  className="portfolio-cine__cta"
+                  target={isInternal ? undefined : "_blank"}
+                  rel={isInternal ? undefined : "noopener noreferrer"}
+                >
+                  {project.linkText}
+                  <ArrowUpRight className="portfolio-cine__cta-icon" aria-hidden="true" />
+                </Link>
+              ) : (
+                <span className="portfolio-cine__cta">
+                  <span>{project.linkText}</span>
+                  <ArrowUpRight className="portfolio-cine__cta-icon" aria-hidden="true" />
+                </span>
+              )
+            ) : null}
+            {hasSecondary ? (
+              <a
+                href={project.secondaryLink}
+                className="portfolio-cine__cta"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(event) => event.stopPropagation()}
+              >
+                {project.secondaryLinkText ?? "Open Figma"}
+                <ArrowUpRight className="portfolio-cine__cta-icon" aria-hidden="true" />
+              </a>
+            ) : null}
           </span>
         ) : null}
       </div>
@@ -146,7 +186,7 @@ function ProjectRow({
       }}
       className="portfolio-cine__item scroll-mt-[5.5rem]"
     >
-      {hasLink ? (
+      {hasLink && !hasSecondary ? (
         isInternal ? (
           <Link href={project.link!} className={className} aria-label={ariaLabel}>
             {body}
@@ -170,9 +210,7 @@ function ProjectRow({
 }
 
 /**
- * Portfolio page: cinematic editorial project index.
- * Matches Evidence / Herbswift stage language with Apple-tempo motion
- * and reduced-motion fallbacks.
+ * Homepage portfolio: cinematic project index in place of selected work.
  */
 export default function Portfolio() {
   const headerRef = useRef(null);
@@ -181,14 +219,12 @@ export default function Portfolio() {
   const headerReveal = fadeUpBlur(shouldReduceMotion, 28);
 
   return (
-    <article
+    <section
       id="portfolio"
-      className="portfolio-cine min-h-screen bg-[var(--background)] pb-24 md:pb-32"
+      className="portfolio-cine scroll-mt-[4.75rem] border-t border-[var(--border-light)] bg-[var(--background)] py-14 md:py-20"
       aria-labelledby="portfolio-heading"
     >
-      <div className="h-[4.75rem]" aria-hidden="true" />
-
-      <div className="mx-auto mt-6 w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)] md:mt-10">
+      <div className="mx-auto w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)]">
         <motion.header
           ref={headerRef}
           initial="hidden"
@@ -196,23 +232,20 @@ export default function Portfolio() {
           variants={headerReveal}
           className="portfolio-cine__header mb-14 max-w-3xl md:mb-20"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
-            Portfolio
-          </p>
-          <h1
+          <h2
             id="portfolio-heading"
-            className="font-display mt-3 text-[clamp(2.25rem,4.5vw,3.75rem)] font-extrabold tracking-[-0.03em] leading-[1.05] text-[var(--text-primary)]"
+            className="font-display text-[clamp(2.25rem,4.5vw,3.75rem)] font-extrabold tracking-[-0.03em] leading-[1.05] text-[var(--text-primary)]"
           >
-            Selected projects
-          </h1>
+            Portfolio
+          </h2>
           <div
             aria-hidden="true"
             className="mt-7 h-[2px] w-20 rounded-full bg-gradient-to-r from-[var(--primary)] to-transparent"
           />
           <p className="mt-6 text-[1.05rem] leading-[1.7] text-[var(--text-secondary)] md:text-[1.15rem] md:leading-[1.75]">
-            Enterprise ops under NDA, multi-surface craft you can see, and
-            end-to-end product ownership. For decision-level proof without
-            confidential screens, open Evidence.
+            An independent retail study, multi-surface craft you can open, and
+            end-to-end product ownership. Evidence covers how I make decisions
+            without showing confidential screens.
           </p>
           <p className="mt-6">
             <Link
@@ -246,6 +279,6 @@ export default function Portfolio() {
           ))}
         </ul>
       </div>
-    </article>
+    </section>
   );
 }

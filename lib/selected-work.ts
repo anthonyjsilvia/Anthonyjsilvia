@@ -1,5 +1,7 @@
 /** Selected work proof items, shared by homepage section + AnthonyOS app. */
 
+import { lowesCaseCopy } from "@/lib/lowes-case";
+
 export type SelectedWorkItem = {
   id: string;
   href: string;
@@ -14,8 +16,8 @@ export const selectedWorkItems: SelectedWorkItem[] = [
     id: "lowes",
     href: "/portfolio/lowes",
     eyebrow: "Lowe's",
-    title: "Retail associate-facing tech under NDA",
-    context: "Request a confidential walkthrough of decision-level detail.",
+    title: "Retail point-of-sale case study",
+    context: lowesCaseCopy.selectedContext,
     role: "Product design",
   },
   {
@@ -31,7 +33,8 @@ export const selectedWorkItems: SelectedWorkItem[] = [
     href: "/portfolio/herbswift",
     eyebrow: "Herbswift",
     title: "UX and design systems across web and mobile",
-    context: "Company-wide craft across iPhone, iPad, and web.",
+    context:
+      "Early concepts across iPhone, iPad, and web, plus a password-protected Figma file.",
     role: "Design systems",
   },
 ];

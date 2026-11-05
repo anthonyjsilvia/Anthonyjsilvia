@@ -31,7 +31,7 @@ export default function PortfolioApp({ embedded = false }: { embedded?: boolean 
       onSelect={setActiveId}
       detailTitle={active.title}
       detailSubtitle={active.subtitle}
-      siteHref="/portfolio"
+      siteHref="/#portfolio"
     >
       {active.image ? (
         <div className="relative mb-4 aspect-[3/4] w-full max-w-xs overflow-hidden rounded-lg">
@@ -70,6 +70,17 @@ export default function PortfolioApp({ embedded = false }: { embedded?: boolean 
           rel={isExternal ? "noopener noreferrer" : undefined}
         >
           {active.linkText ?? "Open"}
+          <ArrowUpRight className="os-app__open-icon" aria-hidden="true" />
+        </Link>
+      ) : null}
+      {active.secondaryLink ? (
+        <Link
+          href={active.secondaryLink}
+          className="os-app__text-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {active.secondaryLinkText ?? "Open Figma"}
           <ArrowUpRight className="os-app__open-icon" aria-hidden="true" />
         </Link>
       ) : null}

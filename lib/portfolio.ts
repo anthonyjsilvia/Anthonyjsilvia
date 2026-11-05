@@ -1,5 +1,8 @@
 /** Portfolio projects, shared by Portfolio page + AnthonyOS Portfolio app. */
 
+import { herbswiftFigma } from "@/lib/herbswift";
+import { lowesCaseCopy } from "@/lib/lowes-case";
+
 export type PortfolioLogo = {
   /** Logo for light page backgrounds. */
   light: string;
@@ -24,19 +27,22 @@ export type PortfolioProject = {
   logo?: PortfolioLogo;
   link: string | null;
   linkText: string | null;
+  /** Extra action shown beside the primary CTA, such as a Figma file. */
+  secondaryLink?: string;
+  secondaryLinkText?: string;
   color: string;
-  isConfidential?: boolean;
+  /** Short label over the thumbnail, such as access or confidentiality status. */
+  mediaBadge?: string;
   companyStatus?: string;
 };
 
 export const portfolioProjects: PortfolioProject[] = [
   {
     id: "lowes",
-    title: "Retail associate-facing tech for enterprise ops",
+    title: "Retail point-of-sale case study",
     subtitle: "Lowe's Companies, Inc.",
-    description:
-      "Product design for tools retail associates rely on under pressure. Confidential under NDA. Request a private walkthrough of decision-level detail.",
-    category: "Retail associate-facing tech",
+    description: lowesCaseCopy.cardDescription,
+    category: "Independent portfolio work",
     technologies: [
       "Product Design",
       "Discovery",
@@ -55,9 +61,10 @@ export const portfolioProjects: PortfolioProject[] = [
       alt: "Lowe's",
     },
     link: "/portfolio/lowes",
-    linkText: "Request details",
+    linkText: "View case study",
     color: "#012169",
-    isConfidential: true,
+    mediaBadge: "Password-protected",
+    companyStatus: lowesCaseCopy.cardStatus,
   },
   {
     id: "kinlily",
@@ -112,7 +119,7 @@ export const portfolioProjects: PortfolioProject[] = [
     title: "Led UX and design systems across web and mobile",
     subtitle: "Herbswift",
     description:
-      "Company-wide UX lead: design systems and product experience across iPhone, iPad, and web. Gallery of curated craft from 2018 builds.",
+      "Company-wide UX lead across iPhone, iPad, and web. Early concepts are public; the full Figma file is password-protected.",
     category: "Product Design + UX",
     technologies: [
       "UX Design",
@@ -131,8 +138,11 @@ export const portfolioProjects: PortfolioProject[] = [
       alt: "Herbswift",
     },
     link: "/portfolio/herbswift",
-    linkText: "Open gallery",
+    linkText: "Early concepts",
+    secondaryLink: herbswiftFigma.url,
+    secondaryLinkText: "Open Figma",
     color: "#38B548",
+    mediaBadge: "Password-protected",
     companyStatus: "Company no longer exists",
   },
 ];

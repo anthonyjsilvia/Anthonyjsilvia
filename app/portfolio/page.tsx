@@ -1,12 +1,12 @@
 "use client";
 
-import Portfolio from "@/components/Portfolio";
+import { useEffect } from "react";
 
-/**
- * Portfolio route - owns the project case study grid. Page chrome
- * (nav/footer/fab/accessibility modal) is provided by `SiteChrome` in
- * `app/layout.tsx`.
- */
+/** Fallback if the /portfolio redirect is not applied. Portfolio lives on the homepage. */
 export default function PortfolioPage() {
-  return <Portfolio />;
+  useEffect(() => {
+    window.location.replace("/#portfolio");
+  }, []);
+
+  return null;
 }

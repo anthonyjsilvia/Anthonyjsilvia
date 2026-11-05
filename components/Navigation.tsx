@@ -18,7 +18,8 @@ type MenuEntry =
 
 const menuItems: MenuEntry[] = [
   { type: "link", name: "Home", href: "/" },
-  { type: "link", name: "Portfolio", href: "/portfolio" },
+  { type: "link", name: "Portfolio", href: "/#portfolio" },
+  { type: "link", name: "About", href: "/about" },
   { type: "link", name: "Evidence", href: "/evidence" },
   { type: "link", name: "Experience", href: "/experience" },
   { type: "link", name: "Recommendations", href: "/recommendations" },

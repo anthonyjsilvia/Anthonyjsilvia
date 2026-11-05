@@ -38,7 +38,8 @@ const NODEDA = {
 
 const PAGE_LINKS: { href: string; label: string }[] = [
   { href: "/", label: "Home" },
-  { href: "/portfolio", label: "Portfolio" },
+  { href: "/#portfolio", label: "Portfolio" },
+  { href: "/about", label: "About" },
   { href: "/evidence", label: "Evidence" },
   { href: "/experience", label: "Experience" },
   { href: "/recommendations", label: "Recommendations" },

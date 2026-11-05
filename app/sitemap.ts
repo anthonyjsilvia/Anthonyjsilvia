@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: baseUrl, lastModified, changeFrequency: 'monthly', priority: 1 },
     { url: `${baseUrl}/experience`, lastModified, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${baseUrl}/portfolio`, lastModified, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${baseUrl}/about`, lastModified, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/portfolio/herbswift`, lastModified, changeFrequency: 'yearly', priority: 0.85 },
     { url: `${baseUrl}/portfolio/kinlily`, lastModified, changeFrequency: 'yearly', priority: 0.85 },
     { url: `${baseUrl}/portfolio/lowes`, lastModified, changeFrequency: 'yearly', priority: 0.8 },

@@ -204,12 +204,12 @@ export default function Hero() {
           className="hero-copy-actions mt-8 md:mt-10 flex flex-wrap gap-3"
         >
           <HeroCTA
-            href="#work"
+            href="#portfolio"
             Icon={Layers}
             variant="primary"
-            ariaLabel="See selected work"
+            ariaLabel="See portfolio"
           >
-            Selected work
+            Portfolio
           </HeroCTA>
           <HeroCTA
             href="/resume"
@@ -223,7 +223,7 @@ export default function Hero() {
       </motion.div>
 
       <motion.a
-        href="#work"
+        href="#portfolio"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{
@@ -232,10 +232,10 @@ export default function Hero() {
           ease: [0.22, 1, 0.36, 1],
         }}
         className="hero-read-more absolute bottom-[var(--hp-cine-pad,1.25rem)] left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/80 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:left-auto md:right-[var(--hp-cine-pad,1.25rem)] md:translate-x-0"
-        aria-label="See selected work"
+        aria-label="See portfolio"
       >
         <span className="font-sans text-[11px] font-bold uppercase tracking-[0.18em]">
-          Selected work
+          Portfolio
         </span>
         <ChevronDown
           className="hero-read-more__chevron h-5 w-5"

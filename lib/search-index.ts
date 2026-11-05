@@ -13,6 +13,7 @@
  * touching this file twice.
  */
 
+import { lowesCaseCopy } from "@/lib/lowes-case";
 import { recommendations } from "@/lib/recommendations";
 
 export type SearchEntry = {
@@ -52,16 +53,23 @@ const PAGE_ENTRIES: SearchEntry[] = [
   {
     title: "Portfolio",
     section: "Pages",
-    href: "/portfolio",
-    description: "Selected projects and case studies",
+    href: "/#portfolio",
+    description: "Portfolio and case studies",
     keywords: ["projects", "case study", "kinlily", "herbswift", "lowes", "nodeda", "portfolio", "work"],
   },
   {
-    title: "Herbswift Gallery",
+    title: "About",
+    section: "Pages",
+    href: "/about",
+    description: "From Lowe's stores into product design, plus NodeDa and an MBA",
+    keywords: ["about", "bio", "profile", "anthony silvia", "mba"],
+  },
+  {
+    title: "Herbswift early concepts",
     section: "Pages",
     href: "/portfolio/herbswift",
-    description: "UX and design systems across web and mobile",
-    keywords: ["herbswift", "gallery", "mobile", "design systems", "ipad", "iphone"],
+    description: "Early concepts plus a password-protected Figma file for UX and design systems across web and mobile",
+    keywords: ["herbswift", "early concepts", "gallery", "figma", "password", "mobile", "design systems", "ipad", "iphone"],
   },
   {
     title: "Kinlily Gallery",
@@ -71,11 +79,11 @@ const PAGE_ENTRIES: SearchEntry[] = [
     keywords: ["kinlily", "cookbook", "gallery", "ios", "app"],
   },
   {
-    title: "Lowe's case request",
+    title: "Independent retail case study",
     section: "Pages",
     href: "/portfolio/lowes",
-    description: "Request confidential retail associate-facing case details",
-    keywords: ["lowes", "retail", "associate", "confidential", "nda", "request"],
+    description: lowesCaseCopy.searchDescription,
+    keywords: ["lowes", "retail", "figma", "conceptual", "fictional", "point of sale", "disclaimer"],
   },
   {
     title: "Evidence",

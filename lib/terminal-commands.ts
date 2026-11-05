@@ -11,6 +11,7 @@
  * `COMMANDS.alias = COMMANDS.original` after the registry is defined.
  */
 
+import { lowesCaseCopy } from "@/lib/lowes-case";
 import { recommendations } from "@/lib/recommendations";
 
 export type TerminalContext = {
@@ -45,7 +46,8 @@ type CommandHandler = (args: string[], ctx: TerminalContext) => CommandResult;
 const PAGES: { name: string; path: string; href: string; description: string }[] = [
   { name: "home", path: "/", href: "/", description: "Landing page" },
   { name: "experience", path: "/experience", href: "/experience", description: "Career timeline" },
-  { name: "portfolio", path: "/portfolio", href: "/portfolio", description: "Selected projects" },
+  { name: "portfolio", path: "/#portfolio", href: "/#portfolio", description: "Portfolio on the homepage" },
+  { name: "about", path: "/about", href: "/about", description: "About" },
   { name: "evidence", path: "/evidence", href: "/evidence", description: "Evidence" },
   { name: "resume", path: "/resume", href: "/resume", description: "Request a private resume copy" },
   { name: "contact", path: "/contact", href: "/contact", description: "Contact form" },
@@ -459,7 +461,7 @@ const COMMANDS: Record<string, CommandHandler> = {
       "  ifconfig, ip      Print network interface info",
       "",
       "  experience        Career timeline",
-      "  portfolio         Selected work",
+      "  portfolio         Portfolio on the homepage",
       "  evidence          Evidence (decision evidence)",
       "  reco              Recommendations",
       "  contact           Contact info",
@@ -550,10 +552,10 @@ const COMMANDS: Record<string, CommandHandler> = {
     output: [
       "Selected work:",
       "",
-      "  · Lowe's internal   Operational tools (confidential)",
+      `  · Lowe's            ${lowesCaseCopy.terminalLine}`,
       "  · Kinlily           Cloud-based cookbook ecosystem",
       "  · NodeDa Work       Unified work suite (Boards through Finance)",
-      "  · Herbswift         Design lead across web + mobile",
+      "  · Herbswift         Password-protected Figma · web + mobile",
       "",
       "Run `open portfolio` to view the case studies in the regular site.",
     ],
