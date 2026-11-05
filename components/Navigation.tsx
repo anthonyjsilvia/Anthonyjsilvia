@@ -6,31 +6,29 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Home, X } from "lucide-react";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { UniversalAccess } from "react-bootstrap-icons";
+import LanguageSelect from "@/components/LanguageSelect";
 import SiteSearch from "@/components/SiteSearch";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 /**
  * Site destinations shown in the full-screen Menu overlay.
  * Replaces the old liquid-glass top bar site-wide.
  */
-type MenuEntry =
-  | { type: "link"; name: string; href: string }
-  | { type: "separator" };
-
-const menuItems: MenuEntry[] = [
-  { type: "link", name: "Home", href: "/" },
-  { type: "link", name: "Portfolio", href: "/#portfolio" },
-  { type: "link", name: "About", href: "/about" },
-  { type: "link", name: "Evidence", href: "/evidence" },
-  { type: "link", name: "Experience", href: "/experience" },
-  { type: "link", name: "Recommendations", href: "/recommendations" },
-  { type: "separator" },
-  { type: "link", name: "Request Resume", href: "/resume" },
-  { type: "link", name: "Contact", href: "/contact" },
+const menuHrefs = [
+  { type: "link" as const, key: "home" as const, href: "/" },
+  { type: "link" as const, key: "portfolio" as const, href: "/#portfolio" },
+  { type: "link" as const, key: "about" as const, href: "/about" },
+  { type: "link" as const, key: "evidence" as const, href: "/evidence" },
+  { type: "link" as const, key: "experience" as const, href: "/experience" },
+  { type: "link" as const, key: "recommendations" as const, href: "/recommendations" },
+  { type: "separator" as const },
+  { type: "link" as const, key: "requestResume" as const, href: "/resume" },
+  { type: "link" as const, key: "contact" as const, href: "/contact" },
 ];
 
 const cineEase = [0.22, 1, 0.36, 1] as const;
 
-/** Minimum clear space between left chrome (tabs / back) and the Menu cluster. */
+/** Minimum clear space between the Menu cluster and page chrome beside it. */
 const CLUSTER_MIN_GAP_PX = 12;
 /** Extra slack before restoring a suppressed control (avoids flicker). */
 const CLUSTER_RESTORE_SLACK_PX = 20;
@@ -59,9 +57,9 @@ function getLeftChromeRect(): DOMRect | null {
  * cluster (`w-fit`) re-enables events - so sticky page chrome (e.g. Experience
  * tabs) stays clickable underneath the empty top strip.
  *
- * Overflow: when the top-right cluster would collide with left chrome (or the
- * viewport edge), Accessibility is suppressed into the Menu overlay first -
- * macOS menu-bar style, only when space is actually needed.
+ * Menu and Home sit on the left. Search and Accessibility stay on the right.
+ * When that right cluster would collide with page chrome, Accessibility is
+ * suppressed into the Menu overlay first.
  */
 type NavigationProps = {
   onOpenAccessibility?: () => void;
@@ -73,13 +71,16 @@ export default function Navigation({
   const pathname = usePathname() ?? "/";
   const shouldReduceMotion = useReducedMotion();
   const isHome = pathname === "/";
+  const messages = useMessages();
+  const chrome = messages.chrome;
 
   const [open, setOpen] = useState(false);
   const [suppressA11y, setSuppressA11y] = useState(false);
   const titleId = useId();
   const closeRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const clusterRef = useRef<HTMLDivElement>(null);
+  const menuClusterRef = useRef<HTMLDivElement>(null);
+  const toolsClusterRef = useRef<HTMLDivElement>(null);
   const a11yRef = useRef<HTMLButtonElement>(null);
   const a11ySlotWidthRef = useRef(A11Y_SLOT_FALLBACK_PX);
   const suppressA11yRef = useRef(false);
@@ -119,56 +120,52 @@ export default function Navigation({
   }, [suppressA11y]);
 
   const measureOverflow = useCallback(() => {
-    const cluster = clusterRef.current;
-    if (!cluster || !onOpenAccessibility) {
+    const menu = menuClusterRef.current;
+    const tools = toolsClusterRef.current;
+    const root = document.documentElement;
+
+    if (menu) {
+      const end = menu.getBoundingClientRect().right + CLUSTER_MIN_GAP_PX;
+      root.style.setProperty("--site-menu-end", `${end}px`);
+    }
+    if (tools) {
+      const start = tools.getBoundingClientRect().left - CLUSTER_MIN_GAP_PX;
+      root.style.setProperty("--site-tools-start", `${start}px`);
+    }
+
+    if (!tools || !onOpenAccessibility) {
       setSuppressA11y(false);
       return;
     }
 
     // Keep a live measure of the a11y control width while it's in the bar.
     if (a11yRef.current && !suppressA11yRef.current) {
-      const styles = getComputedStyle(cluster);
+      const styles = getComputedStyle(tools);
       const gap = Number.parseFloat(styles.columnGap || styles.gap || "8") || 8;
       a11ySlotWidthRef.current = a11yRef.current.getBoundingClientRect().width + gap;
     }
 
-    const clusterRect = cluster.getBoundingClientRect();
+    const toolsRect = tools.getBoundingClientRect();
     const leftRect = getLeftChromeRect();
     const slot = a11ySlotWidthRef.current;
     const currentlySuppressed = suppressA11yRef.current;
 
-    // Cluster is justify-end anchored: suppressing a11y moves its left edge right.
-    // Evaluate collision as if Accessibility were visible in the bar.
-    const clusterLeftIfA11yShown = currentlySuppressed
-      ? clusterRect.left - slot
-      : clusterRect.left;
+    // Tools are anchored to the right. Showing Accessibility grows them left.
+    const toolsLeftIfA11yShown = currentlySuppressed
+      ? toolsRect.left - slot
+      : toolsRect.left;
 
-    let wouldCollide = false;
-
-    if (leftRect) {
-      const gap = clusterLeftIfA11yShown - leftRect.right;
-      wouldCollide = gap < CLUSTER_MIN_GAP_PX;
-    }
-
-    // Also collapse if the full cluster would clip into the left safe inset.
-    const shell = cluster.parentElement;
-    const pad = shell
-      ? Number.parseFloat(getComputedStyle(shell).paddingLeft) || 20
-      : 20;
-    if (clusterLeftIfA11yShown < pad - 1) {
-      wouldCollide = true;
-    }
+    const wouldCollide = leftRect
+      ? toolsLeftIfA11yShown - leftRect.right < CLUSTER_MIN_GAP_PX
+      : false;
 
     setSuppressA11y((prev) => {
       if (wouldCollide) return true;
       if (!prev) return false;
+      if (!leftRect) return false;
 
-      // Restore only when there's clear room again (hysteresis).
-      if (leftRect) {
-        const gapIfShown = clusterLeftIfA11yShown - leftRect.right;
-        return gapIfShown < CLUSTER_MIN_GAP_PX + CLUSTER_RESTORE_SLACK_PX;
-      }
-      return clusterLeftIfA11yShown < pad + CLUSTER_RESTORE_SLACK_PX;
+      const gapIfShown = toolsLeftIfA11yShown - leftRect.right;
+      return gapIfShown < CLUSTER_MIN_GAP_PX + CLUSTER_RESTORE_SLACK_PX;
     });
   }, [onOpenAccessibility]);
 
@@ -183,7 +180,8 @@ export default function Navigation({
     window.addEventListener("resize", schedule);
 
     const observer = new ResizeObserver(schedule);
-    if (clusterRef.current) observer.observe(clusterRef.current);
+    if (menuClusterRef.current) observer.observe(menuClusterRef.current);
+    if (toolsClusterRef.current) observer.observe(toolsClusterRef.current);
 
     // Left chrome (Experience tabs / recommendation back) mounts via portal
     // after paint - watch the tree so we remeasure when it appears.
@@ -209,33 +207,17 @@ export default function Navigation({
         id="main-nav"
         className="pointer-events-none fixed top-0 inset-x-0 z-50"
       >
-        <div className="flex justify-end px-[var(--hp-cine-pad,1.25rem)] pt-5">
+        <div className="flex items-start justify-between px-[var(--hp-cine-pad,1.25rem)] pt-5">
           <div
-            ref={clusterRef}
+            ref={menuClusterRef}
             data-site-menu-cluster
             className="pointer-events-auto flex w-fit items-center gap-2"
           >
-            {onOpenAccessibility && !suppressA11y && (
-              <button
-                ref={a11yRef}
-                type="button"
-                onClick={onOpenAccessibility}
-                aria-label="Open accessibility settings"
-                aria-haspopup="dialog"
-                title="Accessibility"
-                className={`site-menu-icon-btn ${iconTone}`}
-              >
-                <UniversalAccess className="h-4 w-4 fill-current" aria-hidden />
-              </button>
-            )}
-            <SiteSearch
-              triggerClassName={`site-menu-icon-btn ${iconTone}`}
-            />
             {!isHome && (
               <Link
                 href="/"
-                aria-label="Go to homepage"
-                title="Home"
+                aria-label={chrome.goHome}
+                title={chrome.home}
                 className={`site-menu-icon-btn ${iconTone}`}
               >
                 <Home className="h-4 w-4" aria-hidden />
@@ -248,7 +230,7 @@ export default function Navigation({
               aria-expanded={open}
               aria-controls="site-menu-overlay"
               aria-haspopup="dialog"
-              aria-label="Open menu"
+              aria-label={chrome.openMenu}
               className={`site-menu-trigger ${triggerTone}`}
             >
               <span aria-hidden="true" className="site-menu-trigger__icon">
@@ -256,8 +238,31 @@ export default function Navigation({
                 <span />
                 <span />
               </span>
-              <span>Menu</span>
+              <span>{chrome.menu}</span>
             </button>
+          </div>
+          <div
+            ref={toolsClusterRef}
+            data-site-tools-cluster
+            className="pointer-events-auto flex w-fit items-center gap-2"
+          >
+            <LanguageSelect placement="inline" tone={iconTone} />
+            {onOpenAccessibility && !suppressA11y && (
+              <button
+                ref={a11yRef}
+                type="button"
+                onClick={onOpenAccessibility}
+                aria-label={chrome.openAccessibility}
+                aria-haspopup="dialog"
+                title={chrome.accessibility}
+                className={`site-menu-icon-btn ${iconTone}`}
+              >
+                <UniversalAccess className="h-4 w-4 fill-current" aria-hidden />
+              </button>
+            )}
+            <SiteSearch
+              triggerClassName={`site-menu-icon-btn ${iconTone}`}
+            />
           </div>
         </div>
       </div>
@@ -284,13 +289,13 @@ export default function Navigation({
                 id={titleId}
                 className="site-menu-overlay__eyebrow font-sans text-[11px] font-bold uppercase tracking-[0.18em]"
               >
-                Menu
+                {chrome.menu}
               </p>
               <button
                 ref={closeRef}
                 type="button"
                 onClick={close}
-                aria-label="Close menu"
+                aria-label={chrome.closeMenu}
                 className="site-menu-overlay__close inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
@@ -298,13 +303,13 @@ export default function Navigation({
             </div>
 
             <nav
-              aria-label="Main navigation"
+              aria-label={chrome.mainNav}
               className="flex flex-1 flex-col justify-center px-[var(--hp-cine-pad,1.25rem)] pb-8"
             >
               <ul role="list" className="mx-auto w-full max-w-3xl space-y-1 sm:space-y-2">
                 {(() => {
                   let linkNumber = 0;
-                  return menuItems.map((item, idx) => {
+                  return menuHrefs.map((item, idx) => {
                     if (item.type === "separator") {
                       return (
                         <motion.li
@@ -356,7 +361,7 @@ export default function Navigation({
                             {String(linkNumber).padStart(2, "0")}
                           </span>
                           <span className="site-menu-overlay__label font-sans text-[clamp(1.85rem,5vw,3.25rem)] font-bold tracking-[-0.02em] leading-[1.12] transition-transform duration-300 group-hover:translate-x-1">
-                            {item.name}
+                            {messages.nav[item.key]}
                           </span>
                         </Link>
                       </motion.li>
@@ -374,13 +379,13 @@ export default function Navigation({
                     close();
                     onOpenAccessibility();
                   }}
-                  aria-label="Open accessibility settings"
+                  aria-label={chrome.openAccessibility}
                   aria-haspopup="dialog"
                   className="mx-auto flex w-full max-w-3xl items-center gap-3 rounded-2xl border border-white/25 bg-white/10 px-5 py-4 text-left text-white transition-colors hover:bg-white/16 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070a12]"
                 >
                   <UniversalAccess className="h-5 w-5 shrink-0 fill-current" aria-hidden />
                   <span className="font-sans text-sm font-bold uppercase tracking-[0.16em]">
-                    Accessibility
+                    {chrome.accessibility}
                   </span>
                 </button>
               </div>

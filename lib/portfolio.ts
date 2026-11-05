@@ -93,7 +93,7 @@ export const portfolioProjects: PortfolioProject[] = [
   {
     id: "nodeda-work",
     title: "Designed a unified suite for how teams actually work",
-    subtitle: "NodeDa Work",
+    subtitle: "nrova.com",
     description:
       "Product design for Boards, HR, Sign, Docs, Finance, CRM, and Surveys in one subscription. Clearer work with fewer tools, shipped as a live platform.",
     category: "Product Design + SaaS",
@@ -105,13 +105,8 @@ export const portfolioProjects: PortfolioProject[] = [
       "Information Architecture",
     ],
     image: "/portfolio/nodeda-work/cover.png",
-    logo: {
-      light: "/portfolio/logos/nodeda-work/logo-light.svg",
-      dark: "/portfolio/logos/nodeda-work/logo-dark.svg",
-      alt: "NodeDa Work",
-    },
-    link: "https://work.nodeda.com",
-    linkText: "Visit NodeDa Work",
+    link: "https://nrova.com",
+    linkText: "nrova.com",
     color: "#3B82F6",
   },
   {

@@ -6,17 +6,13 @@ import { Accessibility } from "lucide-react";
 import {
   getAccessibilitySettings,
   applyAccessibilitySettings,
+  defaultAccessibilitySettings,
   type AccessibilitySettings,
 } from "@/lib/accessibility-settings";
 import AccessibilityModal from "@/components/AccessibilityModal";
 
 export default function AccessibilityButton() {
-  const [settings, setSettings] = useState<AccessibilitySettings>({
-    reduceTransparency: false,
-    reduceMotion: false,
-    openDyslexic: false,
-    colorScheme: "system",
-  });
+  const [settings, setSettings] = useState<AccessibilitySettings>(defaultAccessibilitySettings);
   const [modalOpen, setModalOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 

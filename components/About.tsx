@@ -5,7 +5,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { fadeUp, fadeUpBlur } from "@/lib/motion";
-import { aboutContent } from "@/lib/about";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 /**
  * About page: portrait, the path from the stores into product design,
@@ -17,6 +17,7 @@ export default function About() {
   const shouldReduceMotion = useReducedMotion();
   const reveal = fadeUpBlur(shouldReduceMotion);
   const sharpReveal = fadeUp(shouldReduceMotion, 28);
+  const aboutContent = useMessages().about;
 
   return (
     <article

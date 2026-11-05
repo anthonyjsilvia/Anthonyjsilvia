@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { cookies, headers } from "next/headers";
 import Script from "next/script";
 import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import SiteChrome from "@/components/SiteChrome";
+import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
+import { englishLocaleForCountry, localeMeta, migrateLocale } from "@/lib/i18n/languages";
 
 /** Clean geometric for large headlines only, open shapes, easier than Syne. */
 const outfit = Outfit({
@@ -98,13 +101,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = await headers();
+  const cookieStore = await cookies();
+  const country = headerList.get("x-site-country");
+  const initialLocale =
+    migrateLocale(cookieStore.get("site-locale")?.value) ?? englishLocaleForCountry(country);
+
   return (
-    <html lang="en" className={`scroll-smooth ${outfit.variable} ${jakarta.variable}`}>
+    <html lang={localeMeta(initialLocale).htmlLang} className={`scroll-smooth ${outfit.variable} ${jakarta.variable}`}>
       <head>
         <link rel="canonical" href="https://anthonysilvia.com" />
       </head>
@@ -118,7 +127,9 @@ export default function RootLayout({
           data-key="nrov_live_c277a0b049cdfe4daf41ec0a2000961f55dd0039f80d468fa7a0baf13ad97c91"
           data-api-base="https://us-central1-nrovallc.cloudfunctions.net/behaviorApi"
         />
-        <SiteChrome>{children}</SiteChrome>
+        <LocaleProvider country={country} initialLocale={initialLocale}>
+          <SiteChrome>{children}</SiteChrome>
+        </LocaleProvider>
       </body>
     </html>
   );

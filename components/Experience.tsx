@@ -11,9 +11,9 @@ import type { MappedExperienceEntry, MappedProject } from "@/lib/resume-public";
 // (used when the live API does not supply project links for NodeDa).
 const NODEDA_PROJECTS = [
   {
-    name: "NodeDa Work",
-    href: "https://work.nodeda.com",
-    ariaLabel: "Visit NodeDa Work (opens in new tab)",
+    name: "nrova.com",
+    href: "https://nrova.com",
+    ariaLabel: "nrova.com (opens in new tab)",
   },
 ];
 const NODEDA_FORMER_CLIENTS: { name: string; href: string; ariaLabel: string }[] = [];

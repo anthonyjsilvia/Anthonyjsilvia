@@ -24,10 +24,11 @@ export type OsApp = {
     | "mail"
     | "quote"
     | "terminal"
-    | "accessibility"
+    | "settings"
     | "work"
     | "about"
-    | "user";
+    | "user"
+    | "coil";
 };
 
 export const OS_APPS: OsApp[] = [
@@ -132,6 +133,15 @@ export const OS_APPS: OsApp[] = [
     icon: "mail",
   },
   {
+    id: "coil",
+    name: "Coil",
+    subtitle: "Easter egg",
+    description: "Steer a growing line around the grid.",
+    action: "native",
+    tint: "rgb(7, 11, 20)",
+    icon: "coil",
+  },
+  {
     id: "terminal",
     name: "Terminal",
     subtitle: "⌘K",
@@ -141,13 +151,13 @@ export const OS_APPS: OsApp[] = [
     icon: "terminal",
   },
   {
-    id: "accessibility",
-    name: "Accessibility",
-    subtitle: "Settings",
-    description: "Motion, typeface, transparency, and color scheme preferences.",
+    id: "settings",
+    name: "Settings",
+    subtitle: "System",
+    description: "Dock, language, and how the site reads.",
     action: "native",
-    tint: "rgb(0, 82, 204)",
-    icon: "accessibility",
+    tint: "rgb(90, 90, 100)",
+    icon: "settings",
   },
 ];
 

@@ -2,15 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import LanguageSelect from "@/components/LanguageSelect";
 import Navigation from "@/components/Navigation";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import Footer from "@/components/Footer";
 import FabNav from "@/components/FabNav";
 import AccessibilityModal from "@/components/AccessibilityModal";
 import TerminalMode from "@/components/TerminalMode";
 import OsMode from "@/components/OsMode";
+import ReadingGuide from "@/components/ReadingGuide";
 import {
   getAccessibilitySettings,
   applyAccessibilitySettings,
+  defaultAccessibilitySettings,
   type AccessibilitySettings,
 } from "@/lib/accessibility-settings";
 
@@ -23,18 +27,16 @@ import {
  */
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const chrome = useMessages().chrome;
   const [mounted, setMounted] = useState(false);
   const [embed, setEmbed] = useState(false);
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [osOpen, setOsOpen] = useState(false);
   const [osTerminalToken, setOsTerminalToken] = useState(0);
-  const [accessibilitySettings, setAccessibilitySettings] = useState<AccessibilitySettings>({
-    reduceTransparency: false,
-    reduceMotion: false,
-    openDyslexic: false,
-    colorScheme: "system",
-  });
+  const [accessibilitySettings, setAccessibilitySettings] = useState<AccessibilitySettings>(
+    defaultAccessibilitySettings,
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -106,11 +108,11 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
   return (
     <>
-      <a href="#main-content" className="skip-link" aria-label="Skip to main content">
-        Skip to main content
+      <a href="#main-content" className="skip-link" aria-label={chrome.skipToContent}>
+        {chrome.skipToContent}
       </a>
-      <a href="#main-nav" className="skip-link" aria-label="Skip to menu">
-        Skip to menu
+      <a href="#main-nav" className="skip-link" aria-label={chrome.skipToMenu}>
+        {chrome.skipToMenu}
       </a>
       <Navigation
         onOpenAccessibility={() => setAccessibilityOpen(true)}
@@ -119,7 +121,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
         key={pathname}
         id="main-content"
         role="main"
-        aria-label="Main content"
+        aria-label={chrome.mainContent}
         className="apple-reveal"
       >
         {children}
@@ -131,6 +133,8 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
         }}
       />
       <FabNav />
+      <LanguageSelect placement="dock" />
+      {accessibilitySettings.readingGuide ? <ReadingGuide /> : null}
       <AccessibilityModal
         open={accessibilityOpen}
         onClose={() => setAccessibilityOpen(false)}

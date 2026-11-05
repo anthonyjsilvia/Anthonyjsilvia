@@ -18,6 +18,7 @@ import {
   ResumePublicProvider,
   usePublicResume,
 } from "@/components/ResumePublicProvider";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import {
   mapCertificationsFromProfile,
   mapCollegeFromProfile,
@@ -30,21 +31,20 @@ import {
  * Experience route - career content as tabs, driven by the NodeDa Resume
  * public embed API when available (with static LinkedIn-aligned fallback).
  *
- * Chapter control stays a segmented tablist when it fits beside the Menu
- * cluster; otherwise it collapses to a popover (collision-aware, not a
- * hard breakpoint).
+ * Chapter control starts after the left Menu cluster and stays a segmented
+ * tablist when it fits before Search. Otherwise it collapses to a popover.
  */
 
 type TabId = "experience" | "education" | "skills" | "certifications";
 
-const TABS: { id: TabId; label: string; Icon: typeof Briefcase }[] = [
-  { id: "experience", label: "Experience", Icon: Briefcase },
-  { id: "education", label: "Education", Icon: GraduationCap },
-  { id: "skills", label: "Skills", Icon: Sparkles },
-  { id: "certifications", label: "Certifications", Icon: Award },
+const TAB_META: { id: TabId; Icon: typeof Briefcase }[] = [
+  { id: "experience", Icon: Briefcase },
+  { id: "education", Icon: GraduationCap },
+  { id: "skills", Icon: Sparkles },
+  { id: "certifications", Icon: Award },
 ];
 
-const TAB_IDS = TABS.map((t) => t.id) as readonly TabId[];
+const TAB_IDS = TAB_META.map((t) => t.id) as readonly TabId[];
 
 /** Minimum clear space between chapter control and the Menu cluster. */
 const CHAPTER_MIN_GAP_PX = 12;
@@ -77,8 +77,17 @@ function ExperiencePageInner() {
   const sizerRef = useRef<HTMLDivElement>(null);
   const { data } = usePublicResume();
   const profile = data?.profile ?? null;
+  const tabCopy = useMessages().experienceTabs;
+  const tabs = useMemo(
+    () =>
+      TAB_META.map((tab) => ({
+        ...tab,
+        label: tabCopy[tab.id],
+      })),
+    [tabCopy],
+  );
 
-  const activeMeta = TABS.find((t) => t.id === activeTab) ?? TABS[0];
+  const activeMeta = tabs.find((t) => t.id === activeTab) ?? tabs[0];
   const ActiveIcon = activeMeta.Icon;
 
   const experienceEntries = useMemo(
@@ -135,20 +144,23 @@ function ExperiencePageInner() {
     const sizer = sizerRef.current;
     if (!sizer) return;
 
-    const cluster = document.querySelector(
+    const menu = document.querySelector(
       "[data-site-menu-cluster]",
     ) as HTMLElement | null;
-    const sizerRect = sizer.getBoundingClientRect();
-    const tabsWidth = sizerRect.width;
+    const tools = document.querySelector(
+      "[data-site-tools-cluster]",
+    ) as HTMLElement | null;
+    const tabsWidth = sizer.getBoundingClientRect().width;
 
-    // If the Menu cluster isn't mounted yet, keep the full tablist.
-    if (!cluster) {
+    if (!menu || !tools) {
       setCompact(false);
       return;
     }
 
     const available =
-      cluster.getBoundingClientRect().left - sizerRect.left - CHAPTER_MIN_GAP_PX;
+      tools.getBoundingClientRect().left -
+      menu.getBoundingClientRect().right -
+      CHAPTER_MIN_GAP_PX * 2;
     const needsCompact = tabsWidth > available;
 
     setCompact((prev) => {
@@ -172,8 +184,10 @@ function ExperiencePageInner() {
 
     const observer = new ResizeObserver(schedule);
     if (sizerRef.current) observer.observe(sizerRef.current);
-    const cluster = document.querySelector("[data-site-menu-cluster]");
-    if (cluster) observer.observe(cluster);
+    const menu = document.querySelector("[data-site-menu-cluster]");
+    const tools = document.querySelector("[data-site-tools-cluster]");
+    if (menu) observer.observe(menu);
+    if (tools) observer.observe(tools);
 
     const mutation = new MutationObserver(schedule);
     mutation.observe(document.body, { childList: true, subtree: true });
@@ -234,13 +248,13 @@ function ExperiencePageInner() {
 
   const onTabKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, currentIdx: number) => {
     let nextIdx: number | null = null;
-    if (e.key === "ArrowRight") nextIdx = (currentIdx + 1) % TABS.length;
-    else if (e.key === "ArrowLeft") nextIdx = (currentIdx - 1 + TABS.length) % TABS.length;
+    if (e.key === "ArrowRight") nextIdx = (currentIdx + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") nextIdx = (currentIdx - 1 + tabs.length) % tabs.length;
     else if (e.key === "Home") nextIdx = 0;
-    else if (e.key === "End") nextIdx = TABS.length - 1;
+    else if (e.key === "End") nextIdx = tabs.length - 1;
     if (nextIdx === null) return;
     e.preventDefault();
-    const nextTab = TABS[nextIdx];
+    const nextTab = tabs[nextIdx];
     handleTabSelect(nextTab.id);
     document.getElementById(`${nextTab.id}-tab`)?.focus();
   };
@@ -252,7 +266,8 @@ function ExperiencePageInner() {
     >
       <div
         ref={shellRef}
-        className="relative flex justify-start px-[var(--hp-cine-pad,1.25rem)] pt-5"
+        className="relative flex justify-start pt-5"
+        style={{ paddingLeft: "var(--site-menu-end, var(--hp-cine-pad, 1.25rem))" }}
       >
         {/* Invisible sizer: natural width of the full segmented control. */}
         <div
@@ -260,7 +275,7 @@ function ExperiencePageInner() {
           aria-hidden="true"
           className="pointer-events-none invisible absolute left-0 top-0 flex w-max items-center gap-2"
         >
-          {TABS.map((tab) => {
+          {tabs.map((tab) => {
             const { Icon } = tab;
             return (
               <span key={tab.id} className="exp-chapter-tab exp-chapter-tab--idle">
@@ -284,9 +299,13 @@ function ExperiencePageInner() {
                 aria-haspopup="listbox"
                 aria-expanded={menuOpen}
                 aria-controls={menuId}
-                aria-label={`Chapter: ${activeMeta.label}. Open to switch.`}
+                aria-label={tabCopy.switchLabel(activeMeta.label)}
                 onClick={() => setMenuOpen((o) => !o)}
-                className="exp-chapter-tab exp-chapter-tab--active"
+                style={{
+                  maxWidth:
+                    "max(2.75rem, calc(var(--site-tools-start, 100vw) - var(--site-menu-end, 1.25rem)))",
+                }}
+                className="exp-chapter-tab exp-chapter-tab--active overflow-hidden"
               >
                 <ActiveIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
                 <span>{activeMeta.label}</span>
@@ -303,7 +322,7 @@ function ExperiencePageInner() {
                   <motion.ul
                     id={menuId}
                     role="listbox"
-                    aria-label="Experience chapters"
+                    aria-label={tabCopy.chapters}
                     initial={
                       shouldReduceMotion
                         ? { opacity: 1 }
@@ -319,9 +338,9 @@ function ExperiencePageInner() {
                       duration: shouldReduceMotion ? 0 : 0.2,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="exp-chapter-popover absolute left-0 top-[calc(100%+0.5rem)] z-50 min-w-[14.5rem] overflow-hidden rounded-2xl p-1.5"
+                    className="exp-chapter-popover absolute right-0 top-[calc(100%+0.5rem)] z-50 w-max min-w-[14.5rem] max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-2xl p-1.5"
                   >
-                    {TABS.map((tab) => {
+                    {tabs.map((tab) => {
                       const isActive = activeTab === tab.id;
                       const { Icon } = tab;
                       return (
@@ -353,10 +372,10 @@ function ExperiencePageInner() {
           ) : (
             <div
               role="tablist"
-              aria-label="Experience, Education, Skills, and Certifications"
+              aria-label={tabCopy.listLabel}
               className="flex w-fit items-center gap-2"
             >
-              {TABS.map((tab, idx) => {
+              {tabs.map((tab, idx) => {
                 const isActive = activeTab === tab.id;
                 const { Icon } = tab;
                 return (

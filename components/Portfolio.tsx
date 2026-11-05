@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useRef, type CSSProperties } from "react";
 import { cineEase, dur, fadeUpBlur } from "@/lib/motion";
+import { localizePortfolio } from "@/lib/i18n/localize-portfolio";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { portfolioProjects, type PortfolioProject } from "@/lib/portfolio";
 
 function ProjectMedia({ project }: { project: PortfolioProject }) {
@@ -68,11 +70,13 @@ function ProjectRow({
     (project.link!.startsWith("/") || project.link!.startsWith("#"));
   const hasSecondary = Boolean(project.secondaryLink);
   const reverse = index % 2 === 1;
+  const portfolio = useMessages().portfolio;
+  const opensInNewTab = useMessages().chrome.opensInNewTab;
 
   const ariaLabel = hasLink
     ? isInternal
-      ? `${project.title}. ${project.linkText ?? "Open"}.`
-      : `${project.title}. ${project.linkText ?? "Visit website"} (opens in new tab).`
+      ? `${project.title}. ${project.linkText ?? portfolio.open}.`
+      : `${project.title}. ${project.linkText ?? portfolio.visitWebsite} (${opensInNewTab}).`
     : project.title;
 
   const body = (
@@ -217,6 +221,8 @@ export default function Portfolio() {
   const headerInView = useInView(headerRef, { once: true, margin: "-8%" });
   const shouldReduceMotion = useReducedMotion();
   const headerReveal = fadeUpBlur(shouldReduceMotion, 28);
+  const copy = useMessages().portfolio;
+  const projects = localizePortfolio(portfolioProjects, copy.projects);
 
   return (
     <section
@@ -236,31 +242,29 @@ export default function Portfolio() {
             id="portfolio-heading"
             className="font-display text-[clamp(2.25rem,4.5vw,3.75rem)] font-extrabold tracking-[-0.03em] leading-[1.05] text-[var(--text-primary)]"
           >
-            Portfolio
+            {copy.heading}
           </h2>
           <div
             aria-hidden="true"
             className="mt-7 h-[2px] w-20 rounded-full bg-gradient-to-r from-[var(--primary)] to-transparent"
           />
           <p className="mt-6 text-[1.05rem] leading-[1.7] text-[var(--text-secondary)] md:text-[1.15rem] md:leading-[1.75]">
-            An independent retail study, multi-surface craft you can open, and
-            end-to-end product ownership. Evidence covers how I make decisions
-            without showing confidential screens.
+            {copy.intro}
           </p>
           <p className="mt-6">
             <Link
               href="/evidence"
               className="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_-14px_rgba(var(--primary-rgb),0.55)] transition-transform duration-[var(--dur-apple-sm)] hover:translate-y-[-1px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
             >
-              How I work
+              {copy.howIWork}
               <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </p>
         </motion.header>
 
-        <nav aria-label="Projects on this page" className="mb-12 md:mb-16">
+        <nav aria-label={copy.projectsNav} className="mb-12 md:mb-16">
           <ul className="flex flex-wrap gap-x-1 gap-y-2">
-            {portfolioProjects.map((p) => (
+            {projects.map((p) => (
               <li key={p.id}>
                 <a
                   href={`#project-${p.id}`}
@@ -274,7 +278,7 @@ export default function Portfolio() {
         </nav>
 
         <ul role="list" className="portfolio-cine__list">
-          {portfolioProjects.map((project, index) => (
+          {projects.map((project, index) => (
             <ProjectRow key={project.id} project={project} index={index} />
           ))}
         </ul>

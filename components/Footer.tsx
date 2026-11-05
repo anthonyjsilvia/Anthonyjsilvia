@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Award, Command, Linkedin, Mail } from "lucide-react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import GlowLink from "@/components/GlowLink";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { cineEase, dur } from "@/lib/motion";
 
 /**
@@ -29,23 +30,21 @@ const CONTACT = {
 
 const NODEDA = {
   home: "https://nodeda.com",
-  work: "https://work.nodeda.com",
+  work: "https://nrova.com",
   logoLight: "https://nodeda.com/logos/NodeDa.svg",
   logoDark: "https://nodeda.com/logos/NodeDa.darkmode.svg",
-  workLogoLight: "https://nodeda.com/logos/NodeDa.work.svg",
-  workLogoDark: "https://nodeda.com/logos/NodeDa.work.darkmode.svg",
 } as const;
 
-const PAGE_LINKS: { href: string; label: string }[] = [
-  { href: "/", label: "Home" },
-  { href: "/#portfolio", label: "Portfolio" },
-  { href: "/about", label: "About" },
-  { href: "/evidence", label: "Evidence" },
-  { href: "/experience", label: "Experience" },
-  { href: "/recommendations", label: "Recommendations" },
-  { href: "/resume", label: "Request Resume" },
-  { href: "/contact", label: "Contact" },
-];
+const PAGE_LINKS = [
+  { href: "/", key: "home" },
+  { href: "/#portfolio", key: "portfolio" },
+  { href: "/about", key: "about" },
+  { href: "/evidence", key: "evidence" },
+  { href: "/experience", key: "experience" },
+  { href: "/recommendations", key: "recommendations" },
+  { href: "/resume", key: "requestResume" },
+  { href: "/contact", key: "contact" },
+] as const;
 
 type SocialLink = {
   href: string;
@@ -58,7 +57,7 @@ type SocialLink = {
 const SOCIAL_LINKS: SocialLink[] = [
   {
     href: `mailto:${CONTACT.email}`,
-    label: "Email",
+    label: "email" as const,
     handle: CONTACT.email,
     Icon: Mail,
     external: false,
@@ -93,6 +92,9 @@ export default function Footer({ onOpenOs }: FooterProps) {
   const ctaRef = useRef(null);
   const ctaInView = useInView(ctaRef, { once: true, margin: "-15%" });
   const shouldReduceMotion = useReducedMotion();
+  const footer = useMessages().footer;
+  const nav = useMessages().nav;
+  const opensInNewTab = useMessages().chrome.opensInNewTab;
 
   useEffect(() => {
     setYear(new Date().getFullYear());
@@ -136,19 +138,16 @@ export default function Footer({ onOpenOs }: FooterProps) {
               id="footer-cta-heading"
               className="text-4xl font-bold leading-[1.05] tracking-tight text-[var(--text-primary)] dark:text-[var(--text-primary)] md:text-5xl lg:text-6xl"
             >
-              Have a problem
+              {footer.headingLead}
               <br />
-              <span className="text-[var(--primary)]">worth solving?</span>
+              <span className="text-[var(--primary)]">{footer.headingAccent}</span>
             </h2>
             <span
               className={`accent-rule mt-6 ${ctaInView ? "accent-rule--animate" : ""}`}
               aria-hidden="true"
             />
             <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)] md:text-lg">
-              Open to Product Designer roles where systems thinking, frontline
-              ops UX, and an MBA lens are real advantages: research-led
-              decisions, accessibility-first craft, and AI practice that raises
-              throughput without skipping judgment.
+              {footer.body}
             </p>
           </motion.div>
 
@@ -172,11 +171,11 @@ export default function Footer({ onOpenOs }: FooterProps) {
             <GlowLink
               href="/contact"
               variant="primary"
-              aria-label="Open Contact page"
+              aria-label={footer.openContact}
               className="group btn-apple-lift rounded-full bg-[var(--primary)] px-6 py-3.5 text-base font-semibold text-white shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
               <Mail className="h-4 w-4" aria-hidden="true" />
-              <span>Get in touch</span>
+              <span>{footer.getInTouch}</span>
               <ArrowUpRight
                 className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 aria-hidden="true"
@@ -184,7 +183,7 @@ export default function Footer({ onOpenOs }: FooterProps) {
             </GlowLink>
             <a
               href={`mailto:${CONTACT.email}`}
-              aria-label={`Email ${CONTACT.email}`}
+              aria-label={footer.emailTo(CONTACT.email)}
               className="inline-flex items-center gap-2 rounded-md text-sm font-medium text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
               <span>{CONTACT.email}</span>
@@ -194,32 +193,29 @@ export default function Footer({ onOpenOs }: FooterProps) {
 
         {/* ───────── Sitemap grid ───────── */}
         <section
-          aria-label="Site navigation and contact"
+          aria-label={footer.siteNav}
           className="grid gap-10 py-12 md:grid-cols-12 md:py-16 md:gap-12"
         >
           {/* Brand block */}
           <div className="md:col-span-6 lg:col-span-5">
             <Link
               href="/"
-              aria-label="Anthony Silvia, MBA - Home"
+              aria-label={footer.homeLabel}
               className="inline-flex items-baseline rounded-md text-xl font-semibold tracking-tight text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
               Anthony Silvia, MBA
             </Link>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-secondary)] dark:text-[var(--text-secondary)]">
-              Anthony Silvia, MBA · Product Designer. Complex operational
-              experiences, systems thinking, and AI-assisted practice. Currently
-              a Product Designer at{" "}
+              {footer.brandBefore}
               <span className="font-medium text-[var(--text-primary)]">
                 Lowe&apos;s
-              </span>{" "}
-              on enterprise retail ops, and Principal Consultant at NodeDa. MBA
-              pending conferral (SNHU). Based in Charlotte, North Carolina.
+              </span>
+              {footer.brandAfter}
             </p>
 
             <p
               className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--background)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]"
-              aria-label="Currently shipping product experience at Lowe's"
+              aria-label={footer.shipping}
             >
               <span
                 aria-hidden="true"
@@ -228,17 +224,17 @@ export default function Footer({ onOpenOs }: FooterProps) {
                 <span className="absolute inset-0 animate-ping rounded-full bg-[var(--primary)] opacity-60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--primary)]" />
               </span>
-              Currently shipping product experience at Lowe&apos;s
+              {footer.shipping}
             </p>
           </div>
 
           {/* Pages */}
           <nav
-            aria-label="Footer page links"
+            aria-label={footer.pageLinks}
             className="md:col-span-3 lg:col-span-3"
           >
             <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-tertiary)]">
-              Pages
+              {footer.pages}
             </h3>
             <ul role="list" className="mt-4 space-y-3">
               {PAGE_LINKS.map((link) => (
@@ -247,7 +243,7 @@ export default function Footer({ onOpenOs }: FooterProps) {
                     href={link.href}
                     className="inline-block rounded text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
                   >
-                    {link.label}
+                    {nav[link.key]}
                   </Link>
                 </li>
               ))}
@@ -256,14 +252,16 @@ export default function Footer({ onOpenOs }: FooterProps) {
 
           {/* Connect */}
           <nav
-            aria-label="Contact and social links"
+            aria-label={footer.socialLinks}
             className="md:col-span-3 lg:col-span-4"
           >
             <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-tertiary)]">
-              Connect
+              {footer.connect}
             </h3>
             <ul role="list" className="mt-4 space-y-3">
-              {SOCIAL_LINKS.map(({ href, label, handle, Icon, external }) => (
+              {SOCIAL_LINKS.map(({ href, label, handle, Icon, external }) => {
+                const name = label === "email" ? footer.email : label;
+                return (
                 <li key={label}>
                   <a
                     href={href}
@@ -271,8 +269,8 @@ export default function Footer({ onOpenOs }: FooterProps) {
                     rel={external ? "noopener noreferrer" : undefined}
                     aria-label={
                       external
-                        ? `${label} - ${handle} (opens in new tab)`
-                        : `${label} - ${handle}`
+                        ? `${name} - ${handle} (${opensInNewTab})`
+                        : `${name} - ${handle}`
                     }
                     className="group inline-flex items-center gap-2.5 rounded text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
                   >
@@ -280,7 +278,7 @@ export default function Footer({ onOpenOs }: FooterProps) {
                       className="h-4 w-4 flex-shrink-0 text-[var(--text-tertiary)] transition-colors group-hover:text-[var(--primary)]"
                       aria-hidden="true"
                     />
-                    <span className="font-medium">{label}</span>
+                    <span className="font-medium">{name}</span>
                     <span className="text-[var(--text-tertiary)]">{handle}</span>
                     {external && (
                       <ArrowUpRight
@@ -290,7 +288,8 @@ export default function Footer({ onOpenOs }: FooterProps) {
                     )}
                   </a>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </nav>
         </section>
@@ -302,10 +301,10 @@ export default function Footer({ onOpenOs }: FooterProps) {
               href={NODEDA.home}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Hosted using NodeDa (opens in new tab)"
+              aria-label={footer.hostedLabel}
               className="inline-flex items-center gap-2 rounded-md text-xs text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
-              <span>Hosted using</span>
+              <span>{footer.hostedUsing}</span>
               <img
                 src={NODEDA.logoLight}
                 alt=""
@@ -321,26 +320,17 @@ export default function Footer({ onOpenOs }: FooterProps) {
               href={NODEDA.work}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Powered by NodeDa Work (opens in new tab)"
+              aria-label={footer.poweredLabel}
               className="inline-flex items-center gap-2 rounded-md text-xs text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
             >
-              <span>Powered by</span>
-              <img
-                src={NODEDA.workLogoLight}
-                alt=""
-                className="h-4 w-auto object-contain dark:hidden"
-              />
-              <img
-                src={NODEDA.workLogoDark}
-                alt=""
-                className="hidden h-4 w-auto object-contain dark:block"
-              />
+              <span>{footer.poweredBy}</span>
+              <span className="font-medium text-[var(--text-secondary)]">nrova.com</span>
             </a>
           </div>
 
           <div className="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
             <p className="text-xs text-[var(--text-tertiary)]">
-              © {year} Anthony Silvia. All rights reserved.
+              © {year} Anthony Silvia. {footer.rights}
             </p>
             <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-tertiary)]">
               {onOpenOs ? (
@@ -348,14 +338,14 @@ export default function Footer({ onOpenOs }: FooterProps) {
                   type="button"
                   onClick={onOpenOs}
                   aria-haspopup="dialog"
-                  aria-label="Open AnthonyOS"
+                  aria-label={footer.openOs}
                   className="rounded-md font-medium text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
                 >
                   AnthonyOS
                 </button>
               ) : null}
               <span className="inline-flex items-center gap-2 opacity-70">
-                <span>Easter eggs</span>
+                <span>{footer.easterEggs}</span>
                 <kbd className="inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--background)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">
                   <Command className="h-2.5 w-2.5" aria-hidden="true" />
                   <span>K</span>

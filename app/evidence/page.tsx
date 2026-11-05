@@ -22,7 +22,7 @@ export default function EvidencePage() {
 
   return (
     <article className="min-h-screen bg-white pb-24 dark:bg-black md:pb-32">
-      <SiteBackBar href="/#portfolio" label="Back to portfolio" />
+      <SiteBackBar href="/#portfolio" />
       <div className="h-[4.75rem]" aria-hidden="true" />
 
       <div

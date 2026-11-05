@@ -15,6 +15,8 @@ import {
   type CommandResult,
   type TerminalContext,
 } from "@/lib/terminal-commands";
+import SortieGame from "@/components/terminal/SortieGame";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 /**
  * TerminalMode - the ⌘K easter egg. A keyboard-only, text-only command
@@ -59,6 +61,7 @@ export default function TerminalMode({
   onNavigate,
 }: Props) {
   const router = useRouter();
+  const messages = useMessages();
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const embedded = variant === "embedded";
@@ -69,6 +72,7 @@ export default function TerminalMode({
   const [historyIdx, setHistoryIdx] = useState<number | null>(null);
   const [cwd, setCwd] = useState("/");
   const [autofillLocked, setAutofillLocked] = useState(true);
+  const [sortie, setSortie] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -110,6 +114,7 @@ export default function TerminalMode({
       setHistoryIdx(null);
       setCwd("/");
       setAutofillLocked(true);
+      setSortie(false);
     }
   }, [open]);
 
@@ -150,6 +155,10 @@ export default function TerminalMode({
     };
 
     const result: CommandResult = raw.trim() ? runCommand(raw, ctx) : {};
+    if (result.launch === "sortie") {
+      setSortie(true);
+      inputRef.current?.blur();
+    }
 
     setLines((prev) => {
       if (result.clear && result.banner) {
@@ -383,6 +392,19 @@ export default function TerminalMode({
         aria-label="Terminal"
       >
         {shell}
+        {sortie ? (
+          <SortieGame
+            onExit={(score) => {
+              setSortie(false);
+              setLines((prev) => [
+                ...prev,
+                { kind: "output", text: messages.games.sortieLogged(score) },
+                { kind: "output", text: "" },
+              ]);
+              requestAnimationFrame(() => inputRef.current?.focus());
+            }}
+          />
+        ) : null}
       </div>
     );
   }
@@ -401,6 +423,19 @@ export default function TerminalMode({
           aria-label="Terminal mode"
         >
           {shell}
+          {sortie ? (
+            <SortieGame
+              onExit={(score) => {
+                setSortie(false);
+                setLines((prev) => [
+                  ...prev,
+                  { kind: "output", text: messages.games.sortieLogged(score) },
+                  { kind: "output", text: "" },
+                ]);
+                requestAnimationFrame(() => inputRef.current?.focus());
+              }}
+            />
+          ) : null}
         </motion.div>
       )}
     </AnimatePresence>

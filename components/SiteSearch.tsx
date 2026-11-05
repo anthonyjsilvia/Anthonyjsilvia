@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Search, X } from "lucide-react";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { searchSite, type SearchEntry } from "@/lib/search-index";
 
 /**
@@ -35,6 +36,7 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
+  const search = useMessages().search;
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIdx, setActiveIdx] = useState(0);
@@ -133,9 +135,9 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Search the site"
+        aria-label={search.open}
         aria-haspopup="dialog"
-        title="Search (press /)"
+        title={search.title}
         className={
           triggerClassName ??
           "inline-flex h-[34px] w-[34px] items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
@@ -159,7 +161,7 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
             {/* Backdrop. Sits below the panel, accepts clicks to dismiss. */}
             <button
               type="button"
-              aria-label="Close search"
+              aria-label={search.close}
               tabIndex={-1}
               onClick={() => setOpen(false)}
               className="absolute inset-0 bg-black/40 backdrop-blur-sm focus:outline-none"
@@ -174,7 +176,7 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
               className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-[var(--border-light)] bg-[var(--background)]"
             >
               <h2 id="site-search-title" className="sr-only">
-                Search the site
+                {search.open}
               </h2>
 
               <div className="flex items-center gap-3 border-b border-[var(--border-light)] px-4">
@@ -188,9 +190,9 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleInputKey}
-                  placeholder="Search pages, portfolio, recommendations…"
+                  placeholder={search.placeholder}
                   className="flex-1 bg-transparent py-4 text-base text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none"
-                  aria-label="Search the site"
+                  aria-label={search.open}
                   aria-controls="site-search-results"
                   aria-activedescendant={
                     results[activeIdx] ? `site-search-row-${activeIdx}` : undefined
@@ -201,7 +203,7 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  aria-label="Close search"
+                  aria-label={search.close}
                   className="flex h-8 w-8 items-center justify-center rounded-md text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)]"
                 >
                   <X className="h-4 w-4" aria-hidden />
@@ -212,12 +214,12 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
                 ref={listRef}
                 id="site-search-results"
                 role="listbox"
-                aria-label="Search results"
+                aria-label={search.results}
                 className="max-h-[60vh] overflow-y-auto p-2"
               >
                 {results.length === 0 ? (
                   <li className="px-3 py-10 text-center text-sm text-[var(--text-secondary)]">
-                    No results for{" "}
+                    {search.noResults}{" "}
                     <span className="font-medium text-[var(--text-primary)]">
                       &ldquo;{query}&rdquo;
                     </span>
@@ -278,23 +280,23 @@ export default function SiteSearch({ triggerClassName }: SiteSearchProps = {}) {
                     <kbd className="inline-flex items-center justify-center rounded border border-[var(--border-light)] bg-[var(--bg-secondary)] px-1.5 py-0.5 text-[10px] font-medium leading-none">
                       ↑↓
                     </kbd>
-                    navigate
+                    {search.navigate}
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <kbd className="inline-flex items-center justify-center rounded border border-[var(--border-light)] bg-[var(--bg-secondary)] px-1.5 py-0.5 text-[10px] font-medium leading-none">
                       ↵
                     </kbd>
-                    open
+                    {search.openResult}
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <kbd className="inline-flex items-center justify-center rounded border border-[var(--border-light)] bg-[var(--bg-secondary)] px-1.5 py-0.5 text-[10px] font-medium leading-none">
                       esc
                     </kbd>
-                    close
+                    {search.closeHint}
                   </span>
                 </div>
                 <span>
-                  {results.length} result{results.length === 1 ? "" : "s"}
+                  {search.resultCount(results.length)}
                 </span>
               </div>
             </motion.div>

@@ -35,6 +35,8 @@ export type CommandResult = {
   clear?: boolean;
   /** When true, also reprint the welcome banner after clearing (i.e. `reset`). */
   banner?: boolean;
+  /** Launches a full-terminal game. The shell renders it over the scrollback. */
+  launch?: "sortie";
 };
 
 type CommandHandler = (args: string[], ctx: TerminalContext) => CommandResult;
@@ -432,6 +434,19 @@ const MAN_PAGES: Record<string, string[]> = {
     "       the browser exposes - connection type, downlink, and",
     "       whether the device is currently online.",
   ],
+  sortie: [
+    "NAME",
+    "       sortie - play a formation shooter",
+    "",
+    "SYNOPSIS",
+    "       sortie",
+    "",
+    "DESCRIPTION",
+    "       Clears into a small shooter. A wing of craft sways across",
+    "       the top of the screen, peels away, and dives. Move with the",
+    "       arrow keys or A and D. Fire with Space. Esc returns to the",
+    "       prompt with your score.",
+  ],
 };
 
 /* -------------------------------------------------------------------------- */
@@ -472,6 +487,7 @@ const COMMANDS: Record<string, CommandHandler> = {
       "  motd              Show the welcome message",
       "  clear, cls        Clear the screen (also Ctrl+L)",
       "  reset             Clear the screen and reprint the welcome banner",
+      "  sortie            Play a formation shooter",
       "  exit, quit        Leave terminal mode (or press ⌘K / Ctrl+K)",
       "",
       "Inline shortcuts: ↑/↓ history · Tab autocomplete · Ctrl+C interrupt",
@@ -554,7 +570,7 @@ const COMMANDS: Record<string, CommandHandler> = {
       "",
       `  · Lowe's            ${lowesCaseCopy.terminalLine}`,
       "  · Kinlily           Cloud-based cookbook ecosystem",
-      "  · NodeDa Work       Unified work suite (Boards through Finance)",
+      "  · nrova.com         Unified work suite (Boards through Finance)",
       "  · Herbswift         Password-protected Figma · web + mobile",
       "",
       "Run `open portfolio` to view the case studies in the regular site.",
@@ -910,6 +926,15 @@ const COMMANDS: Record<string, CommandHandler> = {
     output: ["exec: not in this terminal."],
   }),
 
+  sortie: () => ({
+    output: [
+      "Sortie",
+      "Move with the arrow keys or A and D. Fire with Space.",
+      "Esc returns you to the prompt.",
+    ],
+    launch: "sortie",
+  }),
+
   ssh: (args) => {
     const host = args[0] ?? "localhost";
     return {
@@ -968,7 +993,7 @@ export function buildBanner(): string[] {
     `Last login: ${last} on ttys001`,
     "",
     "anthonysilvia.com - terminal v1.0",
-    "Type `help` for a list of commands. Press ⌘K / Ctrl+K (or `exit`) to leave.",
+    "Type `help` for commands, or `sortie` to play. Press ⌘K / Ctrl+K (or `exit`) to leave.",
     "",
   ];
 }

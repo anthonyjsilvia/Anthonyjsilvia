@@ -4,7 +4,10 @@ import { type ElementType, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
+  AlignLeft,
+  BookOpen,
   Contrast,
+  Link2,
   Monitor,
   Moon,
   Sparkles,
@@ -12,7 +15,8 @@ import {
   Type,
   X,
 } from "lucide-react";
-import type { AccessibilitySettings, ColorScheme } from "@/lib/accessibility-settings";
+import type { AccessibilitySettings, ColorScheme, TextScale } from "@/lib/accessibility-settings";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import {
   setAccessibilitySettings,
   applyAccessibilitySettings,
@@ -41,6 +45,8 @@ function ToggleCard({
   onChange,
   Icon,
   alwaysOpenDyslexic,
+  onLabel,
+  offLabel,
 }: {
   id: string;
   label: string;
@@ -49,6 +55,8 @@ function ToggleCard({
   onChange: (checked: boolean) => void;
   Icon: ElementType;
   alwaysOpenDyslexic?: boolean;
+  onLabel: string;
+  offLabel: string;
 }) {
   return (
     <div className="flex h-full flex-col gap-6 rounded-2xl border border-[var(--border-light)] bg-[var(--bg-secondary)] p-6 lg:p-7">
@@ -73,14 +81,14 @@ function ToggleCard({
       </div>
       <div className="mt-auto flex items-center justify-between">
         <span className="text-sm font-medium text-[var(--text-secondary)]">
-          {checked ? "On" : "Off"}
+          {checked ? onLabel : offLabel}
         </span>
         <button
           id={id}
           type="button"
           role="switch"
           aria-checked={checked}
-          aria-label={`${label}: ${checked ? "on" : "off"}`}
+          aria-label={`${label}: ${checked ? onLabel : offLabel}`}
           onClick={() => onChange(!checked)}
           className="relative flex h-7 w-12 flex-shrink-0 items-center rounded-full bg-[var(--bg-tertiary)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)]"
         >
@@ -109,6 +117,7 @@ export default function AccessibilityModal({
   onSettingsChange,
 }: Props) {
   const shouldReduceMotion = useReducedMotion();
+  const a11y = useMessages().a11y;
   const [origin, setOrigin] = useState("");
 
   useEffect(() => {
@@ -122,7 +131,10 @@ export default function AccessibilityModal({
     }
   }, [open]);
 
-  const handleToggle = (key: keyof AccessibilitySettings, value: boolean) => {
+  const handleToggle = (
+    key: "reduceTransparency" | "reduceMotion" | "openDyslexic" | "readingSpace" | "emphasizeLinks" | "readingGuide",
+    value: boolean,
+  ) => {
     const next = { ...settings, [key]: value };
     onSettingsChange(next);
     setAccessibilitySettings(next);
@@ -136,6 +148,19 @@ export default function AccessibilityModal({
     applyAccessibilitySettings(next);
   };
 
+  const handleTextScale = (value: TextScale) => {
+    const next = { ...settings, textScale: value };
+    onSettingsChange(next);
+    setAccessibilitySettings(next);
+    applyAccessibilitySettings(next);
+  };
+
+  const textScaleOptions: { value: TextScale; label: string }[] = [
+    { value: "default", label: a11y.textDefault },
+    { value: "large", label: a11y.textLarge },
+    { value: "larger", label: a11y.textLarger },
+  ];
+
   // Each scheme option ships its own icon - System gets the laptop, Light the
   // sun, Dark the moon - so the segmented control reads at a glance even on a
   // narrow column.
@@ -144,9 +169,9 @@ export default function AccessibilityModal({
     label: string;
     Icon: ElementType;
   }[] = [
-    { value: "system", label: "System", Icon: Monitor },
-    { value: "light", label: "Light", Icon: Sun },
-    { value: "dark", label: "Dark", Icon: Moon },
+    { value: "system", label: a11y.system, Icon: Monitor },
+    { value: "light", label: a11y.light, Icon: Sun },
+    { value: "dark", label: a11y.dark, Icon: Moon },
   ];
 
   return (
@@ -167,13 +192,13 @@ export default function AccessibilityModal({
             type="button"
             onClick={onClose}
             className="fixed right-6 top-6 z-[231] flex items-center gap-2 rounded-full bg-black px-4 py-2.5 text-sm font-medium text-white hover:bg-black/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-            aria-label="Close accessibility settings"
+            aria-label={a11y.closeSettings}
             whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
             whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
             transition={springConfig}
           >
             <X className="h-4 w-4" aria-hidden />
-            Close
+            {a11y.close}
           </motion.button>
 
           <motion.div
@@ -185,7 +210,7 @@ export default function AccessibilityModal({
           >
             {/* Header band ----------------------------------------------- */}
             <header className="pr-28 sm:pr-32">
-              <nav aria-label="Breadcrumb" className="mb-4">
+                <nav aria-label={a11y.breadcrumb} className="mb-4">
                 <Link
                   href="/"
                   className="rounded text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
@@ -197,18 +222,17 @@ export default function AccessibilityModal({
                   /
                 </span>
                 <span className="text-sm font-medium text-[var(--text-primary)]">
-                  Accessibility settings
+                  {a11y.title}
                 </span>
               </nav>
               <h2
                 id="accessibility-settings-title"
                 className="text-3xl font-bold leading-tight text-[var(--text-primary)] sm:text-4xl lg:text-5xl"
               >
-                Accessibility settings
+                {a11y.title}
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
-                Tune how this site looks and behaves. Your choices are saved in a cookie and
-                will persist across visits.
+                {a11y.intro}
               </p>
             </header>
 
@@ -232,18 +256,17 @@ export default function AccessibilityModal({
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-lg font-semibold leading-snug text-[var(--text-primary)]">
-                      Appearance
+                      {a11y.appearance}
                     </p>
                     <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--text-secondary)]">
-                      Choose how the page is displayed. System follows your device setting and
-                      switches with your OS.
+                      {a11y.appearanceBody}
                     </p>
                   </div>
                 </div>
                 <div
                   role="group"
-                  aria-label="Color scheme"
-                  className="inline-flex flex-shrink-0 rounded-xl border border-[var(--border-light)] bg-[var(--background)] p-1"
+                  aria-label={a11y.colorScheme}
+                  className="flex w-full max-w-full flex-wrap gap-1 rounded-xl border border-[var(--border-light)] bg-[var(--background)] p-1 sm:w-auto sm:flex-shrink-0 sm:flex-nowrap"
                 >
                   {colorSchemeOptions.map((opt) => {
                     const isActive = settings.colorScheme === opt.value;
@@ -254,8 +277,8 @@ export default function AccessibilityModal({
                         type="button"
                         onClick={() => handleColorScheme(opt.value)}
                         aria-pressed={isActive}
-                        aria-label={`${opt.label} theme`}
-                        className={`inline-flex min-w-[6rem] items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)] ${
+                        aria-label={a11y.theme(opt.label)}
+                        className={`inline-flex min-w-[4.5rem] flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)] sm:flex-none sm:px-4 ${
                           isActive
                             ? "bg-[var(--primary)] text-white"
                             : "text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
@@ -269,31 +292,110 @@ export default function AccessibilityModal({
                 </div>
               </section>
 
-              {/* Three on/off toggle cards - auto-equalize height in the row */}
+              <section className="md:col-span-3 flex flex-col gap-6 rounded-2xl border border-[var(--border-light)] bg-[var(--bg-secondary)] p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-8">
+                <div className="flex items-start gap-4">
+                  <div
+                    className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-[var(--primary)]"
+                    style={{ backgroundColor: "rgba(var(--primary-rgb), 0.12)" }}
+                  >
+                    <Type className="h-5 w-5" aria-hidden />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-lg font-semibold leading-snug text-[var(--text-primary)]">
+                      {a11y.textSize}
+                    </p>
+                    <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--text-secondary)]">
+                      {a11y.textSizeBody}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  role="group"
+                  aria-label={a11y.textSize}
+                  className="flex w-full max-w-full flex-wrap gap-1 rounded-xl border border-[var(--border-light)] bg-[var(--background)] p-1 sm:w-auto sm:flex-shrink-0 sm:flex-nowrap"
+                >
+                  {textScaleOptions.map((opt) => {
+                    const isActive = settings.textScale === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => handleTextScale(opt.value)}
+                        aria-pressed={isActive}
+                        aria-label={a11y.textSizeName(opt.label)}
+                        className={`inline-flex min-w-[4.5rem] flex-1 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)] sm:flex-none sm:px-4 ${
+                          isActive
+                            ? "bg-[var(--primary)] text-white"
+                            : "text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <ToggleCard
+                id="accessibility-reading-space"
+                label={a11y.readingSpace}
+                description={a11y.readingSpaceBody}
+                checked={settings.readingSpace}
+                onChange={(v) => handleToggle("readingSpace", v)}
+                Icon={AlignLeft}
+                onLabel={a11y.on}
+                offLabel={a11y.off}
+              />
+              <ToggleCard
+                id="accessibility-emphasize-links"
+                label={a11y.emphasizeLinks}
+                description={a11y.emphasizeLinksBody}
+                checked={settings.emphasizeLinks}
+                onChange={(v) => handleToggle("emphasizeLinks", v)}
+                Icon={Link2}
+                onLabel={a11y.on}
+                offLabel={a11y.off}
+              />
+              <ToggleCard
+                id="accessibility-reading-guide"
+                label={a11y.readingGuide}
+                description={a11y.readingGuideBody}
+                checked={settings.readingGuide}
+                onChange={(v) => handleToggle("readingGuide", v)}
+                Icon={BookOpen}
+                onLabel={a11y.on}
+                offLabel={a11y.off}
+              />
               <ToggleCard
                 id="accessibility-reduce-transparency"
-                label="No transparency"
-                description="Remove all transparency: every element uses 100% opacity and semi-transparent backgrounds (e.g. glass effects) become fully solid."
+                label={a11y.noTransparency}
+                description={a11y.noTransparencyBody}
                 checked={settings.reduceTransparency}
                 onChange={(v) => handleToggle("reduceTransparency", v)}
                 Icon={Contrast}
+                onLabel={a11y.on}
+                offLabel={a11y.off}
               />
               <ToggleCard
                 id="accessibility-reduce-motion"
-                label="Reduce motion"
-                description="Minimize animations and transitions across the site. Useful for vestibular sensitivity or saving battery."
+                label={a11y.reduceMotion}
+                description={a11y.reduceMotionBody}
                 checked={settings.reduceMotion}
                 onChange={(v) => handleToggle("reduceMotion", v)}
                 Icon={Sparkles}
+                onLabel={a11y.on}
+                offLabel={a11y.off}
               />
               <ToggleCard
                 id="accessibility-open-dyslexic"
-                label="OpenDyslexic font"
-                description="Replace all site fonts with OpenDyslexic, a typeface designed to improve readability for people with dyslexia."
+                label={a11y.openDyslexic}
+                description={a11y.openDyslexicBody}
                 checked={settings.openDyslexic}
                 onChange={(v) => handleToggle("openDyslexic", v)}
                 Icon={Type}
                 alwaysOpenDyslexic
+                onLabel={a11y.on}
+                offLabel={a11y.off}
               />
             </div>
           </motion.div>

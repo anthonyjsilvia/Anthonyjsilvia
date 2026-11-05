@@ -55,7 +55,7 @@ const PAGE_ENTRIES: SearchEntry[] = [
     section: "Pages",
     href: "/#portfolio",
     description: "Portfolio and case studies",
-    keywords: ["projects", "case study", "kinlily", "herbswift", "lowes", "nodeda", "portfolio", "work"],
+    keywords: ["projects", "case study", "kinlily", "herbswift", "lowes", "nodeda", "nrova", "nrova.com", "portfolio", "work"],
   },
   {
     title: "About",

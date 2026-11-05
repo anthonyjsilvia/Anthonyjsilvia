@@ -5,13 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import OsAppShell from "@/components/os/OsAppShell";
+import { localizePortfolio } from "@/lib/i18n/localize-portfolio";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { portfolioProjects } from "@/lib/portfolio";
 
 export default function PortfolioApp({ embedded = false }: { embedded?: boolean }) {
+  const copy = useMessages().portfolio;
+  const projects = useMemo(
+    () => localizePortfolio(portfolioProjects, copy.projects),
+    [copy.projects],
+  );
   const [activeId, setActiveId] = useState(portfolioProjects[0]?.id ?? "");
   const active = useMemo(
-    () => portfolioProjects.find((i) => i.id === activeId) ?? portfolioProjects[0],
-    [activeId],
+    () => projects.find((i) => i.id === activeId) ?? projects[0],
+    [activeId, projects],
   );
   if (!active) return null;
 
@@ -20,9 +27,9 @@ export default function PortfolioApp({ embedded = false }: { embedded?: boolean 
   return (
     <OsAppShell
       embedded={embedded}
-      eyebrow="Portfolio"
-      sidebarTitle="Projects"
-      items={portfolioProjects.map((i) => ({
+      eyebrow={copy.heading}
+      sidebarTitle={copy.projectsNav}
+      items={projects.map((i) => ({
         id: i.id,
         title: i.title,
         subtitle: i.subtitle,
@@ -69,7 +76,7 @@ export default function PortfolioApp({ embedded = false }: { embedded?: boolean 
           target={isExternal || embedded ? "_blank" : embedded ? "_top" : undefined}
           rel={isExternal ? "noopener noreferrer" : undefined}
         >
-          {active.linkText ?? "Open"}
+          {active.linkText ?? copy.open}
           <ArrowUpRight className="os-app__open-icon" aria-hidden="true" />
         </Link>
       ) : null}
@@ -80,7 +87,7 @@ export default function PortfolioApp({ embedded = false }: { embedded?: boolean 
           target="_blank"
           rel="noopener noreferrer"
         >
-          {active.secondaryLinkText ?? "Open Figma"}
+          {active.secondaryLinkText ?? copy.projects.herbswift.secondaryLinkText}
           <ArrowUpRight className="os-app__open-icon" aria-hidden="true" />
         </Link>
       ) : null}

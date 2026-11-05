@@ -9,6 +9,7 @@ import {
   recommendations,
   type Recommendation,
 } from "@/lib/recommendations";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { cineEase, dur, fadeUpBlur, staggerContainer } from "@/lib/motion";
 
 /** First paragraph, trimmed for a scannable pull quote on the grid. */
@@ -87,6 +88,7 @@ export default function Recommendations({
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-10%" });
   const shouldReduceMotion = useReducedMotion();
+  const copy = useMessages().recommendations;
 
   const list =
     typeof limit === "number"
@@ -122,18 +124,17 @@ export default function Recommendations({
           variants={titleReveal}
           className="recs__header"
         >
-          <p className="recs__eyebrow">Recommendations</p>
+          <p className="recs__eyebrow">{copy.eyebrow}</p>
           <span
             className={`accent-rule mt-4 ${isInView ? "accent-rule--animate" : ""}`}
             aria-hidden="true"
           />
           <Heading id="recommendations-heading" className="recs__title">
-            Kind words from people I&rsquo;ve worked with.
+            {copy.heading}
           </Heading>
           {asPage ? (
             <p className="recs__lede">
-              Managers and peers who saw the work up close. Open any note for
-              the full recommendation.
+              {copy.lede}
             </p>
           ) : null}
         </motion.header>
@@ -175,7 +176,7 @@ export default function Recommendations({
                   <Link
                     href={`/recommendations/${rec.slug}`}
                     className="recs__face-link group"
-                    aria-label={`Read recommendation from ${rec.name}`}
+                    aria-label={copy.readFrom(rec.name)}
                   >
                     <Image
                       src={rec.image}
@@ -204,7 +205,7 @@ export default function Recommendations({
                 href="/recommendations"
                 className="recs__all-btn group inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_-14px_rgba(var(--primary-rgb),0.55)] transition-transform duration-[var(--dur-apple-sm)] hover:translate-y-[-1px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2"
               >
-                All recommendations
+                {copy.all}
                 <ArrowUpRight
                   className="h-4 w-4 transition-transform duration-[var(--dur-apple-sm)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                   aria-hidden="true"

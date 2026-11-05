@@ -21,7 +21,7 @@ import {
   Maximize2,
   MessageSquareQuote,
   Minus,
-  Power,
+  Settings,
   Sparkles,
   Terminal,
   User,
@@ -29,14 +29,22 @@ import {
   X,
 } from "lucide-react";
 import TerminalMode from "@/components/TerminalMode";
+import OsClock from "@/components/os/OsClock";
 import { renderOsAppContent } from "@/components/os/renderOsAppContent";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { OS_APPS, OS_DOCK_APPS, type OsApp } from "@/lib/os-apps";
 import { cineEase, dur } from "@/lib/motion";
 import {
   getOsSurfaceStyle,
   type OsSurfaceStyle,
 } from "@/lib/platform";
-import type { AccessibilitySettings } from "@/lib/accessibility-settings";
+import {
+  applyAccessibilitySettings,
+  setAccessibilitySettings,
+  type AccessibilitySettings,
+  type ColorScheme,
+} from "@/lib/accessibility-settings";
+import { isDockEdge, type DockEdge } from "@/lib/os-dock";
 
 type Props = {
   open: boolean;
@@ -68,15 +76,80 @@ const ICONS = {
   mail: Mail,
   quote: MessageSquareQuote,
   terminal: Terminal,
+  settings: Settings,
   accessibility: Accessibility,
   work: Layers,
   about: User,
   user: User,
+  coil: CoilIcon,
 } as const;
+
+/** Dock glyph for Coil: the same square line, pale head, and gold bit as the game. */
+function CoilIcon({ className }: { className?: string; strokeWidth?: number }) {
+  const body = [
+    [1.6, 2.2],
+    [7.1, 2.2],
+    [12.6, 2.2],
+    [1.6, 7.7],
+    [1.6, 13.2],
+    [7.1, 13.2],
+  ];
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      {body.map(([x, y]) => (
+        <rect key={`${x}-${y}`} x={x} y={y} width="4.7" height="4.7" rx="0.6" fill="#3ddc97" style={{ fill: "#3ddc97" }} />
+      ))}
+      <rect x="12.6" y="13.2" width="4.7" height="4.7" rx="0.6" fill="#d7ffe8" style={{ fill: "#d7ffe8" }} />
+      <circle cx="20.1" cy="15.55" r="2.05" fill="#f2c14e" style={{ fill: "#f2c14e" }} />
+    </svg>
+  );
+}
 
 const MIN_W = 320;
 const MIN_H = 240;
 const MOBILE_MQ = "(max-width: 768px)";
+const DOCK_STORAGE_KEY = "os-hide-dock";
+const DOCK_EDGE_KEY = "os-dock-edge";
+const DOCK_FILL_KEY = "os-dock-fill";
+
+function maximizedFrame(edge: DockEdge, isMobile: boolean) {
+  const pad = isMobile ? "0px" : "0.75rem";
+  const dock = "6.25rem";
+  if (edge === "top") {
+    return {
+      left: pad,
+      top: dock,
+      width: isMobile ? "100%" : (`calc(100% - ${pad} - ${pad})` as const),
+      height: `calc(100% - ${dock} - ${pad})` as const,
+    };
+  }
+  if (edge === "left") {
+    return {
+      left: dock,
+      top: pad,
+      width: `calc(100% - ${dock} - ${pad})` as const,
+      height: isMobile ? "100%" : (`calc(100% - ${pad} - ${pad})` as const),
+    };
+  }
+  if (edge === "right") {
+    return {
+      left: pad,
+      top: pad,
+      width: `calc(100% - ${dock} - ${pad})` as const,
+      height: isMobile ? "100%" : (`calc(100% - ${pad} - ${pad})` as const),
+    };
+  }
+  return {
+    left: isMobile ? 0 : pad,
+    top: isMobile ? 0 : pad,
+    width: isMobile ? "100%" : (`calc(100% - ${pad} - ${pad})` as const),
+    height: isMobile ? "calc(100% - 5.5rem)" : (`calc(100% - ${dock})` as const),
+  };
+}
+
+type ResizeEdge = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
+
+const RESIZE_EDGES: ResizeEdge[] = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
 
 function defaultGeometry(index: number): Pick<WinState, "x" | "y" | "w" | "h"> {
   const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
@@ -94,7 +167,14 @@ function defaultGeometry(index: number): Pick<WinState, "x" | "y" | "w" | "h"> {
 
 function AppGlyph({ app, size = "md" }: { app: OsApp; size?: "sm" | "md" }) {
   const Icon = ICONS[app.icon] ?? Home;
-  const dim = size === "sm" ? "h-5 w-5" : "h-7 w-7";
+  const dim =
+    app.icon === "coil"
+      ? size === "sm"
+        ? "h-8 w-8"
+        : "h-12 w-12"
+      : size === "sm"
+        ? "h-5 w-5"
+        : "h-7 w-7";
   const pad = size === "sm" ? "h-10 w-10" : "h-14 w-14";
   return (
     <span className={`os-app-icon ${pad}`} style={{ background: app.tint }} aria-hidden="true">
@@ -114,10 +194,18 @@ function OsAppWindow({
   onMinimize,
   onToggleMaximize,
   onMove,
+  onResize,
   onNavigateAway,
   onOpenApp,
   accessibilitySettings,
   onAccessibilitySettingsChange,
+  dockHidden,
+  onDockHiddenChange,
+  dockEdge,
+  onDockEdgeChange,
+  dockFill,
+  onDockFillChange,
+  title,
 }: {
   app: OsApp;
   win: WinState;
@@ -129,10 +217,18 @@ function OsAppWindow({
   onMinimize: () => void;
   onToggleMaximize: () => void;
   onMove: (x: number, y: number) => void;
+  onResize: (rect: { x: number; y: number; w: number; h: number }) => void;
   onNavigateAway: (href: string) => void;
   onOpenApp: (id: string) => void;
   accessibilitySettings: AccessibilitySettings;
   onAccessibilitySettingsChange: (settings: AccessibilitySettings) => void;
+  dockHidden: boolean;
+  onDockHiddenChange: (hidden: boolean) => void;
+  dockEdge: DockEdge;
+  onDockEdgeChange: (edge: DockEdge) => void;
+  dockFill: boolean;
+  onDockFillChange: (fill: boolean) => void;
+  title: string;
 }) {
   const dragRef = useRef<{
     pointerId: number;
@@ -140,6 +236,16 @@ function OsAppWindow({
     startY: number;
     origX: number;
     origY: number;
+  } | null>(null);
+  const resizeRef = useRef<{
+    pointerId: number;
+    edge: ResizeEdge;
+    startX: number;
+    startY: number;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
   } | null>(null);
 
   const maximized = isMobile || win.maximized;
@@ -176,28 +282,82 @@ function OsAppWindow({
     }
   };
 
+  const onResizePointerDown = (edge: ResizeEdge) => (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (maximized) return;
+    e.preventDefault();
+    e.stopPropagation();
+    onFocus();
+    resizeRef.current = {
+      pointerId: e.pointerId,
+      edge,
+      startX: e.clientX,
+      startY: e.clientY,
+      x: win.x,
+      y: win.y,
+      w: win.w,
+      h: win.h,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const onResizePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = resizeRef.current;
+    if (!drag || drag.pointerId !== e.pointerId) return;
+    const dx = e.clientX - drag.startX;
+    const dy = e.clientY - drag.startY;
+    let { x, y, w, h } = drag;
+    if (drag.edge.includes("e")) w = Math.max(MIN_W, drag.w + dx);
+    if (drag.edge.includes("s")) h = Math.max(MIN_H, drag.h + dy);
+    if (drag.edge.includes("w")) {
+      w = Math.max(MIN_W, drag.w - dx);
+      x = drag.x + (drag.w - w);
+    }
+    if (drag.edge.includes("n")) {
+      h = Math.max(MIN_H, drag.h - dy);
+      y = drag.y + (drag.h - h);
+    }
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    onResize({
+      x: Math.min(Math.max(8, x), Math.max(8, vw - 80)),
+      y: Math.min(Math.max(8, y), Math.max(8, vh - 64)),
+      w: Math.min(w, vw - 16),
+      h: Math.min(h, vh - 16),
+    });
+  };
+
+  const onResizePointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (resizeRef.current?.pointerId !== e.pointerId) return;
+    resizeRef.current = null;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* noop */
+    }
+  };
+
   if (win.minimized) return null;
 
   const style = maximized
-    ? {
-        left: isMobile ? 0 : 12,
-        top: isMobile ? 0 : 12,
-        width: isMobile ? "100%" : ("calc(100% - 24px)" as const),
-        height: isMobile ? "calc(100% - 5.5rem)" : ("calc(100% - 96px)" as const),
-        zIndex: win.z,
-      }
+    ? { ...maximizedFrame(dockEdge, isMobile), zIndex: win.z }
     : { left: win.x, top: win.y, width: win.w, height: win.h, zIndex: win.z };
 
   const native = renderOsAppContent(app.id, {
     onOpenApp,
     accessibilitySettings,
     onAccessibilitySettingsChange,
+    dockHidden,
+    onDockHiddenChange,
+    dockEdge,
+    onDockEdgeChange,
+    dockFill,
+    onDockFillChange,
   });
 
   return (
     <motion.div
       role="dialog"
-      aria-label={`${app.name} window`}
+      aria-label={`${title} window`}
       className={`os-window${focused ? " is-focused" : ""}${isMobile ? " is-mobile" : ""}`}
       style={style}
       onMouseDown={onFocus}
@@ -213,12 +373,12 @@ function OsAppWindow({
         onPointerUp={onTitlePointerUp}
         onPointerCancel={onTitlePointerUp}
       >
-        <p className="os-window__title">{app.name}</p>
+        <p className="os-window__title">{title}</p>
         <div className="os-window__controls" role="toolbar" aria-label="Window controls">
           <button
             type="button"
             className="os-window__ctrl os-window__ctrl--min"
-            aria-label={`Minimize ${app.name}`}
+            aria-label={`Minimize ${title}`}
             onClick={onMinimize}
           >
             <Minus className="os-window__ctrl-icon" strokeWidth={2.25} aria-hidden="true" />
@@ -228,7 +388,7 @@ function OsAppWindow({
               type="button"
               className="os-window__ctrl os-window__ctrl--max"
               aria-label={
-                win.maximized ? `Restore ${app.name}` : `Expand ${app.name}`
+                win.maximized ? `Restore ${title}` : `Expand ${title}`
               }
               onClick={onToggleMaximize}
             >
@@ -238,13 +398,26 @@ function OsAppWindow({
           <button
             type="button"
             className="os-window__ctrl os-window__ctrl--close"
-            aria-label={`Close ${app.name}`}
+            aria-label={`Close ${title}`}
             onClick={onClose}
           >
             <X className="os-window__ctrl-icon" strokeWidth={2.25} aria-hidden="true" />
           </button>
         </div>
       </div>
+
+      {!maximized
+        ? RESIZE_EDGES.map((edge) => (
+            <div
+              key={edge}
+              className={`os-window__resize os-window__resize--${edge}`}
+              onPointerDown={onResizePointerDown(edge)}
+              onPointerMove={onResizePointerMove}
+              onPointerUp={onResizePointerUp}
+              onPointerCancel={onResizePointerUp}
+            />
+          ))
+        : null}
 
       <div className="os-window__content">
         {app.action === "terminal" ? (
@@ -265,6 +438,7 @@ export default function OsMode({
   onAccessibilitySettingsChange,
 }: Props) {
   const router = useRouter();
+  const { os } = useMessages();
   const shouldReduceMotion = useReducedMotion();
   const titleId = useId();
   const desktopRef = useRef<HTMLDivElement>(null);
@@ -274,6 +448,16 @@ export default function OsMode({
   const [focusId, setFocusId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [exitConfirmOpen, setExitConfirmOpen] = useState(false);
+  const [dockHidden, setDockHidden] = useState(false);
+  const [dockEdge, setDockEdge] = useState<DockEdge>("bottom");
+  const [dockFill, setDockFill] = useState(true);
+  const schemeAside = useRef<ColorScheme>("system");
+  const [dockPeek, setDockPeek] = useState(false);
+  const [coarsePointer, setCoarsePointer] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const calendarOpenRef = useRef(false);
+  const dockHideTimer = useRef<number | null>(null);
+  calendarOpenRef.current = calendarOpen;
   // Default material until hydrated so non-Apple devices never flash glass blur.
   const [surfaceStyle, setSurfaceStyle] = useState<OsSurfaceStyle>("material");
 
@@ -381,6 +565,82 @@ export default function OsMode({
     setWindows((prev) => prev.map((w) => (w.id === id ? { ...w, x, y } : w)));
   }, []);
 
+  const resizeApp = useCallback(
+    (id: string, rect: { x: number; y: number; w: number; h: number }) => {
+      setWindows((prev) => prev.map((w) => (w.id === id ? { ...w, ...rect } : w)));
+    },
+    [],
+  );
+
+  useEffect(() => {
+    setDockHidden(window.localStorage.getItem(DOCK_STORAGE_KEY) === "1");
+    const storedEdge = window.localStorage.getItem(DOCK_EDGE_KEY);
+    if (isDockEdge(storedEdge)) setDockEdge(storedEdge);
+    setDockFill(window.localStorage.getItem(DOCK_FILL_KEY) !== "0");
+    const mq = window.matchMedia("(pointer: coarse)");
+    const sync = () => setCoarsePointer(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  const changeDockHidden = useCallback((hidden: boolean) => {
+    setDockHidden(hidden);
+    setDockPeek(false);
+    if (hidden) setCalendarOpen(false);
+    window.localStorage.setItem(DOCK_STORAGE_KEY, hidden ? "1" : "0");
+  }, []);
+
+  const changeDockEdge = useCallback((edge: DockEdge) => {
+    setDockEdge(edge);
+    setCalendarOpen(false);
+    window.localStorage.setItem(DOCK_EDGE_KEY, edge);
+  }, []);
+
+  const changeDockFill = useCallback((fill: boolean) => {
+    setDockFill(fill);
+    window.localStorage.setItem(DOCK_FILL_KEY, fill ? "1" : "0");
+  }, []);
+
+  const setDarkMode = useCallback(
+    (on: boolean) => {
+      let nextScheme = accessibilitySettings.colorScheme;
+      if (on) {
+        if (nextScheme !== "dark") schemeAside.current = nextScheme;
+        nextScheme = "dark";
+      } else {
+        nextScheme = schemeAside.current === "dark" ? "system" : schemeAside.current;
+      }
+      const next = { ...accessibilitySettings, colorScheme: nextScheme };
+      onAccessibilitySettingsChange(next);
+      setAccessibilitySettings(next);
+      applyAccessibilitySettings(next);
+    },
+    [accessibilitySettings, onAccessibilitySettingsChange],
+  );
+
+  const revealDock = useCallback(() => {
+    if (dockHideTimer.current != null) window.clearTimeout(dockHideTimer.current);
+    setDockPeek(true);
+  }, []);
+
+  const scheduleHideDock = useCallback(() => {
+    if (coarsePointer) return;
+    if (dockHideTimer.current != null) window.clearTimeout(dockHideTimer.current);
+    dockHideTimer.current = window.setTimeout(() => setDockPeek(false), 280);
+  }, [coarsePointer]);
+
+  useEffect(() => {
+    if (!dockHidden || !dockPeek || !coarsePointer) return;
+    const onPointer = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest?.(".os-dock, .os-dock-hotzone")) return;
+      setDockPeek(false);
+    };
+    document.addEventListener("pointerdown", onPointer);
+    return () => document.removeEventListener("pointerdown", onPointer);
+  }, [coarsePointer, dockHidden, dockPeek]);
+
   const onNavigateAway = useCallback(
     (href: string) => {
       onClose();
@@ -414,6 +674,8 @@ export default function OsMode({
       setWindows([]);
       setFocusId(null);
       setExitConfirmOpen(false);
+      setCalendarOpen(false);
+      setDockPeek(false);
       return;
     }
     const prevOverflow = document.body.style.overflow;
@@ -423,10 +685,14 @@ export default function OsMode({
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       const target = e.target as HTMLElement | null;
-      if (target?.closest?.(".terminal-mode")) return;
+      if (target?.closest?.(".terminal-mode, .os-game")) return;
       e.preventDefault();
       if (exitConfirmOpen) {
         setExitConfirmOpen(false);
+        return;
+      }
+      if (calendarOpenRef.current) {
+        setCalendarOpen(false);
         return;
       }
       const focused = focusIdRef.current;
@@ -495,31 +761,58 @@ export default function OsMode({
                     onMinimize={() => minimizeApp(win.id)}
                     onToggleMaximize={() => toggleMaximize(win.id)}
                     onMove={(x, y) => moveApp(win.id, x, y)}
+                    onResize={(rect) => resizeApp(win.id, rect)}
                     onNavigateAway={onNavigateAway}
                     onOpenApp={openAppById}
                     accessibilitySettings={accessibilitySettings}
                     onAccessibilitySettingsChange={onAccessibilitySettingsChange}
+                    dockHidden={dockHidden}
+                    onDockHiddenChange={changeDockHidden}
+                    dockEdge={dockEdge}
+                    onDockEdgeChange={changeDockEdge}
+                    dockFill={dockFill}
+                    onDockFillChange={changeDockFill}
+                    title={app.id === "settings" ? os.settings : app.name}
                   />
                 );
               })}
             </AnimatePresence>
           </div>
 
-          <nav className="os-dock" aria-label="Dock">
+          {dockHidden ? (
+            <div
+              className={`os-dock-hotzone os-dock-hotzone--${dockEdge}`}
+              onPointerEnter={revealDock}
+              onPointerLeave={scheduleHideDock}
+              onClick={() => {
+                if (coarsePointer) setDockPeek((open) => !open);
+              }}
+            />
+          ) : null}
+
+          <nav
+            className={`os-dock os-dock--${dockEdge}${dockFill ? " os-dock--fill" : ""}${
+              dockHidden ? " is-autohide" : ""
+            }${dockHidden && dockPeek ? " is-revealed" : ""}`}
+            aria-label="Dock"
+            onPointerEnter={revealDock}
+            onPointerLeave={scheduleHideDock}
+          >
             <ul className="os-dock__list">
               {OS_DOCK_APPS.map((app) => {
                 const isOpen = openIds.has(app.id);
                 const win = windows.find((w) => w.id === app.id);
                 const isActive = isOpen && !win?.minimized && focusId === app.id;
+                const label = app.id === "settings" ? os.settings : app.name;
                 return (
                   <li key={app.id} className="os-dock__slot">
                     <button
                       type="button"
                       className={`os-dock__item${isActive ? " is-active" : ""}${isOpen ? " is-open" : ""}`}
-                      aria-label={isOpen ? `${app.name}, open` : app.name}
+                      aria-label={isOpen ? `${label}, open` : label}
                       onClick={() => onDockClick(app)}
                     >
-                      <span className="os-dock__tooltip">{app.name}</span>
+                      <span className="os-dock__tooltip">{label}</span>
                       <AppGlyph app={app} size="sm" />
                       {isOpen ? (
                         <span className="os-dock__dot" aria-hidden="true" />
@@ -529,25 +822,18 @@ export default function OsMode({
                 );
               })}
               <li className="os-dock__sep" aria-hidden="true" />
-              <li className="os-dock__slot">
-                <button
-                  type="button"
-                  className="os-dock__item os-dock__item--power"
-                  aria-label="Exit AnthonyOS"
-                  onClick={() => setExitConfirmOpen(true)}
-                >
-                  <span className="os-dock__tooltip">Exit</span>
-                  <span
-                    className="os-app-icon h-10 w-10"
-                    style={{ background: "rgb(180, 50, 50)" }}
-                  >
-                    <Power
-                      className="h-5 w-5 text-white"
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
-                  </span>
-                </button>
+              <li className="os-dock__slot os-dock__slot--clock">
+                <OsClock
+                  open={calendarOpen}
+                  onOpenChange={setCalendarOpen}
+                  edge={dockEdge}
+                  dark={accessibilitySettings.colorScheme === "dark"}
+                  onDarkChange={setDarkMode}
+                  onExit={() => {
+                    setCalendarOpen(false);
+                    setExitConfirmOpen(true);
+                  }}
+                />
               </li>
             </ul>
           </nav>

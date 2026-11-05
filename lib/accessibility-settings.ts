@@ -9,19 +9,32 @@ const COOKIE_MAX_AGE_DAYS = 365;
 const COOKIE_PATH = "/";
 
 export type ColorScheme = "system" | "light" | "dark";
+export type TextScale = "default" | "large" | "larger";
 
 export type AccessibilitySettings = {
   reduceTransparency: boolean;
   reduceMotion: boolean;
   openDyslexic: boolean;
   colorScheme: ColorScheme;
+  /** Root type scale. Large and Larger keep the same layout. */
+  textScale: TextScale;
+  /** Looser line, letter, and paragraph spacing in body copy. */
+  readingSpace: boolean;
+  /** Underline text links so they are not identified by color alone. */
+  emphasizeLinks: boolean;
+  /** A band that follows the pointer to help track a line of text. */
+  readingGuide: boolean;
 };
 
-const DEFAULTS: AccessibilitySettings = {
+export const defaultAccessibilitySettings: AccessibilitySettings = {
   reduceTransparency: false,
   reduceMotion: false,
   openDyslexic: false,
   colorScheme: "system",
+  textScale: "default",
+  readingSpace: false,
+  emphasizeLinks: false,
+  readingGuide: false,
 };
 
 function getCookie(name: string): string | null {
@@ -42,7 +55,7 @@ function setCookie(name: string, value: string): void {
 
 export function getAccessibilitySettings(): AccessibilitySettings {
   const raw = getCookie(COOKIE_NAME);
-  if (!raw) return { ...DEFAULTS };
+  if (!raw) return { ...defaultAccessibilitySettings };
   try {
     const parsed = JSON.parse(raw) as Partial<AccessibilitySettings>;
     return {
@@ -53,9 +66,16 @@ export function getAccessibilitySettings(): AccessibilitySettings {
         parsed.colorScheme === "light" || parsed.colorScheme === "dark"
           ? parsed.colorScheme
           : "system",
+      textScale:
+        parsed.textScale === "large" || parsed.textScale === "larger"
+          ? parsed.textScale
+          : "default",
+      readingSpace: !!parsed.readingSpace,
+      emphasizeLinks: !!parsed.emphasizeLinks,
+      readingGuide: !!parsed.readingGuide,
     };
   } catch {
-    return { ...DEFAULTS };
+    return { ...defaultAccessibilitySettings };
   }
 }
 
@@ -71,6 +91,10 @@ export function applyAccessibilitySettings(settings: AccessibilitySettings): voi
   root.classList.toggle("force-reduce-transparency", settings.reduceTransparency);
   root.classList.toggle("force-reduce-motion", settings.reduceMotion);
   root.classList.toggle("use-open-dyslexic", settings.openDyslexic);
+  root.classList.toggle("text-scale-large", settings.textScale === "large");
+  root.classList.toggle("text-scale-larger", settings.textScale === "larger");
+  root.classList.toggle("reading-space", settings.readingSpace);
+  root.classList.toggle("emphasize-links", settings.emphasizeLinks);
 
   // Color scheme: system (OS-aware), light, or dark
   root.classList.remove("color-scheme-light", "color-scheme-dark");

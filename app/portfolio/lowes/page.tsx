@@ -4,7 +4,8 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import SiteBackBar from "@/components/SiteBackBar";
-import { lowesCaseCopy, lowesFigmaUrl } from "@/lib/lowes-case";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
+import { lowesFigmaUrl } from "@/lib/lowes-case";
 import { cineEase, dur } from "@/lib/motion";
 
 /**
@@ -13,10 +14,11 @@ import { cineEase, dur } from "@/lib/motion";
  */
 export default function LowesCasePage() {
   const shouldReduceMotion = useReducedMotion();
+  const lowesCaseCopy = useMessages().lowes;
 
   return (
     <article className="min-h-screen bg-[var(--background)] pb-24 md:pb-32">
-      <SiteBackBar href="/#portfolio" label="Back to portfolio" />
+      <SiteBackBar href="/#portfolio" />
       <div className="h-[4.75rem]" aria-hidden="true" />
 
       <div className="mx-auto mt-6 w-full max-w-[var(--hp-cine-max)] px-[var(--hp-cine-pad,1.25rem)] md:mt-10">

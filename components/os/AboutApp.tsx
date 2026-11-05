@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { aboutContent } from "@/lib/about";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 
 export default function AboutApp({ embedded = false }: { embedded?: boolean }) {
+  const aboutContent = useMessages().about;
   return (
     <div className={`os-app os-app--single${embedded ? " os-app--embedded" : ""}`}>
       <div className="os-app__single">

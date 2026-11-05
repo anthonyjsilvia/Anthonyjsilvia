@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown, FileText, Layers } from "lucide-react";
 import Image from "next/image";
 import { type ElementType, type ReactNode, useEffect, useRef } from "react";
+import { useMessages } from "@/lib/i18n/LocaleProvider";
 import { heroItem, heroStagger } from "@/lib/motion";
 
 /**
@@ -75,6 +76,7 @@ const PARALLAX_PORTRAIT = 0.18;
  */
 export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
+  const hero = useMessages().hero;
   const portraitRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const item = heroItem(shouldReduceMotion);
@@ -181,7 +183,7 @@ export default function Hero() {
           variants={item}
           className="font-sans text-[clamp(0.75rem,1.1vw,0.85rem)] font-bold uppercase tracking-[0.2em] text-white/65"
         >
-          Product Designer · MBA
+          {hero.eyebrow}
         </motion.p>
 
         <motion.h1
@@ -196,7 +198,7 @@ export default function Hero() {
           variants={item}
           className="mt-4 md:mt-5 font-sans text-[clamp(1.05rem,1.7vw,1.25rem)] font-medium leading-[1.55] text-white/85 max-w-[28rem]"
         >
-          I turn complex operational workflows into clear product experiences.
+          {hero.lede}
         </motion.p>
 
         <motion.div
@@ -207,17 +209,17 @@ export default function Hero() {
             href="#portfolio"
             Icon={Layers}
             variant="primary"
-            ariaLabel="See portfolio"
+            ariaLabel={hero.seePortfolio}
           >
-            Portfolio
+            {hero.portfolio}
           </HeroCTA>
           <HeroCTA
             href="/resume"
             Icon={FileText}
             variant="secondary"
-            ariaLabel="Request resume"
+            ariaLabel={hero.requestResume}
           >
-            Request Resume
+            {hero.requestResumeLabel}
           </HeroCTA>
         </motion.div>
       </motion.div>
@@ -232,10 +234,10 @@ export default function Hero() {
           ease: [0.22, 1, 0.36, 1],
         }}
         className="hero-read-more absolute bottom-[var(--hp-cine-pad,1.25rem)] left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-white/80 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:left-auto md:right-[var(--hp-cine-pad,1.25rem)] md:translate-x-0"
-        aria-label="See portfolio"
+        aria-label={hero.seePortfolio}
       >
         <span className="font-sans text-[11px] font-bold uppercase tracking-[0.18em]">
-          Portfolio
+          {hero.portfolio}
         </span>
         <ChevronDown
           className="hero-read-more__chevron h-5 w-5"
