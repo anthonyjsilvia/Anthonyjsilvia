@@ -1,0 +1,20 @@
+---
+description: Keep every locale in sync when English site copy changes
+alwaysApply: true
+---
+
+# Translations
+
+English in `lib/i18n/en.ts` is the source of truth. `lib/i18n/es.ts` must satisfy `Messages`, and every future locale file must too.
+
+When you add or change visitor-facing English copy, update every catalog in `lib/i18n/` in the same change. Do not ship an English string that the other languages still show in English.
+
+- Read copy through `useMessages()`. Do not hardcode new visitor-facing sentences in components.
+- Keep proper nouns as written: Anthony Silvia, Lowe's, NodeDa, nrova.com, Kinlily, Herbswift, Figma, WCAG, MBA, product names. The suite in the portfolio is nrova.com. Do not describe it as a rename.
+- Leave third-party recommendation quotes in their original language. Translate the headings and labels around them.
+- Keep Lowe's case-study wording just as careful in every language: independent fictional portfolio work, not Lowe's materials, interfaces, research, or work product, and not endorsed by Lowe's.
+- Language names in the picker stay in each language's own name (`English`, `Español`, `Português`). Region names stay in that language too (`US`, `UK`, `México`, `España`, `Brasil`, `Portugal`).
+- English has an American catalog (`en.ts`, `en-US`) and a British catalog (`en-GB.ts`). British English uses British spelling and vocabulary: colour, judgement, programme, CV, queue.
+- Spanish has Mexico (`es.ts`, `es-MX`) and Spain (`es-ES.ts`). Portuguese has Brazil (`pt.ts`, `pt-BR`) and Portugal (`pt-PT.ts`).
+- Visitors outside the United States default to British English. A saved language choice wins over that default.
+- A new language needs an entry in `lib/i18n/languages.ts`, a catalog for each region, and a flag for each region in `components/LanguageFlag.tsx`.
