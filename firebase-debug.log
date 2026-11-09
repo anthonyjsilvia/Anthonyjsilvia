@@ -1,0 +1,15 @@
+[debug] [2026-11-09T19:43:40.218Z] ----------------------------------------------------------------------
+[debug] [2026-11-09T19:43:40.219Z] Command:       /usr/local/bin/node /opt/homebrew/bin/firebase --debug apphosting:backends:get website --project anthony-silvia
+[debug] [2026-11-09T19:43:40.219Z] CLI Version:   15.26.0
+[debug] [2026-11-09T19:43:40.219Z] Platform:      darwin
+[debug] [2026-11-09T19:43:40.220Z] Node Version:  v26.13.0
+[debug] [2026-11-09T19:43:40.220Z] Detected Agent: cursor
+[debug] [2026-11-09T19:43:40.220Z] Time:          Mon Nov 09 2026 14:43:40 GMT-0500 (Eastern Standard Time)
+[debug] [2026-11-09T19:43:40.220Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-11-09T19:43:40.222Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-11-09T19:43:40.222Z] > authorizing via signed-in user (no-reply@help.nodeda.com)
+[debug] [2026-11-09T19:43:40.226Z] Checked if tokens are valid: true, expires at: 1794256939482
+[debug] [2026-11-09T19:43:40.226Z] Checked if tokens are valid: true, expires at: 1794256939482
+[debug] [2026-11-09T19:43:40.226Z] >>> [apiv2][query] GET https://firebaseapphosting.googleapis.com/v1beta/projects/anthony-silvia/locations/-/backends 
+[debug] [2026-11-09T19:43:40.754Z] <<< [apiv2][status] GET https://firebaseapphosting.googleapis.com/v1beta/projects/anthony-silvia/locations/-/backends 200
